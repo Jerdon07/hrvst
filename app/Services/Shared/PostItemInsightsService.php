@@ -142,7 +142,7 @@ class PostItemInsightsService
             ->where('posts.created_at', '>=', $start)
             ->select('posts.created_at', 'post_items.quantity_kg')
             ->get()
-            ->groupBy(fn ($row) => \Carbon\Carbon::parse($row->created_at)->format('Y-m'))
+            ->groupBy(fn ($row) => Carbon::parse($row->created_at)->format('Y-m'))
             ->map(fn ($group) => $group->sum('quantity_kg'));
 
         $result = [];

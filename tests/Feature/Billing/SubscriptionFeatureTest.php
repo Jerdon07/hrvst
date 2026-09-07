@@ -5,6 +5,7 @@ use App\Enums\Billing\SubscriptionPlan;
 use App\Enums\Billing\SubscriptionStatus;
 use App\Models\Billing\Subscription;
 use App\Models\Profiles\Role;
+use App\Models\User;
 
 beforeEach(function () {
     Role::firstOrCreate(['name' => 'admin']);
@@ -12,7 +13,7 @@ beforeEach(function () {
     Role::firstOrCreate(['name' => 'dealer']);
 });
 
-function subscribeTo(App\Models\User $user, SubscriptionFeature $feature, array $overrides = []): Subscription
+function subscribeTo(User $user, SubscriptionFeature $feature, array $overrides = []): Subscription
 {
     return Subscription::create(array_merge([
         'user_id' => $user->id,
@@ -42,7 +43,7 @@ describe('SubscriptionFeature::forUser', function () {
     });
 
     it('returns null for a user with no recognized role', function () {
-        $user = App\Models\User::factory()->create();
+        $user = User::factory()->create();
 
         expect(SubscriptionFeature::forUser($user))->toBeNull();
     });
@@ -102,7 +103,7 @@ describe('SubscriptionFeature::hasAccessFor', function () {
     });
 
     it('is false for a user with no recognized role, without throwing', function () {
-        $user = App\Models\User::factory()->create();
+        $user = User::factory()->create();
 
         expect(SubscriptionFeature::hasAccessFor($user))->toBeFalse();
     });

@@ -56,7 +56,7 @@ class SupplyController extends Controller
 
         $action->handle(post: $post, validated: $request->validated());
 
-        $routeName = $this->routePrefix() . '.show';
+        $routeName = $this->routePrefix().'.show';
 
         return redirect()->route($routeName, $post)
             ->with('flash', ['type' => 'success', 'message' => $this->updatedMessage()]);

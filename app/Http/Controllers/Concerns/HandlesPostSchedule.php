@@ -42,7 +42,7 @@ trait HandlesPostSchedule
         Gate::authorize('viewAny', Post::class);
 
         $userId = $request->user()->id;
-        $index = $this->pageNamespace() . '/Index';
+        $index = $this->pageNamespace().'/Index';
 
         return Inertia::render($index, [
             'type' => $this->postType()->value,
@@ -67,7 +67,7 @@ trait HandlesPostSchedule
             $status = PostItemStatus::Expired;
         }
 
-        $archived = $this->pageNamespace() . '/Archived';
+        $archived = $this->pageNamespace().'/Archived';
 
         return Inertia::render($archived, [
             'type' => $this->postType()->value,
@@ -82,7 +82,7 @@ trait HandlesPostSchedule
     {
         Gate::authorize('create', [Post::class, $this->postType()]);
 
-        $create = $this->pageNamespace() . '/Create';
+        $create = $this->pageNamespace().'/Create';
 
         return Inertia::render($create, [
             'type' => $this->postType()->value,
@@ -95,7 +95,7 @@ trait HandlesPostSchedule
         Gate::authorize('view', $post);
 
         $post->load('postItems.vegetable');
-        $show = $this->pageNamespace() . '/Show';
+        $show = $this->pageNamespace().'/Show';
 
         return Inertia::render($show, [
             'type' => $this->postType()->value,
@@ -109,7 +109,7 @@ trait HandlesPostSchedule
         Gate::authorize('update', $post);
 
         $post->load('postItems.vegetable');
-        $edit = $this->pageNamespace() . '/Edit';
+        $edit = $this->pageNamespace().'/Edit';
 
         return Inertia::render($edit, [
             'type' => $this->postType()->value,

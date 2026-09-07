@@ -3,10 +3,9 @@
 use App\Enums\Billing\SubscriptionFeature;
 use App\Enums\Billing\SubscriptionPlan;
 use App\Enums\Billing\SubscriptionStatus;
-use App\Http\Middleware\HandleInertiaRequests;
 use App\Models\Billing\Subscription;
 use App\Models\Profiles\Role;
-use Illuminate\Http\Request;
+use App\Models\User;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
@@ -17,7 +16,7 @@ beforeEach(function () {
     Role::firstOrCreate(['name' => 'dealer']);
 });
 
-function subscribeViewerTo(App\Models\User $user, SubscriptionFeature $feature): void
+function subscribeViewerTo(User $user, SubscriptionFeature $feature): void
 {
     Subscription::create([
         'user_id' => $user->id,
