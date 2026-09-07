@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, usePage } from '@inertiajs/vue3'
-import { Clock } from '@lucide/vue'
+import { Clock, Users } from '@lucide/vue'
 import { ArrowRight, BarChart3, Download, MapPin, Package, ShieldCheck, Share, Sprout, Store, TrendingUp } from '@lucide/vue'
 import { ref, watch } from 'vue'
 import FlashToaster from '@/components/FlashToaster.vue'
@@ -86,24 +86,19 @@ const dealerBenefits = [
 
 const adminBenefits = [
     {
-        icon: Package,
-        title: 'Lorem Ipsum',
-        desc: 'Lorem Ipsum',
+        icon: Sprout,
+        title: 'Manage Vegetable',
+        desc: 'Create and manage vegetables for users.',
     },
     {
-        icon: BarChart3,
-        title: 'Lorem Ipsum',
-        desc: 'Lorem Ipsum',
+        icon: Users,
+        title: 'Manage Users',
+        desc: 'Track and manage farmers and dealers activities.',
     },
     {
         icon: MapPin,
-        title: 'Lorem Ipsum',
-        desc: 'Lorem Ipsum.',
-    },
-    {
-        icon: ShieldCheck,
-        title: 'Lorem Ipsum',
-        desc: 'Lorem Ipsum.',
+        title: 'Supply & Demand Access',
+        desc: 'Get access to supply and demand data.',
     },
 ]
 
@@ -489,7 +484,7 @@ const steps = [
                             </h3>
 
                             <p class="mb-8 text-sm leading-relaxed text-muted-foreground">
-                                Lorem ipsum.
+                                Manage Trading Post users and track vegetable status in real-time.
                             </p>
 
                             <ul class="space-y-4">
