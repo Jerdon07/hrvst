@@ -1,15 +1,15 @@
-import { dashboard as farmerDashboard } from '@/routes/farmer'
-import { dashboard as dealerDashboard } from '@/routes/dealer'
-import * as farmerSupplyRoutes from '@/routes/farmer/supplies'
-import * as dealerDemandRoutes from '@/routes/dealer/demands'
-import {
-    fulfill as farmerFulfill,
-    expire as farmerExpire,
-} from '@/actions/App/Http/Controllers/Farmer/Schedule/PostItemController'
 import {
     fulfill as dealerFulfill,
     expire as dealerExpire,
 } from '@/actions/App/Http/Controllers/Dealer/Schedule/PostItemController'
+import {
+    fulfill as farmerFulfill,
+    expire as farmerExpire,
+} from '@/actions/App/Http/Controllers/Farmer/Schedule/PostItemController'
+import { dashboard as dealerDashboard } from '@/routes/dealer'
+import * as dealerDemandRoutes from '@/routes/dealer/demands'
+import { dashboard as farmerDashboard } from '@/routes/farmer'
+import * as farmerSupplyRoutes from '@/routes/farmer/supplies'
 
 export type ScheduleType = 'supply' | 'demand'
 

@@ -40,7 +40,10 @@ const effectiveSide = computed(() =>
                 <SheetDescription v-if="description">
                     {{ description }}
                 </SheetDescription>
-                <SheetDescription v-else class="sr-only">Sheet Description</SheetDescription>
+                <SheetDescription
+                    v-else
+                    class="sr-only"
+                >Sheet Description</SheetDescription>
             </SheetHeader>
 
             <ScrollArea class="flex-1 min-h-0">

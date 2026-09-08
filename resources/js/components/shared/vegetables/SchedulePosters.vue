@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { Link } from '@inertiajs/vue3';
 import { ChevronRight, User } from '@lucide/vue';
 import { Badge } from '@/components/ui/badge';
-import { Link } from '@inertiajs/vue3';
 import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/components/ui/item';
 
 defineProps<{
@@ -20,9 +20,7 @@ defineProps<{
         :class="bgClass"
         as-child
     >
-        <Link
-            :href="link"
-        >
+        <Link :href="link">
             <ItemMedia variant="icon">
                 <User class="size-3.5" />
             </ItemMedia>

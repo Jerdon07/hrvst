@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3'
 import { CalendarClock, ChevronDown, MoreVertical, SquarePen, Trash, TriangleAlert, Eye } from '@lucide/vue'
+import PostActionButtons from '@/components/shared/PostActionButtons.vue'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -9,7 +10,6 @@ import {
 import { Item, ItemActions, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemSeparator, ItemTitle } from '@/components/ui/item'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import PostActionButtons from '@/components/shared/PostActionButtons.vue'
 import type { PostDataFixed } from '@/types'
 
 const props = defineProps<{
@@ -46,8 +46,14 @@ const emit = defineEmits<{ delete: [post: PostDataFixed] }>()
             ]"
         />
         
-        <ItemMedia variant="icon" :class="post.needs_action ? 'bg-destructive/10' : 'bg-primary/10'">
-            <TriangleAlert v-if="post.needs_action" class="text-destructive" />
+        <ItemMedia
+            variant="icon"
+            :class="post.needs_action ? 'bg-destructive/10' : 'bg-primary/10'"
+        >
+            <TriangleAlert
+                v-if="post.needs_action"
+                class="text-destructive"
+            />
             <CalendarClock v-else />
         </ItemMedia>
 
@@ -55,7 +61,10 @@ const emit = defineEmits<{ delete: [post: PostDataFixed] }>()
             <ItemTitle class="flex flex-wrap items-center gap-1.5">
                 {{ post.scheduled_date }}
                 <Badge variant="outline">{{ post.time_slot }}</Badge>
-                <Badge v-if="post.needs_action" variant="destructive">Action needed</Badge>
+                <Badge
+                    v-if="post.needs_action"
+                    variant="destructive"
+                >Action needed</Badge>
             </ItemTitle>
             <ItemDescription v-if="post.post_items?.length">
                 {{ post.post_items.length }} {{ post.post_items.length === 1 ? itemNounSingular : itemNounPlural }}
@@ -65,11 +74,17 @@ const emit = defineEmits<{ delete: [post: PostDataFixed] }>()
         <ItemActions class="z-10 flex items-center gap-1">
             <Popover>
                 <PopoverTrigger as-child>
-                    <Button variant="ghost" size="icon-sm">
+                    <Button
+                        variant="ghost"
+                        size="icon-sm"
+                    >
                         <ChevronDown class="size-4" />
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent align="end" class="w-80 p-0">
+                <PopoverContent
+                    align="end"
+                    class="w-80 p-0"
+                >
                     <ScrollArea class="max-h-80 overflow-y-scroll rounded-t-md">
                         <ItemGroup>
                             <template
@@ -115,7 +130,10 @@ const emit = defineEmits<{ delete: [post: PostDataFixed] }>()
 
             <DropdownMenu>
                 <DropdownMenuTrigger as-child>
-                    <Button variant="ghost" size="icon-sm">
+                    <Button
+                        variant="ghost"
+                        size="icon-sm"
+                    >
                         <MoreVertical class="size-4" />
                     </Button>
                 </DropdownMenuTrigger>

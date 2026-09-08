@@ -14,8 +14,8 @@ import { formatNetKgDealer, formatNetKgFarmer, netKgClassDealer, netKgClassFarme
 import AppLayout from '@/layouts/AppLayout.vue'
 import { scheduleRegistry, type ScheduleType } from '@/lib/scheduleRegistry'
 import type { BreadcrumbItem, PostDataFixed, VegetableOverlapData } from '@/types'
-import farmers from '@/routes/farmers'
 import dealers from '@/routes/dealers'
+import farmers from '@/routes/farmers'
 
 const props = defineProps<{
     type: ScheduleType
