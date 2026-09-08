@@ -12,5 +12,10 @@ export interface ScheduleFormItem {
 }
 
 export function blankScheduleItem(): ScheduleFormItem {
-    return { _key: nextItemKey(), id: null, vegetable_id: '', quantity_kg: null }
+    return {
+        _key: nextItemKey(),
+        id: null,
+        vegetable_id: '',
+        quantity_kg: null,
+    }
 }

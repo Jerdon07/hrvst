@@ -55,7 +55,8 @@ export const scheduleRegistry: Record<ScheduleType, ScheduleConfig> = {
         entityLabel: 'Supply',
         copy: {
             createTitle: 'New Supply Schedule',
-            createDescription: 'Post the vegetables you plan to bring, and when.',
+            createDescription:
+                'Post the vegetables you plan to bring, and when.',
             editTitle: 'Edit Supply Schedule',
             editDescription: (date) => `Originally posted for ${date}`,
         },
@@ -72,7 +73,8 @@ export const scheduleRegistry: Record<ScheduleType, ScheduleConfig> = {
         entityLabel: 'Schedule',
         copy: {
             createTitle: 'New Demand Schedule',
-            createDescription: "Post the vegetables you need, and when you'll be there.",
+            createDescription:
+                "Post the vegetables you need, and when you'll be there.",
             editTitle: 'Edit Demand Schedule',
             editDescription: (date) => `Originally posted for ${date}`,
         },
