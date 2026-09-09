@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Deferred, Head, router, useForm } from '@inertiajs/vue3'
+import { Deferred, Head, Link, router, useForm } from '@inertiajs/vue3'
 import { Package, Plus } from 'lucide-vue-next'
 import { ref } from 'vue'
 import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import AppLayout from '@/layouts/AppLayout.vue'
 import farmer from '@/routes/farmer'
-import { destroy, index } from '@/routes/farmer/supplies'
+import { create, destroy, index } from '@/routes/farmer/supplies'
 import type {
     BreadcrumbItem,
     FarmerSuppliesProps,
@@ -19,21 +19,6 @@ import type {
 } from '@/types'
 
 defineProps<FarmerSuppliesProps>()
-
-// ─── Supply form (create + edit) ─────────────────────────────────────────────
-
-const supplyFormOpen = ref(false)
-const activeSupply = ref<FarmerSupplyDataFixed | null>(null)
-
-function openCreate() {
-    activeSupply.value = null
-    supplyFormOpen.value = true
-}
-
-function openEdit(supply: FarmerSupplyDataFixed) {
-    activeSupply.value = supply
-    supplyFormOpen.value = true
-}
 
 // ─── Delete ───────────────────────────────────────────────────────────────────
 
@@ -84,10 +69,12 @@ const breadcrumbs: BreadcrumbItem[] = [
                 />
                 <Button
                     class="gap-2"
-                    @click="openCreate"
+                    as-child
                 >
-                    <Plus class="size-4" />
-                    New Schedule
+                    <Link :href="create().url">
+                        <Plus class="size-4" />
+                        New Schedule
+                    </Link>
                 </Button>
             </div>
 
@@ -113,7 +100,6 @@ const breadcrumbs: BreadcrumbItem[] = [
                             v-for="supply in needsAction"
                             :key="supply.id"
                             :supply="supply"
-                            @edit="openEdit(supply)"
                             @delete="openDelete(supply)"
                         />
                     </div>
@@ -145,7 +131,6 @@ const breadcrumbs: BreadcrumbItem[] = [
                             v-for="supply in supplies!.data"
                             :key="supply.id"
                             :supply="supply"
-                            @edit="openEdit(supply)"
                             @delete="openDelete(supply)"
                         />
                     </div>
@@ -181,13 +166,6 @@ const breadcrumbs: BreadcrumbItem[] = [
             </Deferred>
         </div>
     </AppLayout>
-
-    <SupplyForm
-        :open="supplyFormOpen"
-        :supply="activeSupply"
-        :variety-options="varietyOptions"
-        @update:open="supplyFormOpen = $event"
-    />
 
     <ConfirmationDialog
         v-model:open="deleteDialogOpen"

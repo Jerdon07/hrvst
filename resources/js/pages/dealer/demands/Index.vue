@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Deferred, Head, router, useForm } from '@inertiajs/vue3'
+import { Deferred, Head, Link, router, useForm } from '@inertiajs/vue3'
 import { Plus, ShoppingBag } from 'lucide-vue-next'
 import { ref } from 'vue'
 import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import AppLayout from '@/layouts/AppLayout.vue'
 import dealer from '@/routes/dealer'
-import { destroy, index } from '@/routes/dealer/demands'
+import { create, destroy, index } from '@/routes/dealer/demands'
 import type {
     BreadcrumbItem,
     DealerDemandsProps,
@@ -19,21 +19,6 @@ import type {
 } from '@/types'
 
 defineProps<DealerDemandsProps>()
-
-// ─── Demand form (create + edit) ──────────────────────────────────────────────
-
-const demandFormOpen = ref(false)
-const activeDemand = ref<DealerDemandDataFixed | null>(null)
-
-function openCreate() {
-    activeDemand.value = null
-    demandFormOpen.value = true
-}
-
-function openEdit(demand: DealerDemandDataFixed) {
-    activeDemand.value = demand
-    demandFormOpen.value = true
-}
 
 // ─── Delete ───────────────────────────────────────────────────────────────────
 
@@ -84,10 +69,12 @@ const breadcrumbs: BreadcrumbItem[] = [
                 />
                 <Button
                     class="gap-2"
-                    @click="openCreate"
+                    as-child
                 >
-                    <Plus class="size-4" />
-                    New Schedule
+                    <Link :href="create().url">
+                        <Plus class="size-4" />
+                        New Schedule
+                    </Link>
                 </Button>
             </div>
 
@@ -113,7 +100,6 @@ const breadcrumbs: BreadcrumbItem[] = [
                             v-for="demand in needsAction"
                             :key="demand.id"
                             :demand="demand"
-                            @edit="openEdit(demand)"
                             @delete="openDelete(demand)"
                         />
                     </div>
@@ -145,7 +131,6 @@ const breadcrumbs: BreadcrumbItem[] = [
                             v-for="demand in demands!.data"
                             :key="demand.id"
                             :demand="demand"
-                            @edit="openEdit(demand)"
                             @delete="openDelete(demand)"
                         />
                     </div>
@@ -181,13 +166,6 @@ const breadcrumbs: BreadcrumbItem[] = [
             </Deferred>
         </div>
     </AppLayout>
-
-    <DemandForm
-        :open="demandFormOpen"
-        :demand="activeDemand"
-        :variety-options="varietyOptions"
-        @update:open="demandFormOpen = $event"
-    />
 
     <ConfirmationDialog
         v-model:open="deleteDialogOpen"

@@ -75,7 +75,7 @@ onUnmounted(() => {
                         <Form
                             v-else
                             v-slot="{ processing }"
-                            v-bind="enable.form()"
+                            v-bind="enable.post()"
                             @success="showSetupModal = true"
                         >
                             <Button
@@ -104,7 +104,7 @@ onUnmounted(() => {
                     <div class="relative inline">
                         <Form
                             v-slot="{ processing }"
-                            v-bind="disable.form()"
+                            v-bind="disable.delete()"
                         >
                             <Button
                                 variant="destructive"

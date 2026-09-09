@@ -24,6 +24,8 @@ import { Item, ItemActions, ItemContent, ItemDescription, ItemGroup, ItemMedia, 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import type { DealerDemandDataFixed } from '@/types'
+import { Link } from '@inertiajs/vue3'
+import { edit } from '@/routes/dealer/demands'
 
 defineProps<{ demand: DealerDemandDataFixed }>()
 
@@ -169,9 +171,11 @@ const emit = defineEmits<{
                 <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuGroup>
-                        <DropdownMenuItem @click="emit('edit', demand)">
-                            <SquarePen />
-                            Edit Schedule
+                        <DropdownMenuItem>
+                            <Link :href="edit(demand.id).url">
+                                <SquarePen />
+                                Edit Schedule
+                            </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem
                             class="text-destructive focus:text-destructive"

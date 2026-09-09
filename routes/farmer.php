@@ -12,7 +12,10 @@ Route::middleware(['auth', 'verified', 'farmer'])->prefix('farmer')->name('farme
     Route::prefix('supplies')->name('supplies.')->group(function () {
         Route::get('/', [SupplyController::class, 'index'])->name('index');
         Route::get('/archived', [SupplyController::class, 'archived'])->name('archived');
+        Route::get('/create', [SupplyController::class, 'create'])->name('create');
         Route::post('/', [SupplyController::class, 'store'])->name('store');
+        Route::get('/{supply}', [SupplyController::class, 'show'])->name('show');
+        Route::get('/{supply}/edit', [SupplyController::class, 'edit'])->name('edit');
         Route::put('/{supply}', [SupplyController::class, 'update'])->name('update');
         Route::delete('/{supply}', [SupplyController::class, 'destroy'])->name('destroy');
 

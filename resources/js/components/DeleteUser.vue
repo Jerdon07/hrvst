@@ -45,7 +45,7 @@ const passwordInput = useTemplateRef('passwordInput')
                 <DialogContent>
                     <Form
                         v-slot="{ errors, processing, reset, clearErrors }"
-                        v-bind="ProfileController.destroy.form()"
+                        v-bind="ProfileController.destroy.delete()"
                         reset-on-success
                         :options="{
                             preserveScroll: true,

@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Dealer\StoreDemandRequest;
 use App\Http\Requests\Dealer\UpdateDemandRequest;
 use App\Models\Schedule\Post;
+use App\Services\Post\PostScheduleOverlapService;
 use App\Services\Post\PostService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,7 +23,8 @@ use Inertia\Response;
 class DemandController extends Controller
 {
     public function __construct(
-        private PostService $postService
+        private PostService $postService,
+        private PostScheduleOverlapService $overlapService,
     ) {}
 
     public function index(Request $request): Response
@@ -73,6 +75,40 @@ class DemandController extends Controller
         ]);
     }
 
+    public function create(): Response
+    {
+        Gate::authorize('create', [Post::class, PostType::Demand]);
+
+        return Inertia::render('dealer/demands/Create', [
+            'varietyOptions' => Inertia::defer(fn () => $this->postService->varietyOptions(PostType::Demand)),
+        ]);
+    }
+
+    public function show(Post $demand): Response
+    {
+        Gate::authorize('view', $demand);
+
+        $demand->load('postItems.vegetable');
+
+        return Inertia::render('dealer/demands/Show', [
+            'demand' => DealerDemandData::from($demand),
+            'overlap' => Inertia::defer(fn () => $this->overlapService->forPost($demand)),
+        ]);
+    }
+
+    public function edit(Post $demand): Response
+    {
+        Gate::authorize('update', $demand);
+
+        $demand->load('postItems.vegetable');
+
+        return Inertia::render('dealer/demands/Edit', [
+            'demand' => DealerDemandData::from($demand),
+            'varietyOptions' => Inertia::defer(fn () => $this->postService->varietyOptions(PostType::Demand)),
+            'overlap' => Inertia::defer(fn () => $this->overlapService->forPost($demand)),
+        ]);
+    }
+
     public function store(StoreDemandRequest $request, CreatePostAction $action): RedirectResponse
     {
         Gate::authorize('create', [Post::class, PostType::Demand]);
@@ -93,7 +129,7 @@ class DemandController extends Controller
 
         $action->handle(post: $demand, validated: $request->validated());
 
-        return redirect()->route('dealer.demands.index')
+        return redirect()->route('dealer.demands.show', $demand)
             ->with('flash', ['type' => 'success', 'message' => 'Demand updated successfully!']);
     }
 
