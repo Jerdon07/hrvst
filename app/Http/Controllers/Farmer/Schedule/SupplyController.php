@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Farmer\StoreSupplyRequest;
 use App\Http\Requests\Farmer\UpdateSupplyRequest;
 use App\Models\Schedule\Post;
+use App\Services\Post\PostScheduleOverlapService;
 use App\Services\Post\PostService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,7 +22,10 @@ use Inertia\Response;
 
 class SupplyController extends Controller
 {
-    public function __construct(private PostService $postService) {}
+    public function __construct(
+        private PostService $postService,
+        private PostScheduleOverlapService $overlapService,
+    ) {}
 
     public function index(Request $request): Response
     {
@@ -70,6 +74,40 @@ class SupplyController extends Controller
         ]);
     }
 
+    public function create(): Response
+    {
+        Gate::authorize('create', [Post::class, PostType::Supply]);
+
+        return Inertia::render('farmer/supplies/Create', [
+            'varietyOptions' => Inertia::defer(fn () => $this->postService->varietyOptions(PostType::Supply)),
+        ]);
+    }
+
+    public function show(Post $supply): Response
+    {
+        Gate::authorize('view', $supply);
+
+        $supply->load('postItems.vegetable');
+
+        return Inertia::render('farmer/supplies/Show', [
+            'supply' => FarmerSupplyData::from($supply),
+            'overlap' => Inertia::defer(fn () => $this->overlapService->forPost($supply)),
+        ]);
+    }
+
+    public function edit(Post $supply): Response
+    {
+        Gate::authorize('update', $supply);
+
+        $supply->load('postItems.vegetable');
+
+        return Inertia::render('farmer/supplies/Edit', [
+            'supply' => FarmerSupplyData::from($supply),
+            'varietyOptions' => Inertia::defer(fn () => $this->postService->varietyOptions(PostType::Supply)),
+            'overlap' => Inertia::defer(fn () => $this->overlapService->forPost($supply)),
+        ]);
+    }
+
     public function store(StoreSupplyRequest $request, CreatePostAction $action): RedirectResponse
     {
         Gate::authorize('create', [Post::class, PostType::Supply]);
@@ -80,7 +118,7 @@ class SupplyController extends Controller
             validated: $request->validated()
         );
 
-        return back(fallback: route('farmer.supplies.index'))
+        return redirect()->route('farmer.supplies.index')
             ->with('flash', ['type' => 'success', 'message' => 'Supply posted successfully!']);
     }
 
@@ -90,7 +128,7 @@ class SupplyController extends Controller
 
         $action->handle(post: $supply, validated: $request->validated());
 
-        return back(fallback: route('farmer.supplies.index'))
+        return redirect()->route('farmer.supplies.show', $supply)
             ->with('flash', ['type' => 'success', 'message' => 'Supply updated successfully!']);
     }
 
