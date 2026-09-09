@@ -23,8 +23,9 @@ import { Item, ItemActions, ItemContent, ItemDescription, ItemGroup, ItemMedia, 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import type { FarmerSupplyDataFixed } from '@/types'
-import { edit } from '@/routes/farmer/supplies'
+import { edit, show } from '@/routes/farmer/supplies'
 import { Link } from '@inertiajs/vue3'
+import { Eye } from '@lucide/vue'
 
 defineProps<{ supply: FarmerSupplyDataFixed }>()
 
@@ -136,6 +137,12 @@ const emit = defineEmits<{
                 <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuGroup>
+                        <DropdownMenuItem>
+                            <Link :href="show(supply.id).url">
+                                <Eye />
+                                View Supply
+                            </Link>
+                        </DropdownMenuItem>
                         <DropdownMenuItem>
                             <Link :href="edit(supply.id).url">
                                 <SquarePen />
