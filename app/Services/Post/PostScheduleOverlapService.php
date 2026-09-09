@@ -3,44 +3,51 @@
 namespace App\Services\Post;
 
 use App\Data\Post\OverlapPosterData;
-use App\Enums\PostTimeSlot;
-use App\Enums\PostType;
+use App\Data\Post\VegetableOverlapData;
 use App\Models\Schedule\Post;
-use Carbon\Carbon;
+use App\Models\Schedule\PostItem;
 
 class PostScheduleOverlapService
 {
     /**
-     * Same-type posters sharing a date + time slot, excluding the given user.
-     * Farmer supplies only ever see other farmers; dealer demands only ever
-     * see other dealers — never cross-type. This is a scheduling-collision
-     * view ("who else is showing up then"), not a market-imbalance signal —
-     * that's VegetableAvailabilityService's job.
-     *
-     * @return OverlapPosterData[]
+     * @return array<int, VegetableOverlapData> keyed by post_item id
      */
-    public function overlappingFor(
-        PostType $type,
-        string|Carbon $scheduledDate,
-        PostTimeSlot $timeSlot,
-        int $excludeUserId,
-    ): array {
-        $posts = Post::query()
-            ->where('type', $type)
-            ->whereDate('scheduled_date', $scheduledDate)
-            ->where('time_slot', $timeSlot)
-            ->where('user_id', '!=', $excludeUserId)
-            ->whereHas('postItems', fn ($q) => $q->ongoing())
-            ->with(['user', 'postItems' => fn ($q) => $q->ongoing()->with('vegetable')])
-            ->get();
-
-        return OverlapPosterData::collect(
-            $posts->map(fn (Post $post) => OverlapPosterData::fromModel($post))->values()->all()
-        );
-    }
-
     public function forPost(Post $post): array
     {
-        return $this->overlappingFor($post->type, $post->scheduled_date, $post->time_slot, $post->user_id);
+        $post->loadMissing('postItems');
+
+        $vegetableIds = $post->postItems->pluck('vegetable_id')->unique()->values();
+
+        if ($vegetableIds->isEmpty()) {
+            return [];
+        }
+
+        $othersByVegetable = PostItem::query()
+            ->ongoing()
+            ->whereIn('vegetable_id', $vegetableIds)
+            ->whereHas('post', fn ($q) => $q
+                ->where('type', $post->type)
+                ->where('user_id', '!=', $post->user_id)
+                ->whereDate('scheduled_date', $post->scheduled_date)
+                ->where('time_slot', $post->time_slot))
+            ->with('post.user')
+            ->get()
+            ->groupBy('vegetable_id');
+
+        return $post->postItems
+            ->mapWithKeys(fn (PostItem $item) => [
+                $item->id => new VegetableOverlapData(
+                    post_item_id: $item->id,
+                    vegetable_id: $item->vegetable_id,
+                    total_kg: (float) $othersByVegetable->get($item->vegetable_id, collect())->sum('quantity_kg'),
+                    posters: OverlapPosterData::collect(
+                        $othersByVegetable->get($item->vegetable_id, collect())
+                            ->map(fn (PostItem $i) => OverlapPosterData::fromPostItem($i))
+                            ->values()
+                            ->all()
+                    ),
+                ),
+            ])
+            ->all();
     }
 }
