@@ -28,7 +28,7 @@ class OverlapPosterData extends Data
             poster_name: $post->user->name,
             poster_phone: $post->user->phone_number,
             total_kg: (float) $post->postItems->sum('quantity_kg'),
-            items: PostItemLightData::collect($post->postItems),
+            items: PostItemLightData::collect($post->postItems->all()),
         );
     }
 }

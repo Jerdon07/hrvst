@@ -45,7 +45,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         :title="demand.scheduled_date"
                         :description="`${demand.time_slot} slot`"
                     />
-                    <Button v-if="demand.needs_action" as-child variant="outline">
+                    <Button v-if="demand.post_items?.some((item) => item.status === 'ongoing')" as-child variant="outline">
                         <Link :href="edit(demand.id).url">
                             <SquarePen class="size-4" />
                             Edit

@@ -123,7 +123,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 <Button
                                     variant="outline"
                                     :class="[
-                                        'justify-start text-left font-normal',
+                                        'w-full justify-start text-left font-normal',
                                         !form.scheduled_date && 'text-muted-foreground',
                                         form.errors.scheduled_date && 'border-destructive text-destructive',
                                     ]"
