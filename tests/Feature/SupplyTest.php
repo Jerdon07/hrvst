@@ -83,6 +83,7 @@ describe('CreateSupply', function () {
     it('returns other posters for the same vegetable in the same slot', function () {
         $owner = farmerWithProfile();
         $other = farmerWithProfile();
+        $dealer = createDealerUser();
         $vegetable = createVegetable();
         $date = now()->addDays(4)->toDateString();
 
@@ -96,12 +97,25 @@ describe('CreateSupply', function () {
             'time_slot' => PostTimeSlot::Morning,
         ]);
 
+        $fulfilledPost = createSupplyPost($other, $vegetable, [
+            'scheduled_date' => $date,
+            'time_slot' => PostTimeSlot::Morning,
+        ]);
+        $fulfilledPost->postItems->first()->markAsFulfilled();
+
+        createDemandPost($dealer, $vegetable, [
+            'scheduled_date' => $date,
+            'time_slot' => PostTimeSlot::Morning,
+        ]);
+
         $overlap = app(PostScheduleOverlapService::class)->forPost($ownerPost);
         $itemOverlap = $overlap[$ownerPost->postItems->first()->id] ?? null;
 
         expect($itemOverlap)->not->toBeNull()
-            ->and($itemOverlap->posters)->toHaveCount(1)
-            ->and($itemOverlap->posters[0]->poster_name)->toBe($other->name);
+            ->and($itemOverlap->supply_posters)->toHaveCount(1)
+            ->and($itemOverlap->supply_posters[0]->poster_name)->toBe($other->name)
+            ->and($itemOverlap->demand_posters)->toHaveCount(1)
+            ->and($itemOverlap->demand_posters[0]->poster_name)->toBe($dealer->name);
     });
 
     it('returns overlap for the requested delivery day, time slot, and vegetables', function () {

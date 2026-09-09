@@ -121,6 +121,8 @@ post_item_id: number,
 vegetable_id: number,
 total_kg: number,
 posters: App.Data.Post.OverlapPosterData[],
+supply_posters: App.Data.Post.OverlapPosterData[],
+demand_posters: App.Data.Post.OverlapPosterData[],
 };
 }
 namespace PostItem {

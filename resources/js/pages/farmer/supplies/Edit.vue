@@ -299,18 +299,32 @@ const breadcrumbs: BreadcrumbItem[] = [
                                             </Button>
                                         </PopoverTrigger>
                                         <PopoverContent class="w-64 space-y-1.5" align="center">
-                                            <p class="mb-1 text-xs font-medium text-muted-foreground">
-                                                Others bringing this vegetable
-                                            </p>
+                                            <p class="mb-1 text-xs font-medium text-muted-foreground">Farmers supplying</p>
                                             <PosterRow
-                                                v-for="(poster, i) in overlapFor(item.vegetable_id)!.posters"
-                                                :key="i"
+                                                v-for="(poster, i) in overlapFor(item.vegetable_id)!.supply_posters"
+                                                :key="`supply-${i}`"
                                                 :poster-name="poster.poster_name"
                                                 :poster-phone="poster.poster_phone"
                                                 :total-kg="poster.quantity_kg"
                                                 status="ongoing"
                                                 accent-class="text-primary"
                                                 bg-class="bg-primary/5"
+                                            />
+                                            <p
+                                                v-if="overlapFor(item.vegetable_id)!.demand_posters.length"
+                                                class="mb-1 text-xs font-medium text-muted-foreground"
+                                            >
+                                                Dealers requesting
+                                            </p>
+                                            <PosterRow
+                                                v-for="(poster, i) in overlapFor(item.vegetable_id)!.demand_posters"
+                                                :key="`demand-${i}`"
+                                                :poster-name="poster.poster_name"
+                                                :poster-phone="poster.poster_phone"
+                                                :total-kg="poster.quantity_kg"
+                                                status="ongoing"
+                                                accent-class="text-orange-600"
+                                                bg-class="bg-orange-500/5"
                                             />
                                         </PopoverContent>
                                     </Popover>

@@ -16,5 +16,11 @@ class VegetableOverlapData extends Data
         /** @var OverlapPosterData[] */
         #[DataCollectionOf(OverlapPosterData::class)]
         public array $posters,
+        /** @var OverlapPosterData[] */
+        #[DataCollectionOf(OverlapPosterData::class)]
+        public array $supply_posters,
+        /** @var OverlapPosterData[] */
+        #[DataCollectionOf(OverlapPosterData::class)]
+        public array $demand_posters,
     ) {}
 }
