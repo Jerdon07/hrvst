@@ -12,7 +12,10 @@ Route::middleware(['auth', 'verified', 'dealer'])->prefix('dealer')->name('deale
     Route::prefix('demands')->name('demands.')->group(function () {
         Route::get('/', [DemandController::class, 'index'])->name('index');
         Route::get('/archived', [DemandController::class, 'archived'])->name('archived');
+        Route::get('/create', [DemandController::class, 'create'])->name('create');
         Route::post('/', [DemandController::class, 'store'])->name('store');
+        Route::get('/{demand}', [DemandController::class, 'show'])->name('show');
+        Route::get('/{demand}/edit', [DemandController::class, 'edit'])->name('edit');
         Route::put('/{demand}', [DemandController::class, 'update'])->name('update');
         Route::delete('/{demand}', [DemandController::class, 'destroy'])->name('destroy');
 
