@@ -8,6 +8,7 @@ use App\Models\Schedule\Post;
 use App\Models\Schedule\PostItem;
 use App\Models\User;
 use App\Models\Vegetable\Vegetable;
+use App\Services\Post\PostScheduleOverlapService;
 use Database\Seeders\AddressSeeder;
 use Illuminate\Support\Facades\Storage;
 
@@ -95,12 +96,46 @@ describe('CreateSupply', function () {
             'time_slot' => PostTimeSlot::Morning,
         ]);
 
-        $overlap = app(App\Services\Post\PostScheduleOverlapService::class)->forPost($ownerPost);
+        $overlap = app(PostScheduleOverlapService::class)->forPost($ownerPost);
         $itemOverlap = $overlap[$ownerPost->postItems->first()->id] ?? null;
 
         expect($itemOverlap)->not->toBeNull()
             ->and($itemOverlap->posters)->toHaveCount(1)
             ->and($itemOverlap->posters[0]->poster_name)->toBe($other->name);
+    });
+
+    it('returns overlap for the requested delivery day, time slot, and vegetables', function () {
+        $owner = farmerWithProfile();
+        $other = farmerWithProfile();
+        $vegetable = createVegetable();
+        $otherVegetable = createVegetable();
+        $date = now()->addDays(4)->toDateString();
+
+        $ownerPost = createSupplyPost($owner, $vegetable, [
+            'scheduled_date' => now()->addDays(8)->toDateString(),
+            'time_slot' => PostTimeSlot::Morning,
+        ]);
+
+        createSupplyPost($other, $vegetable, [
+            'scheduled_date' => $date,
+            'time_slot' => PostTimeSlot::Afternoon,
+        ]);
+
+        createSupplyPost($other, $otherVegetable, [
+            'scheduled_date' => $date,
+            'time_slot' => PostTimeSlot::Afternoon,
+        ]);
+
+        $overlap = app(PostScheduleOverlapService::class)->forPostAt(
+            post: $ownerPost,
+            scheduledDate: now()->addDays(4),
+            timeSlot: PostTimeSlot::Afternoon,
+            vegetableIds: collect([$vegetable->id]),
+        );
+
+        expect($overlap[$vegetable->id]->posters)->toHaveCount(1)
+            ->and($overlap[$vegetable->id]->posters[0]->poster_name)->toBe($other->name)
+            ->and($overlap)->not->toHaveKey($otherVegetable->id);
     });
 
     it('creation is atomic — no post exists if items fail', function () {
