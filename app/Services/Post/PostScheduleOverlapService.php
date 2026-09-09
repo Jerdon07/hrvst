@@ -26,10 +26,10 @@ class PostScheduleOverlapService
             ->ongoing()
             ->whereIn('vegetable_id', $vegetableIds)
             ->whereHas('post', fn ($q) => $q
-                ->where('type', $post->type)
+                ->where('type', $post->type->value)
                 ->where('user_id', '!=', $post->user_id)
-                ->whereDate('scheduled_date', $post->scheduled_date)
-                ->where('time_slot', $post->time_slot))
+                ->whereDate('scheduled_date', $post->scheduled_date->toDateString())
+                ->where('time_slot', $post->time_slot->value))
             ->with('post.user')
             ->get()
             ->groupBy('vegetable_id');
