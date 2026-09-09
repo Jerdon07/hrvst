@@ -2,7 +2,9 @@
 
 namespace App\Services\Vegetable;
 
+use App\Models\Vegetable\Vegetable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class VegetableActivityService
@@ -85,6 +87,67 @@ class VegetableActivityService
                 'supply_expired_kg' => (float) ($row?->supply_expired_kg ?? 0),
                 'demand_fulfilled_kg' => (float) ($row?->demand_fulfilled_kg ?? 0),
                 'demand_expired_kg' => (float) ($row?->demand_expired_kg ?? 0),
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Same has_data/zero-padding contract as buildMonthlyActivity(), but for every
+     * vegetable at once. This is the single source of truth both analytics
+     * services must use — VegetableAnalyticsService (per-vegetable forecast) and
+     * VegetableWasteAnalyticsService (platform-wide waste ranking) were
+     * previously reading the same table through two different queries with
+     * different gap-handling, which is how they could silently drift apart.
+     *
+     * @return Collection<int, array<int, array{
+     *     month: string, label: string, has_data: bool,
+     *     supply_fulfilled_kg: float, supply_expired_kg: float,
+     *     demand_fulfilled_kg: float, demand_expired_kg: float,
+     * }>> keyed by vegetable_id
+     */
+    public function buildMonthlyActivityForAllVegetables(int $months = self::TOTAL_HISTORY_MONTHS): Collection
+    {
+        $vegetableIds = Vegetable::pluck('id');
+        $start = now()->startOfMonth()->subMonths($months - 1)->toDateString();
+        $end = now()->startOfMonth()->endOfMonth()->toDateString();
+
+        $rowsByVegetable = DB::table('vegetable_monthly_stats')
+            ->whereBetween('period_date', [$start, $end])
+            ->select(['vegetable_id', 'period_date', 'supply_fulfilled_kg', 'supply_expired_kg', 'demand_fulfilled_kg', 'demand_expired_kg'])
+            ->get()
+            ->groupBy('vegetable_id')
+            ->map(fn ($group) => $group->groupBy(fn ($row) => Carbon::parse($row->period_date)->format('Y-m'))
+                ->map(fn ($monthRows) => (object) [
+                    'supply_fulfilled_kg' => $monthRows->sum('supply_fulfilled_kg'),
+                    'supply_expired_kg' => $monthRows->sum('supply_expired_kg'),
+                    'demand_fulfilled_kg' => $monthRows->sum('demand_fulfilled_kg'),
+                    'demand_expired_kg' => $monthRows->sum('demand_expired_kg'),
+                ]));
+
+        return $vegetableIds->mapWithKeys(
+            fn ($vegetableId) => [$vegetableId => $this->zeroPadMonths($rowsByVegetable->get($vegetableId, collect()), $months)]
+        );
+    }
+
+    private function zeroPadMonths(Collection $rows, int $months): array
+    {
+        $result = [];
+
+        for ($i = $months - 1; $i >= 0; $i--) {
+            $date = now()->startOfMonth()->subMonths($i);
+            $key = $date->format('Y-m');
+            $row = $rows->get($key);
+
+            $result[] = [
+                'month' => $key,
+                'label' => $date->format('M Y'),
+                'has_data' => $row !== null,
+                'supply_fulfilled_kg' => (float) ($row->supply_fulfilled_kg ?? 0),
+                'supply_expired_kg' => (float) ($row->supply_expired_kg ?? 0),
+                'demand_fulfilled_kg' => (float) ($row->demand_fulfilled_kg ?? 0),
+                'demand_expired_kg' => (float) ($row->demand_expired_kg ?? 0),
             ];
         }
 

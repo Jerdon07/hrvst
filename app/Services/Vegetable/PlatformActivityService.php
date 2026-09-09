@@ -24,7 +24,7 @@ class PlatformActivityService
     {
         return Cache::remember(
             'platform_monthly_active_counts',
-            self::CACHE_TTL_SECONDS,
+            [3600, self::CACHE_TTL_SECONDS],
             fn () => $this->resolve(),
         );
     }

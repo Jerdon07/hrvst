@@ -41,6 +41,10 @@ class VegetableWasteAnalyticsService
 
     private const array ALLOWED_COLUMNS = ['demand_expired_kg', 'supply_expired_kg'];
 
+    public function __construct(
+        private VegetableActivityService $activityService
+    ) {}
+
     // ── Seasonal forecast ─────────────────────────────────────────────────────
 
     /** Forecasted unmet dealer demand — signals farmers to supply more of this vegetable soon. */
@@ -88,14 +92,14 @@ class VegetableWasteAnalyticsService
             return 0.0;
         }
 
-        $sorted = $history->sortBy('period_date')->values();
+        $sorted = $history->sortBy('month')->values();
 
         $byCalendarMonth = [];
         foreach ($sorted as $row) {
-            $date = Carbon::parse($row->period_date);
+            $date = Carbon::createFromFormat('Y-m', $row['month']);
             $byCalendarMonth[$date->month][] = [
                 'year' => $date->year,
-                'value' => (float) $row->{$column},
+                'value' => (float) $row[$column],
             ];
         }
 
@@ -288,15 +292,14 @@ class VegetableWasteAnalyticsService
      */
     private function fetchHistoryByColumn(string $column): Collection
     {
-        $start = now()->startOfMonth()->subYears(self::HISTORY_YEARS)->toDateString();
-        $currentMonthStart = now()->startOfMonth()->toDateString();
+        $currentMonthKey = now()->format('Y-m');
 
-        return DB::table('vegetable_monthly_stats')
-            ->where('period_date', '>=', $start)
-            ->where('period_date', '<', $currentMonthStart)
-            ->select(['vegetable_id', 'period_date', $column])
-            ->get()
-            ->groupBy('vegetable_id');
+        return $this->activityService
+            ->buildMonthlyActivityForAllVegetables(self::HISTORY_YEARS * 12)
+            ->map(fn (array $months) => collect($months)
+                ->filter(fn (array $m) => $m['has_data'] && $m['month'] !== $currentMonthKey)
+                ->map(fn (array $m) => ['month' => $m['month'], $column => $m[$column]])
+                ->values());
     }
 
     private function assertAllowedColumn(string $column): void
