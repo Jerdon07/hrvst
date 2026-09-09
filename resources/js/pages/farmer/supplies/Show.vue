@@ -45,7 +45,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         :title="supply.scheduled_date"
                         :description="`${supply.time_slot} slot`"
                     />
-                    <Button v-if="supply.needs_action" as-child variant="outline">
+                    <Button v-if="supply.post_items?.some((item) => item.status === 'ongoing')" as-child variant="outline">
                         <Link :href="edit(supply.id).url">
                             <SquarePen class="size-4" />
                             Edit
