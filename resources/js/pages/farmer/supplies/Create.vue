@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { Head, useForm } from '@inertiajs/vue3'
+import { Deferred, Head, router, useForm } from '@inertiajs/vue3'
 import { CalendarDate, today, getLocalTimeZone, DateFormatter } from '@internationalized/date'
 import { CalendarIcon, Check, ChevronsUpDown, Plus, Search, Trash2 } from '@lucide/vue'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { store } from '@/actions/App/Http/Controllers/Farmer/Schedule/SupplyController'
 import Heading from '@/components/Heading.vue'
+import PosterRow from '@/components/shared/PosterRow.vue'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -19,11 +20,12 @@ import { Table, TableBody, TableCell, TableEmpty, TableHead, TableHeader, TableR
 import { useVegetableAvailability, netKgClassFarmer, formatNetKgFarmer } from '@/composables/useVegetableAvailability'
 import AppLayout from '@/layouts/AppLayout.vue'
 import farmer from '@/routes/farmer'
-import { index } from '@/routes/farmer/supplies'
-import type { BreadcrumbItem, PostTimeSlot, VarietyOptionsByVegetable } from '@/types'
+import { create, index } from '@/routes/farmer/supplies'
+import type { BreadcrumbItem, PostTimeSlot, VarietyOptionsByVegetable, VegetableOverlapData } from '@/types'
 
 const props = defineProps<{
     varietyOptions?: VarietyOptionsByVegetable
+    overlap?: Record<number, VegetableOverlapData>
 }>()
 
 let _keyCounter = 0
@@ -78,6 +80,24 @@ function removeItem(index: number): void {
 function submit(): void {
     form.post(store().url)
 }
+
+watch(
+    () => [form.scheduled_date, form.time_slot, ...form.items.map((item) => item.vegetable_id)],
+    ([scheduledDate, timeSlot, ...vegetableIds]) => {
+        router.visit(create({
+            query: {
+                scheduled_date: scheduledDate,
+                time_slot: timeSlot,
+                vegetable_ids: vegetableIds.filter(Boolean),
+            },
+        }).url, {
+            only: ['overlap'],
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+        })
+    },
+)
 
 const df = new DateFormatter('en-US', { dateStyle: 'long' })
 const minDateValue = computed(() => today(getLocalTimeZone()).add({ days: 1 }))
@@ -264,6 +284,44 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 <Button type="button" variant="ghost" size="icon" class="size-9 text-muted-foreground hover:text-destructive" @click="removeItem(index)">
                                     <Trash2 class="size-4" />
                                 </Button>
+                            </TableCell>
+                        </TableRow>
+                        <TableRow v-for="item in form.items" :key="`overlap-${item._key}`">
+                            <TableCell colspan="3" class="border-b-0 pt-0">
+                                <Deferred data="overlap">
+                                    <template #fallback>
+                                        <Skeleton v-if="item.vegetable_id" class="h-7 w-full rounded" />
+                                    </template>
+                                    <div v-if="item.vegetable_id && overlap?.[Number(item.vegetable_id)]?.posters.length" class="space-y-2 rounded-md bg-muted/30 p-2">
+                                        <p class="text-xs font-medium text-muted-foreground">Other activity this slot</p>
+                                        <div v-if="overlap[Number(item.vegetable_id)].supply_posters.length" class="space-y-1.5">
+                                            <p class="text-xs text-muted-foreground">Farmers supplying</p>
+                                            <PosterRow
+                                                v-for="(poster, i) in overlap[Number(item.vegetable_id)].supply_posters"
+                                                :key="`supply-${i}`"
+                                                :poster-name="poster.poster_name"
+                                                :poster-phone="poster.poster_phone"
+                                                :total-kg="poster.quantity_kg"
+                                                status="ongoing"
+                                                accent-class="text-primary"
+                                                bg-class="bg-primary/5"
+                                            />
+                                        </div>
+                                        <div v-if="overlap[Number(item.vegetable_id)].demand_posters.length" class="space-y-1.5">
+                                            <p class="text-xs text-muted-foreground">Dealers requesting</p>
+                                            <PosterRow
+                                                v-for="(poster, i) in overlap[Number(item.vegetable_id)].demand_posters"
+                                                :key="`demand-${i}`"
+                                                :poster-name="poster.poster_name"
+                                                :poster-phone="poster.poster_phone"
+                                                :total-kg="poster.quantity_kg"
+                                                status="ongoing"
+                                                accent-class="text-orange-600"
+                                                bg-class="bg-orange-500/5"
+                                            />
+                                        </div>
+                                    </div>
+                                </Deferred>
                             </TableCell>
                         </TableRow>
                     </TableBody>

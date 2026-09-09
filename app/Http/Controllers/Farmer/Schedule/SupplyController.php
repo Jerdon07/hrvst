@@ -77,12 +77,37 @@ class SupplyController extends Controller
         ]);
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
         Gate::authorize('create', [Post::class, PostType::Supply]);
+        $request->validate([
+            'scheduled_date' => ['nullable', 'date'],
+            'time_slot' => ['nullable', Rule::enum(PostTimeSlot::class)],
+            'vegetable_ids' => ['nullable', 'array'],
+            'vegetable_ids.*' => ['integer', 'exists:vegetables,id'],
+        ]);
+
+        $overlap = Inertia::defer(function () use ($request): array {
+            if (! $request->filled(['scheduled_date', 'time_slot']) || ! $request->has('vegetable_ids')) {
+                return [];
+            }
+
+            $draft = new Post([
+                'user_id' => $request->user()->id,
+                'type' => PostType::Supply,
+            ]);
+
+            return $this->overlapService->forPostAt(
+                post: $draft,
+                scheduledDate: Carbon::parse($request->string('scheduled_date')->toString()),
+                timeSlot: PostTimeSlot::from($request->string('time_slot')->toString()),
+                vegetableIds: collect($request->input('vegetable_ids')),
+            );
+        });
 
         return Inertia::render('farmer/supplies/Create', [
             'varietyOptions' => Inertia::defer(fn () => $this->postService->varietyOptions(PostType::Supply)),
+            'overlap' => $overlap,
         ]);
     }
 
