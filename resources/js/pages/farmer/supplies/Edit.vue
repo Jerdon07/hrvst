@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { Deferred, Head, useForm } from '@inertiajs/vue3'
+import { Deferred, Head, router, useForm } from '@inertiajs/vue3'
 import { CalendarDate, today, getLocalTimeZone, DateFormatter } from '@internationalized/date'
 import { CalendarIcon, Check, ChevronsUpDown, Plus, Search, Trash2, Users } from '@lucide/vue'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { update } from '@/actions/App/Http/Controllers/Farmer/Schedule/SupplyController'
 import Heading from '@/components/Heading.vue'
 import PosterRow from '@/components/shared/PosterRow.vue'
@@ -21,7 +21,7 @@ import { toInputDate } from '@/composables/useDateFormat'
 import { useVegetableAvailability, netKgClassFarmer, formatNetKgFarmer } from '@/composables/useVegetableAvailability'
 import AppLayout from '@/layouts/AppLayout.vue'
 import farmer from '@/routes/farmer'
-import { index, show } from '@/routes/farmer/supplies'
+import { edit, index, show } from '@/routes/farmer/supplies'
 import type { BreadcrumbItem, FarmerSupplyDataFixed, PostTimeSlot, VarietyOptionsByVegetable, VegetableOverlapData } from '@/types'
 
 const props = defineProps<{
@@ -33,7 +33,18 @@ const props = defineProps<{
 let _keyCounter = 0
 const nextKey = (): number => ++_keyCounter
 
-const form = useForm({
+type SupplyFormItem = {
+    _key: number
+    id: number | null
+    vegetable_id: string
+    quantity_kg: number | null
+}
+
+const form = useForm<{
+    scheduled_date: string
+    time_slot: PostTimeSlot | ''
+    items: SupplyFormItem[]
+}>({
     scheduled_date: toInputDate(props.supply.scheduled_date),
     time_slot: props.supply.time_slot as PostTimeSlot | '',
     items: (props.supply.post_items ?? []).map((item) => ({
@@ -67,16 +78,32 @@ function varietyFilterFunction<T extends { value: unknown }>(items: T[], term: s
     return items.filter((item) => (varietyLabelById.value.get(String(item.value)) ?? '').toLowerCase().includes(needle))
 }
 
-// Overlap only exists for items that were already persisted (have an id) —
-// items added client-side in this edit session have nothing to look up yet.
-function overlapFor(id: number | null): VegetableOverlapData | undefined {
-    if (id === null || !props.overlap) return undefined
-    return props.overlap[id]
+function overlapFor(vegetableId: string): VegetableOverlapData | undefined {
+    if (!vegetableId || !props.overlap) return undefined
+    return props.overlap[Number(vegetableId)]
 }
 
 function addItem(): void { form.items.push(blankItem()) }
 function removeItem(index: number): void { form.items.splice(index, 1) }
 function submit(): void { form.put(update(props.supply.id).url) }
+
+watch(
+    () => [form.scheduled_date, form.time_slot, ...form.items.map((item) => item.vegetable_id)],
+    ([scheduledDate, timeSlot, ...vegetableIds]) => {
+        router.visit(edit(props.supply.id, {
+            query: {
+                scheduled_date: scheduledDate,
+                time_slot: timeSlot,
+                vegetable_ids: vegetableIds.filter(Boolean),
+            },
+        }).url, {
+            only: ['overlap'],
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+        })
+    },
+)
 
 const df = new DateFormatter('en-US', { dateStyle: 'long' })
 const minDateValue = computed(() => today(getLocalTimeZone()).add({ days: 1 }))
@@ -259,16 +286,16 @@ const breadcrumbs: BreadcrumbItem[] = [
                             </TableCell>
 
                             <TableCell class="text-center align-top">
-                                <Deferred v-if="item.id" data="overlap">
+                                <Deferred v-if="item.vegetable_id" data="overlap">
                                     <template #fallback>
                                         <Skeleton class="mx-auto h-7 w-16 rounded" />
                                     </template>
 
-                                    <Popover v-if="overlapFor(item.id)?.posters.length">
+                                    <Popover v-if="overlapFor(item.vegetable_id)?.posters.length">
                                         <PopoverTrigger as-child>
                                             <Button type="button" variant="outline" size="sm" class="h-7 gap-1.5 px-2 text-xs">
                                                 <Users class="size-3" />
-                                                {{ overlapFor(item.id)!.total_kg }} kg
+                                                {{ overlapFor(item.vegetable_id)!.total_kg }} kg
                                             </Button>
                                         </PopoverTrigger>
                                         <PopoverContent class="w-64 space-y-1.5" align="center">
@@ -276,7 +303,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                                 Others bringing this vegetable
                                             </p>
                                             <PosterRow
-                                                v-for="(poster, i) in overlapFor(item.id)!.posters"
+                                                v-for="(poster, i) in overlapFor(item.vegetable_id)!.posters"
                                                 :key="i"
                                                 :poster-name="poster.poster_name"
                                                 :poster-phone="poster.poster_phone"

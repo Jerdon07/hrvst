@@ -7,6 +7,7 @@ use App\Actions\Post\CreatePostAction;
 use App\Actions\Post\DeletePostAction;
 use App\Data\Post\FarmerSupplyData;
 use App\Enums\PostItemStatus;
+use App\Enums\PostTimeSlot;
 use App\Enums\PostType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Farmer\StoreSupplyRequest;
@@ -14,9 +15,11 @@ use App\Http\Requests\Farmer\UpdateSupplyRequest;
 use App\Models\Schedule\Post;
 use App\Services\Post\PostScheduleOverlapService;
 use App\Services\Post\PostService;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -95,16 +98,48 @@ class SupplyController extends Controller
         ]);
     }
 
-    public function edit(Post $supply): Response
+    private function editOverlap(Request $request, Post $supply): array
+    {
+        $scheduledDate = $supply->scheduled_date;
+        $timeSlot = $supply->time_slot;
+        $vegetableIds = collect($supply->postItems->pluck('vegetable_id'));
+
+        if ($request->filled('scheduled_date')) {
+            $scheduledDate = Carbon::parse($request->string('scheduled_date')->toString());
+        }
+
+        if ($request->filled('time_slot')) {
+            $timeSlot = PostTimeSlot::from($request->string('time_slot')->toString());
+        }
+
+        if ($request->has('vegetable_ids')) {
+            $vegetableIds = collect($request->input('vegetable_ids'));
+        }
+
+        return $this->overlapService->forPostAt(
+            post: $supply,
+            scheduledDate: $scheduledDate,
+            timeSlot: $timeSlot,
+            vegetableIds: $vegetableIds,
+        );
+    }
+
+    public function edit(Request $request, Post $supply): Response
     {
         Gate::authorize('update', $supply);
+        $request->validate([
+            'scheduled_date' => ['nullable', 'date'],
+            'time_slot' => ['nullable', Rule::enum(PostTimeSlot::class)],
+            'vegetable_ids' => ['nullable', 'array'],
+            'vegetable_ids.*' => ['integer', 'exists:vegetables,id'],
+        ]);
 
         $supply->load('postItems.vegetable');
 
         return Inertia::render('farmer/supplies/Edit', [
             'supply' => FarmerSupplyData::from($supply),
             'varietyOptions' => Inertia::defer(fn () => $this->postService->varietyOptions(PostType::Supply)),
-            'overlap' => Inertia::defer(fn () => $this->overlapService->forPost($supply)),
+            'overlap' => Inertia::defer(fn () => $this->editOverlap($request, $supply)),
         ]);
     }
 
