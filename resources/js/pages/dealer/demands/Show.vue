@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Deferred, Head, Link } from '@inertiajs/vue3'
-import { Calendar1, SquarePen, Users } from 'lucide-vue-next'
+import { Head, Link } from '@inertiajs/vue3'
+import { Calendar1, SquarePen, Users } from '@lucide/vue'
 import EmptyState from '@/components/EmptyState.vue'
 import Heading from '@/components/Heading.vue'
 import PosterRow from '@/components/shared/PosterRow.vue'
@@ -53,39 +53,12 @@ const breadcrumbs: BreadcrumbItem[] = [
                     </CardTitle>
                 </CardHeader>
                 <CardContent class="space-y-3">
-                    <Deferred data="overlap">
-                        <template #fallback>
-                            <div
-                                v-for="item in demand.post_items"
-                                :key="item.id"
-                                class="space-y-2 rounded-lg border p-3"
-                            >
-                                <Item variant="ghost" class="p-0">
-                                    <ItemMedia variant="image">
-                                        <Avatar>
-                                            <AvatarImage
-                                                v-if="item.vegetable_image_url"
-                                                :src="item.vegetable_image_url"
-                                                :alt="item.display_name!"
-                                            />
-                                        </Avatar>
-                                    </ItemMedia>
-                                    <ItemContent class="flex-row items-center justify-between">
-                                        <ItemTitle>{{ item.display_name }}</ItemTitle>
-                                        <Badge variant="secondary" class="capitalize">{{ item.status }}</Badge>
-                                    </ItemContent>
-                                    <span class="font-mono text-sm">{{ item.quantity_kg }} kg</span>
-                                </Item>
-                                <Skeleton class="h-12 w-full" />
-                            </div>
-                        </template>
-
-                        <div
-                            v-for="item in demand.post_items"
-                            :key="item.id"
-                            class="space-y-2 rounded-lg border p-3"
-                        >
-                            <Item variant="ghost" class="p-0">
+                    <div
+                        v-for="item in demand.post_items"
+                        :key="item.id"
+                        class="space-y-2 rounded-lg border p-3"
+                    >
+                            <Item class="p-0">
                                 <ItemMedia variant="image">
                                     <Avatar>
                                         <AvatarImage
@@ -131,7 +104,6 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 </div>
                             </div>
                         </div>
-                    </Deferred>
                 </CardContent>
             </Card>
         </div>

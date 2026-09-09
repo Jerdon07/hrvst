@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Deferred, Head, Link } from '@inertiajs/vue3'
-import { Calendar1, SquarePen, Users } from 'lucide-vue-next'
+import { Calendar1, SquarePen, Users } from '@lucide/vue'
 import EmptyState from '@/components/EmptyState.vue'
 import Heading from '@/components/Heading.vue'
 import PosterRow from '@/components/shared/PosterRow.vue'
@@ -60,7 +60,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 :key="item.id"
                                 class="space-y-2 rounded-lg border p-3"
                             >
-                                <Item variant="ghost" class="p-0">
+                                <Item class="p-0">
                                     <ItemMedia variant="image">
                                         <Avatar>
                                             <AvatarImage
@@ -85,7 +85,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                             :key="item.id"
                             class="space-y-2 rounded-lg border p-3"
                         >
-                            <Item variant="ghost" class="p-0">
+                            <Item class="p-0">
                                 <ItemMedia variant="image">
                                     <Avatar>
                                         <AvatarImage
