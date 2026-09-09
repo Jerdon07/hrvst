@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\PostTimeSlot;
 use App\Enums\PostType;
 use App\Models\Profiles\FarmerProfile;
 use App\Models\Profiles\Role;
@@ -76,6 +77,30 @@ describe('CreateSupply', function () {
             ->and($post->postItems)->toHaveCount(2);
 
         expect((float) $post->postItems->firstWhere('vegetable_id', $vegetable1->id)->quantity_kg)->toBe(100.0);
+    });
+
+    it('returns other posters for the same vegetable in the same slot', function () {
+        $owner = farmerWithProfile();
+        $other = farmerWithProfile();
+        $vegetable = createVegetable();
+        $date = now()->addDays(4)->toDateString();
+
+        $ownerPost = createSupplyPost($owner, $vegetable, [
+            'scheduled_date' => $date,
+            'time_slot' => PostTimeSlot::Morning,
+        ]);
+
+        createSupplyPost($other, $vegetable, [
+            'scheduled_date' => $date,
+            'time_slot' => PostTimeSlot::Morning,
+        ]);
+
+        $overlap = app(App\Services\Post\PostScheduleOverlapService::class)->forPost($ownerPost);
+        $itemOverlap = $overlap[$ownerPost->postItems->first()->id] ?? null;
+
+        expect($itemOverlap)->not->toBeNull()
+            ->and($itemOverlap->posters)->toHaveCount(1)
+            ->and($itemOverlap->posters[0]->poster_name)->toBe($other->name);
     });
 
     it('creation is atomic — no post exists if items fail', function () {
