@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Search } from 'lucide-vue-next'
+import { Search } from '@lucide/vue'
 import type { Component } from 'vue'
 import { Button } from './ui/button'
 import {
@@ -20,7 +20,7 @@ type Props = {
 }
 
 withDefaults(defineProps<Props>(), {
-	icon: Search,
+	icon: () => Search,
     description: null,
     button: null,
     iconClass: null,
