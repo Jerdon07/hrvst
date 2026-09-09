@@ -225,7 +225,7 @@ watch(
                 <template v-else>
                     <Form
                         v-slot="{ errors, processing }"
-                        v-bind="confirm.form()"
+                        v-bind="confirm.post()"
                         reset-on-error
                         @finish="code = ''"
                         @success="isOpen = false"
