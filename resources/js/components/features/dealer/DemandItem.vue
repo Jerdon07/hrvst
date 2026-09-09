@@ -25,7 +25,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ScrollArea } from '@/components/ui/scroll-area'
 import type { DealerDemandDataFixed } from '@/types'
 import { Link } from '@inertiajs/vue3'
-import { edit } from '@/routes/dealer/demands'
+import { edit, show } from '@/routes/dealer/demands'
+import { Eye } from '@lucide/vue'
 
 defineProps<{ demand: DealerDemandDataFixed }>()
 
@@ -171,7 +172,13 @@ const emit = defineEmits<{
                 <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuGroup>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem as-child>
+                            <Link :href="show(demand.id).url">
+                                <Eye />
+                                View Schedule
+                            </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem as-child>
                             <Link :href="edit(demand.id).url">
                                 <SquarePen />
                                 Edit Schedule

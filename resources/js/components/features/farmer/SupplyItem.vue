@@ -137,13 +137,13 @@ const emit = defineEmits<{
                 <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuGroup>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem as-child>
                             <Link :href="show(supply.id).url">
                                 <Eye />
                                 View Supply
                             </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem as-child>
                             <Link :href="edit(supply.id).url">
                                 <SquarePen />
                                 Edit Supply
