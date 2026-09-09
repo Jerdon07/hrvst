@@ -105,7 +105,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <div class="pl-1">
                                 <p class="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                                     <Users class="size-3.5" />
-                                    Others bringing {{ item.display_name }} this slot
+                                    Other activity for {{ item.display_name }} this slot
                                     <span v-if="overlap?.[item.id]" class="font-mono">
                                         ({{ overlap[item.id].total_kg }} kg)
                                     </span>
@@ -114,20 +114,36 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 <EmptyState
                                     v-if="!overlap?.[item.id]?.posters.length"
                                     title="No overlap"
-                                    description="You're the only one bringing this vegetable in this slot."
+                                    description="No other farmers or dealers are active for this vegetable in this slot."
                                 />
 
-                                <div v-else class="flex flex-col gap-1.5">
-                                    <PosterRow
-                                        v-for="(poster, i) in overlap[item.id].posters"
-                                        :key="i"
-                                        :poster-name="poster.poster_name"
-                                        :poster-phone="poster.poster_phone"
-                                        :total-kg="poster.quantity_kg"
-                                        status="ongoing"
-                                        accent-class="text-primary"
-                                        bg-class="bg-primary/5"
-                                    />
+                                <div v-else class="space-y-3">
+                                    <div v-if="overlap[item.id].supply_posters.length" class="space-y-1.5">
+                                        <p class="text-xs font-medium text-muted-foreground">Farmers supplying</p>
+                                        <PosterRow
+                                            v-for="(poster, i) in overlap[item.id].supply_posters"
+                                            :key="`supply-${i}`"
+                                            :poster-name="poster.poster_name"
+                                            :poster-phone="poster.poster_phone"
+                                            :total-kg="poster.quantity_kg"
+                                            status="ongoing"
+                                            accent-class="text-primary"
+                                            bg-class="bg-primary/5"
+                                        />
+                                    </div>
+                                    <div v-if="overlap[item.id].demand_posters.length" class="space-y-1.5">
+                                        <p class="text-xs font-medium text-muted-foreground">Dealers requesting</p>
+                                        <PosterRow
+                                            v-for="(poster, i) in overlap[item.id].demand_posters"
+                                            :key="`demand-${i}`"
+                                            :poster-name="poster.poster_name"
+                                            :poster-phone="poster.poster_phone"
+                                            :total-kg="poster.quantity_kg"
+                                            status="ongoing"
+                                            accent-class="text-orange-600"
+                                            bg-class="bg-orange-500/5"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
