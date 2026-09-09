@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Deferred, Head, Link, router, useForm } from '@inertiajs/vue3'
-import { Package, Plus } from 'lucide-vue-next'
+import { Package, Plus } from '@lucide/vue'
 import { ref } from 'vue'
 import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
 import EmptyState from '@/components/EmptyState.vue'

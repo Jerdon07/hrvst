@@ -1,7 +1,7 @@
 
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3'
-import { ArrowRight, ChevronDown, ChevronUp, Vegan } from 'lucide-vue-next'
+import { ArrowRight, ChevronDown, ChevronUp, Vegan } from '@lucide/vue'
 import { computed, ref } from 'vue'
 import AppTooltip from '@/components/templates/AppTooltip.vue'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'

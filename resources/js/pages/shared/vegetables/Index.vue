@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Deferred, Head, router, usePage } from '@inertiajs/vue3'
-import { Search, Vegan } from 'lucide-vue-next'
+import { Search, Vegan } from '@lucide/vue'
 import { computed, ref } from 'vue'
 import EmptyState from '@/components/EmptyState.vue'
 import Heading from '@/components/Heading.vue'

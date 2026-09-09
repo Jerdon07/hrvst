@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3'
-import { Lock, Sparkles } from 'lucide-vue-next'
+import { Lock, Sparkles } from '@lucide/vue'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { show as billingShow } from '@/routes/billing'

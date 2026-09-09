@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { router, usePage } from '@inertiajs/vue3'
-import { Check, ChevronsUpDown, Search } from 'lucide-vue-next'
+import { Check, ChevronsUpDown, Search } from '@lucide/vue'
 import { computed, ref } from 'vue'
 import { Button } from '@/components/ui/button'
 import {

@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { Deferred, Head, Link, router, useForm } from '@inertiajs/vue3'
-import { Plus, ShoppingBag } from 'lucide-vue-next'
+import { Plus, ShoppingBag } from '@lucide/vue'
 import { ref } from 'vue'
 import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
 import EmptyState from '@/components/EmptyState.vue'
-import DemandForm from '@/components/features/dealer/DemandForm.vue'
 import DemandItem from '@/components/features/dealer/DemandItem.vue'
 import Heading from '@/components/Heading.vue'
 import { Button } from '@/components/ui/button'

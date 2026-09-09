@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ColumnDef } from '@tanstack/vue-table'
-import { ClipboardList, Mail, Package, Phone } from 'lucide-vue-next'
+import { ClipboardList, Mail, Package, Phone } from '@lucide/vue'
 import DataTable from '@/components/shared/tables/DataTable.vue'
 import AppTooltip from '@/components/templates/AppTooltip.vue'
 import { Button } from '@/components/ui/button'

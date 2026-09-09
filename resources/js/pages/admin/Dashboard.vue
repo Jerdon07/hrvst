@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Deferred, Head } from '@inertiajs/vue3'
-import { Minus, TrendingDown, TrendingUp } from 'lucide-vue-next'
+import { Minus, TrendingDown, TrendingUp } from '@lucide/vue'
 import RegistrationTrendChart from '@/components/features/admin/charts/RegistrationTrendChart.vue'
 import Heading from '@/components/Heading.vue'
 import LargeCard from '@/components/shared/cards/LargeCard.vue'

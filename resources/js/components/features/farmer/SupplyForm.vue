@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3'
 import { CalendarDate, today, getLocalTimeZone, DateFormatter } from '@internationalized/date'
-import { CalendarIcon, Check, ChevronsUpDown, Plus, Search, Trash2 } from 'lucide-vue-next'
+import { CalendarIcon, Check, ChevronsUpDown, Plus, Search, Trash2 } from '@lucide/vue'
 import { computed, watch } from 'vue'
 import { store, update } from '@/actions/App/Http/Controllers/Farmer/Schedule/SupplyController'
 import DialogForm from '@/components/dialogs/DialogForm.vue'

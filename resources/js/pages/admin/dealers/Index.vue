@@ -7,7 +7,7 @@ import {
     UserPlus,
     UserRoundPlus,
     Users,
-} from 'lucide-vue-next'
+} from '@lucide/vue'
 import { ref } from 'vue'
 import { toast } from 'vue-sonner'
 import { details as dealerDetails } from '@/actions/App/Http/Controllers/Admin/DealerController'

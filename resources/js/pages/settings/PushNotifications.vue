@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3'
-import { Bell, BellOff, BellRing, TriangleAlert } from 'lucide-vue-next'
+import { Bell, BellOff, BellRing, TriangleAlert } from '@lucide/vue'
 import { computed } from 'vue'
 import Heading from '@/components/Heading.vue'
 import { Button } from '@/components/ui/button'

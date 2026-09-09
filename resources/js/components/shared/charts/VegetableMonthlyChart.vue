@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3'
-import { AlertCircle, ChartColumn, ChartLine, ChevronLeft, ChevronRight, Info, Lock, Sparkles } from 'lucide-vue-next'
+import { AlertCircle, ChartColumn, ChartLine, ChevronLeft, ChevronRight, Info, Lock, Sparkles } from '@lucide/vue'
 import { computed, ref } from 'vue'
 import { Bar, Line } from 'vue-chartjs'
 import EmptyState from '@/components/EmptyState.vue'

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, Link, usePage } from '@inertiajs/vue3'
 import { Clock } from '@lucide/vue'
-import { ArrowRight, BarChart3, Download, MapPin, Package, ShieldCheck, Share, Sprout, Store, TrendingUp } from 'lucide-vue-next'
+import { ArrowRight, BarChart3, Download, MapPin, Package, ShieldCheck, Share, Sprout, Store, TrendingUp } from '@lucide/vue'
 import { ref, watch } from 'vue'
 import FlashToaster from '@/components/FlashToaster.vue'
 import AppLogoIcon from '@/components/layout/AppLogoIcon.vue'

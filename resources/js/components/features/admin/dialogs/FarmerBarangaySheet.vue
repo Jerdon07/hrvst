@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MapPin, Sprout } from 'lucide-vue-next'
+import { MapPin, Sprout } from '@lucide/vue'
 import DetailSheet from '@/components/dialogs/DetailSheet.vue'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'

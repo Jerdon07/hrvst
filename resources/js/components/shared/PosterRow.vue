@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CheckCircle2, CircleDot, Phone, User, XCircle } from 'lucide-vue-next'
+import { CheckCircle2, CircleDot, Phone, User, XCircle } from '@lucide/vue'
 import AppTooltip from '@/components/templates/AppTooltip.vue'
 
 const props = defineProps<{

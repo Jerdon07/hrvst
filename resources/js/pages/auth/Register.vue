@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, useForm } from '@inertiajs/vue3'
-import { Sprout, ShoppingBag } from 'lucide-vue-next'
+import { Sprout, ShoppingBag } from '@lucide/vue'
 import { computed, ref } from 'vue'
 import FarmLocationPicker from '@/components/forms/FarmLocationPicker.vue'
 import FileUpload from '@/components/forms/FileUpload.vue'

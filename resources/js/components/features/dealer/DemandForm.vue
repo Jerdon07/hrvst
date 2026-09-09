@@ -2,7 +2,7 @@
 import { useForm } from '@inertiajs/vue3'
 import { CalendarDate, today, getLocalTimeZone, DateFormatter } from '@internationalized/date'
 import { ChevronsUpDown, Search } from '@lucide/vue'
-import { CalendarIcon, Plus, Trash2 } from 'lucide-vue-next'
+import { CalendarIcon, Plus, Trash2 } from '@lucide/vue'
 import { computed, watch } from 'vue'
 import { store, update } from '@/actions/App/Http/Controllers/Dealer/Schedule/DemandController'
 import DialogForm from '@/components/dialogs/DialogForm.vue'

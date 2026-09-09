@@ -9,7 +9,7 @@ import {
     ShoppingBag,
     Sprout,
     UserCheck,
-} from 'lucide-vue-next'
+} from '@lucide/vue'
 import { ref } from 'vue'
 import { approve, reject } from '@/actions/App/Http/Controllers/Admin/RegistrationRequestController'
 import EmptyState from '@/components/EmptyState.vue'

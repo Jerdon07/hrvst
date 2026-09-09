@@ -15,7 +15,7 @@ import {
 	ChevronsUpDown,
 	ChevronUp,
 	Search,
-} from 'lucide-vue-next'
+} from '@lucide/vue'
 import { computed, ref } from 'vue'
 import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'

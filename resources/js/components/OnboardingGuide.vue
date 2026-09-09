@@ -6,7 +6,7 @@ import {
 	PackageCheck,
 	ShoppingBag,
 	Sprout,
-} from 'lucide-vue-next'
+} from '@lucide/vue'
 import { computed, onMounted, ref, type Component } from 'vue'
 import { complete } from '@/actions/App/Http/Controllers/OnboardingController'
 import { Button } from '@/components/ui/button'

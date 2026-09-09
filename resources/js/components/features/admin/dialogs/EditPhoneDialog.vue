@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3'
-import { Pencil } from 'lucide-vue-next'
+import { Pencil } from '@lucide/vue'
 import { ref, watch } from 'vue'
 import { updatePhone } from '@/actions/App/Http/Controllers/Admin/UserController'
 import InputError from '@/components/InputError.vue'

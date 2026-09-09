@@ -6,7 +6,7 @@ import {
     Mail,
     Package,
     PackageCheck,
-} from 'lucide-vue-next'
+} from '@lucide/vue'
 import { computed } from 'vue'
 import UserTeaser from '@/components/features/admin/charts/UserTeaser.vue'
 import PhoneNumberField from '@/components/features/admin/PhoneNumberField.vue'

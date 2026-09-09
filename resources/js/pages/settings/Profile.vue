@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Form, Head, useForm, usePage } from '@inertiajs/vue3'
-import { Camera } from 'lucide-vue-next'
+import { Camera } from '@lucide/vue'
 import { computed, ref, useTemplateRef } from 'vue'
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController'
 import DeleteUser from '@/components/DeleteUser.vue'

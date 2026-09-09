@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { File as FileIcon, Image as ImageIcon, Upload, X } from 'lucide-vue-next'
+import { File as FileIcon, Image as ImageIcon, Upload, X } from '@lucide/vue'
 import { computed, ref, watch } from 'vue'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'

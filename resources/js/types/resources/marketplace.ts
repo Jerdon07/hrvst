@@ -46,6 +46,7 @@ export type DealerExpiringDemandFixed = Omit<
 // ─── DealerPostItemResource ───────────────────────────────────────────────────
 
 export type DealerPostItemResource = App.Data.PostItem.PostItemData
+export type VegetableOverlapData = App.Data.Post.VegetableOverlapData
 
 // ─── Option Bag Types ─────────────────────────────────────────────────────────
 

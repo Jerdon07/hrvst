@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, useForm } from '@inertiajs/vue3'
-import { CalendarClock, CircleCheck, Lock, Sparkles } from 'lucide-vue-next'
+import { CalendarClock, CircleCheck, Lock, Sparkles } from '@lucide/vue'
 import { computed } from 'vue'
 import Heading from '@/components/Heading.vue'
 import { Badge } from '@/components/ui/badge'

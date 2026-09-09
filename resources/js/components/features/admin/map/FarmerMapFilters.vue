@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MapPin, Sprout, X } from 'lucide-vue-next'
+import { MapPin, Sprout, X } from '@lucide/vue'
 import { computed } from 'vue'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'

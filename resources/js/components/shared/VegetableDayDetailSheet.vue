@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CalendarClock, ChevronDown, Package, ShoppingBag } from 'lucide-vue-next'
+import { CalendarClock, ChevronDown, Package, ShoppingBag } from '@lucide/vue'
 import DetailSheet from '@/components/dialogs/DetailSheet.vue'
 import PosterRow from '@/components/shared/PosterRow.vue'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
