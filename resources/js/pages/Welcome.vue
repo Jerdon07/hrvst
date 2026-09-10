@@ -198,7 +198,7 @@ const steps = [
         </nav>
 
         <!-- ═══════════════════════════════════════ HERO ═══ -->
-        <section class="relative flex min-h-screen items-center overflow-hidden px-6 pt-20">
+        <section class="relative flex min-h-screen items-center overflow-hidden px-6 pt-5">
             <!-- Garden background -->
             <div
                 class="absolute inset-0 bg-cover bg-center"
@@ -212,7 +212,7 @@ const steps = [
             <div class="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-background via-background/70 to-transparent"></div>
 
             <!-- Hero content -->
-            <div class="relative z-10 mx-auto grid w-full max-w-7xl items-center gap-12 py-20 lg:grid-cols-2 lg:gap-20">
+            <div class="relative z-10 mx-auto grid w-full max-w-7xl items-center gap-6 py-20 lg:grid-cols-2 lg:gap-20">
                 <!-- ═══════════════════════════════════ TEXT ═══ -->
                 <div class="max-w-2xl text-left">
                     <Badge
@@ -276,24 +276,38 @@ const steps = [
                 </div>
 
                 <!-- ═══════════════════════════════════ IMAGES ═══ -->
-                <div class="flex min-h-[400px] items-center justify-center">
-                    <div class="flex h-[400px] w-full max-w-xl items-center justify-center rounded-3xl border border-white/20 bg-white/10 p-6 shadow-2xl backdrop-blur-sm">
-                        <!--
-                    PUT YOUR IMAGES HERE
+                <div class="relative min-h-[400px] items-center justify-center">
+                        <div class="h-full w-full flex justify-center items-center">
+                            <img 
+                                src="/images/welcome/screen.png" 
+                                alt=""
+                                class="w-fit rounded-lg border-4 m-4"
+                            >
+                        </div>
+                        
+                        <img
+                            src="/images/welcome/morning.png"
+                            alt="Schedule your supply and demand"
+                            class="hero-card hero-card-1 absolute right-0 top-30 z-10 w-50 rounded-lg border border-white/20 shadow-2xl"
+                        />
 
-                    Example:
+                        <img
+                            src="/images/welcome/afternoon.png"
+                            alt="View the daily and monthly supply and demand forecast"
+                            class="hero-card hero-card-2 hidden sm:block sm:absolute left-0 top-62 z-20 w-50 rounded-lg border border-white/20 shadow-2xl"
+                        />
 
-                    <img
-                        src="/images/dashboard.png"
-                        alt="Hrvst Dashboard"
-                        class="w-full rounded-2xl shadow-xl"
-                    />
-                -->
+                        <img
+                            src="/images/welcome/evening.png"
+                            alt="Schedule your Supply and Demand"
+                            class="hero-card hero-card-3 hidden sm:block sm:absolute right-0 top-90 z-30 w-50 rounded-lg border border-white/20 shadow-2xl"
+                        />
 
-                        <span class="text-sm text-muted-foreground">
-                            Image / mockup container
-                        </span>
-                    </div>
+                        <img
+                            src="/images/welcome/monthly-forecast.png"
+                            alt="Schedule your Supply and Demand"
+                            class="hero-card hero-card-4 absolute left-0 top-120 z-30 w-80 rounded-lg border border-white/20 shadow-2xl"
+                        />
                 </div>
             </div>
         </section>
@@ -310,7 +324,7 @@ const steps = [
                     </h2>
                 </div>
 
-                <div class="grid gap-6 lg:grid-cols-2">
+                <div class="grid gap-6 lg:grid-cols-3">
                     <!-- Farmer card -->
                     <div
                         class="relative overflow-hidden rounded-2xl p-8 lg:p-12"
@@ -687,4 +701,52 @@ const steps = [
     animation: fade-in 0.7s ease both;
     animation-delay: 400ms;
 }
+
+.hero-card {
+    transform-style: preserve-3d;
+    will-change: transform;
+    animation: floating-card 6s ease-in-out infinite;
+}
+
+/* Back */
+.hero-card-1 {
+    z-index: 1;
+    animation-delay: -2s;
+}
+
+/* Middle */
+.hero-card-2 {
+    z-index: 2;
+    animation-delay: -4s;
+}
+
+/* Front */
+.hero-card-3 {
+    z-index: 3;
+    animation-delay: -1s;
+}
+
+/* Front */
+.hero-card-4 {
+    z-index: 3;
+    animation-delay: -5s;
+}
+
+@keyframes floating-card {
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0) rotateX(2deg) rotateY(-3deg) rotateZ(-1deg);
+    }
+
+    50% {
+        transform: translate3d(0, -18px, 35px) rotateX(-2deg) rotateY(4deg) rotateZ(1deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-card {
+        animation: none;
+    }
+}
+
 </style>
