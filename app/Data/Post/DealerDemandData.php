@@ -23,7 +23,7 @@ class DealerDemandData extends Data
         public int $user_id,
         public PostType $type,
         #[WithCast(DateTimeInterfaceCast::class, format: 'F j, Y')]
-        #[WithTransformer(DateTimeInterfaceTransformer::class, format: 'F j')]
+        #[WithTransformer(DateTimeInterfaceTransformer::class, format: 'F j, Y')]
         #[TypeScriptType('string')]
         public Carbon $scheduled_date,
         public PostTimeSlot $time_slot,

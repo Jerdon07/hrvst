@@ -126,8 +126,6 @@ class SupplyController extends Controller
         Gate::authorize('update', $supply);
 
         $action->handle(post: $supply, validated: $request->validated());
-        
-        dd($supply);
 
         return redirect()->route('farmer.supplies.show', $supply)
             ->with('flash', ['type' => 'success', 'message' => 'Supply updated successfully!']);
