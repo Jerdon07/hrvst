@@ -178,7 +178,7 @@ trait HandlesPostSchedule
             : 'Demand deleted.';
     }
 
-    /** @return mixed Data-collection call for the concrete Data class (FarmerSupplyData::collect / DealerDemandData::collect until merged). */
+    /** @return mixed */
     abstract protected function collectData($items);
 
     /** @return mixed Data::from() call for the concrete Data class. */

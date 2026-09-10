@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Data\Farmer;
+namespace App\Data\Post;
 
 use App\Data\PostItem\PostItemLightData;
 use App\Enums\PostTimeSlot;
@@ -10,13 +10,13 @@ use Spatie\LaravelData\Lazy;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[TypeScript]
-class FarmerExpiringSupplyData extends Data
+class ExpiringPostData extends Data
 {
     public function __construct(
         public int $id,
-        public ?string $scheduled_date,
-        public ?PostTimeSlot $time_slot,
-        public ?string $time_slot_label,
+        public string $scheduled_date,
+        public PostTimeSlot $time_slot,
+        public string $time_slot_label,
         public string $created_at,
         public string $created_at_human,
         public string|Lazy $image_url,
