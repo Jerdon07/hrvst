@@ -7,7 +7,6 @@ use App\Actions\Post\CreatePostAction;
 use App\Actions\Post\DeletePostAction;
 use App\Data\Post\DealerDemandData;
 use App\Enums\PostItemStatus;
-use App\Enums\PostTimeSlot;
 use App\Enums\PostType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dealer\StoreDemandRequest;
@@ -15,11 +14,9 @@ use App\Http\Requests\Dealer\UpdateDemandRequest;
 use App\Models\Schedule\Post;
 use App\Services\Post\PostScheduleOverlapService;
 use App\Services\Post\PostService;
-use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -78,37 +75,12 @@ class DemandController extends Controller
         ]);
     }
 
-    public function create(Request $request): Response
+    public function create(): Response
     {
         Gate::authorize('create', [Post::class, PostType::Demand]);
-        $request->validate([
-            'scheduled_date' => ['nullable', 'date'],
-            'time_slot' => ['nullable', Rule::enum(PostTimeSlot::class)],
-            'vegetable_ids' => ['nullable', 'array'],
-            'vegetable_ids.*' => ['integer', 'exists:vegetables,id'],
-        ]);
-
-        $overlap = Inertia::defer(function () use ($request): array {
-            if (! $request->filled(['scheduled_date', 'time_slot']) || ! $request->has('vegetable_ids')) {
-                return [];
-            }
-
-            $draft = new Post([
-                'user_id' => $request->user()->id,
-                'type' => PostType::Demand,
-            ]);
-
-            return $this->overlapService->forPostAt(
-                post: $draft,
-                scheduledDate: Carbon::parse($request->string('scheduled_date')->toString()),
-                timeSlot: PostTimeSlot::from($request->string('time_slot')->toString()),
-                vegetableIds: collect($request->input('vegetable_ids')),
-            );
-        });
 
         return Inertia::render('dealer/demands/Create', [
             'varietyOptions' => Inertia::defer(fn () => $this->postService->varietyOptions(PostType::Demand)),
-            'overlap' => $overlap,
         ]);
     }
 
@@ -133,7 +105,6 @@ class DemandController extends Controller
         return Inertia::render('dealer/demands/Edit', [
             'demand' => DealerDemandData::from($demand),
             'varietyOptions' => Inertia::defer(fn () => $this->postService->varietyOptions(PostType::Demand)),
-            'overlap' => Inertia::defer(fn () => $this->overlapService->forPost($demand)),
         ]);
     }
 
