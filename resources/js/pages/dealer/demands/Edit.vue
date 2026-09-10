@@ -24,6 +24,7 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import dealer from '@/routes/dealer'
 import { edit, index, show } from '@/routes/dealer/demands'
 import type { BreadcrumbItem, DealerDemandDataFixed, PostTimeSlot, VarietyOptionsByVegetable, VegetableOverlapData } from '@/types'
+import { useOverlapPreview } from '@/composables/useOverlapPreview'
 
 const props = defineProps<{
     demand: DealerDemandDataFixed
@@ -55,6 +56,14 @@ const { getState, getData } = useVegetableAvailability(
     () => form.items.map((i) => i.vegetable_id),
 )
 
+const { overlap, loading: overlapLoading } = useOverlapPreview({
+    type: 'demand',
+    postId: props.demand.id,
+    scheduledDate: () => form.scheduled_date,
+    timeSlot: () => form.time_slot,
+    vegetableIds: () => form.items.map((i) => i.vegetable_id),
+})
+
 const varietyLabelById = computed(() => {
     const map = new Map<string, string>()
     for (const varieties of Object.values(props.varietyOptions ?? {} as VarietyOptionsByVegetable)) {
@@ -69,8 +78,8 @@ function varietyFilterFunction<T extends { value: unknown }>(items: T[], term: s
 }
 
 function overlapFor(vegetableId: string): VegetableOverlapData | undefined {
-    if (!vegetableId || !props.overlap) return undefined
-    return props.overlap[Number(vegetableId)]
+    if (!vegetableId) return undefined
+    return overlap.value[Number(vegetableId)]
 }
 
 function addItem(): void { form.items.push(blankItem()) }
