@@ -45,7 +45,11 @@ function toggleItemExpanded(itemId: number): void {
                     :title="demand.scheduled_date"
                     :description="`${demand.time_slot} slot`"
                 />
-                <Button v-if="demand.post_items?.some((item) => item.status === 'ongoing')" as-child variant="outline">
+                <Button
+                    v-if="demand.post_items?.some((item) => item.status === 'ongoing')"
+                    as-child
+                    variant="outline"
+                >
                     <Link :href="edit(demand.id).url">
                         <SquarePen class="size-4" />
                         Edit
@@ -63,16 +67,27 @@ function toggleItemExpanded(itemId: number): void {
                 <CardContent class="space-y-4">
                     <Deferred data="overlap">
                         <template #fallback>
-                            <div v-for="item in demand.post_items" :key="item.id" class="space-y-2 rounded-lg border p-3">
+                            <div
+                                v-for="item in demand.post_items"
+                                :key="item.id"
+                                class="space-y-2 rounded-lg border p-3"
+                            >
                                 <Item class="p-0">
                                     <ItemMedia variant="image">
                                         <Avatar>
-                                            <AvatarImage v-if="item.vegetable_image_url" :src="item.vegetable_image_url" :alt="item.display_name!" />
+                                            <AvatarImage
+                                                v-if="item.vegetable_image_url"
+                                                :src="item.vegetable_image_url"
+                                                :alt="item.display_name!"
+                                            />
                                         </Avatar>
                                     </ItemMedia>
                                     <ItemContent class="flex-row items-center justify-between">
                                         <ItemTitle>{{ item.display_name }}</ItemTitle>
-                                        <Badge variant="secondary" class="capitalize">{{ item.status }}</Badge>
+                                        <Badge
+                                            variant="secondary"
+                                            class="capitalize"
+                                        >{{ item.status }}</Badge>
                                     </ItemContent>
                                     <span class="font-mono text-sm">{{ item.quantity_kg }} kg</span>
                                 </Item>
@@ -80,12 +95,20 @@ function toggleItemExpanded(itemId: number): void {
                             </div>
                         </template>
 
-                        <div v-for="item in demand.post_items" :key="item.id" class="rounded-lg border p-4">
+                        <div
+                            v-for="item in demand.post_items"
+                            :key="item.id"
+                            class="rounded-lg border p-4"
+                        >
                             <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                                 <Item class="p-0">
                                     <ItemMedia variant="image">
                                         <Avatar>
-                                            <AvatarImage v-if="item.vegetable_image_url" :src="item.vegetable_image_url" :alt="item.display_name!" />
+                                            <AvatarImage
+                                                v-if="item.vegetable_image_url"
+                                                :src="item.vegetable_image_url"
+                                                :alt="item.display_name!"
+                                            />
                                         </Avatar>
                                     </ItemMedia>
                                     <ItemContent class="flex-row items-center justify-between gap-3">
@@ -93,11 +116,20 @@ function toggleItemExpanded(itemId: number): void {
                                             <ItemTitle>{{ item.display_name }}</ItemTitle>
                                             <p class="text-xs text-muted-foreground">{{ item.quantity_kg }} kg</p>
                                         </div>
-                                        <Badge variant="secondary" class="capitalize">{{ item.status }}</Badge>
+                                        <Badge
+                                            variant="secondary"
+                                            class="capitalize"
+                                        >{{ item.status }}</Badge>
                                     </ItemContent>
                                 </Item>
 
-                                <Button type="button" variant="ghost" size="icon-lg" class="shrink-0" @click="toggleItemExpanded(item.id)">
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon-lg"
+                                    class="shrink-0"
+                                    @click="toggleItemExpanded(item.id)"
+                                >
                                     <ChevronsUpDown :class="[expandedItems[item.id] ? 'rotate-180' : '', 'size-4 transition-transform']" />
                                 </Button>
                             </div>
@@ -108,19 +140,53 @@ function toggleItemExpanded(itemId: number): void {
                                         <p class="mb-2 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                                             <Users class="size-3.5" />
                                             Other activity for {{ item.display_name }} this slot
-                                            <span v-if="overlap?.[item.id]" class="font-mono">({{ overlap[item.id].total_kg }} kg)</span>
+                                            <span
+                                                v-if="overlap?.[item.id]"
+                                                class="font-mono"
+                                            >({{ overlap[item.id].total_kg }} kg)</span>
                                         </p>
 
-                                        <EmptyState v-if="!overlap?.[item.id]?.posters.length" title="No overlap" description="No other farmers or dealers are active for this vegetable in this slot." />
+                                        <EmptyState
+                                            v-if="!overlap?.[item.id]?.posters.length"
+                                            title="No overlap"
+                                            description="No other farmers or dealers are active for this vegetable in this slot."
+                                        />
 
-                                        <div v-else class="space-y-3">
-                                            <div v-if="overlap[item.id].supply_posters.length" class="space-y-1.5">
+                                        <div
+                                            v-else
+                                            class="space-y-3"
+                                        >
+                                            <div
+                                                v-if="overlap[item.id].supply_posters.length"
+                                                class="space-y-1.5"
+                                            >
                                                 <p class="text-xs font-medium text-muted-foreground">Farmers supplying</p>
-                                                <PosterRow v-for="(poster, i) in overlap[item.id].supply_posters" :key="`supply-${i}`" :poster-name="poster.poster_name" :poster-phone="poster.poster_phone" :total-kg="poster.quantity_kg" status="ongoing" accent-class="text-primary" bg-class="bg-primary/5" />
+                                                <PosterRow
+                                                    v-for="(poster, i) in overlap[item.id].supply_posters"
+                                                    :key="`supply-${i}`"
+                                                    :poster-name="poster.poster_name"
+                                                    :poster-phone="poster.poster_phone"
+                                                    :total-kg="poster.quantity_kg"
+                                                    status="ongoing"
+                                                    accent-class="text-primary"
+                                                    bg-class="bg-primary/5"
+                                                />
                                             </div>
-                                            <div v-if="overlap[item.id].demand_posters.length" class="space-y-1.5">
+                                            <div
+                                                v-if="overlap[item.id].demand_posters.length"
+                                                class="space-y-1.5"
+                                            >
                                                 <p class="text-xs font-medium text-muted-foreground">Dealers requesting</p>
-                                                <PosterRow v-for="(poster, i) in overlap[item.id].demand_posters" :key="`demand-${i}`" :poster-name="poster.poster_name" :poster-phone="poster.poster_phone" :total-kg="poster.quantity_kg" status="ongoing" accent-class="text-orange-600" bg-class="bg-orange-500/5" />
+                                                <PosterRow
+                                                    v-for="(poster, i) in overlap[item.id].demand_posters"
+                                                    :key="`demand-${i}`"
+                                                    :poster-name="poster.poster_name"
+                                                    :poster-phone="poster.poster_phone"
+                                                    :total-kg="poster.quantity_kg"
+                                                    status="ongoing"
+                                                    accent-class="text-orange-600"
+                                                    bg-class="bg-orange-500/5"
+                                                />
                                             </div>
                                         </div>
                                     </div>

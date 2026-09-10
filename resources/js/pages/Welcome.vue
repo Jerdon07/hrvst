@@ -198,105 +198,87 @@ const steps = [
         </nav>
 
         <!-- ═══════════════════════════════════════ HERO ═══ -->
-        <section
-    class="relative flex min-h-screen items-center overflow-hidden px-6 pt-20"
->
-    <!-- Garden background -->
-    <div
-        class="absolute inset-0 bg-cover bg-center"
-        style="background-image: url('/images/welcome/background.webp');"
-    ></div>
-
-    <!-- Image overlay -->
-    <div class="absolute inset-0 bg-background/40"></div>
-
-    <!-- Fade into page background at bottom -->
-    <div
-        class="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-background via-background/70 to-transparent"
-    ></div>
-
-    <!-- Hero content -->
-    <div
-        class="relative z-10 mx-auto grid w-full max-w-7xl items-center gap-12 py-20 lg:grid-cols-2 lg:gap-20"
-    >
-        <!-- ═══════════════════════════════════ TEXT ═══ -->
-        <div class="max-w-2xl text-left">
-            <Badge
-                variant="outline"
-                class="mb-6 border-primary bg-primary/10 px-4 py-1.5 text-xs font-bold tracking-widest text-primary"
-            >
-                <Sprout class="size-3.5 shrink-0" />
-                TRADING POST · TEAM CRESCO
-            </Badge>
-
-            <h1
-                class="hero-title mb-6 text-5xl font-black leading-[1.05] tracking-tight sm:text-7xl lg:text-[5.5rem]"
-            >
-                Trading Post<br />
-                <span class="text-primary">Synchronizer</span>
-            </h1>
-
-            <p
-                class="hero-sub mb-10 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
-            >
-                Hrvst is Trading Post's synchronizer where both sides commit
-                forward-looking intentions before going to Trading Post.
-                Built to surface the imbalance between supplies & demands
-                early enough for either side to adjust — Created and preserved
-                by team Cresco.
-            </p>
-
-            <div class="hero-cta flex flex-wrap items-center gap-4">
-                <template v-if="page.props.auth.user">
-                    <Link
-                        :href="dashboard()"
-                        class="group transition-all duration-300"
-                    >
-                        <Button class="font-semibold">
-                            Go to Dashboard
-                            <ArrowRight
-                                class="size-4 transition-transform group-hover:translate-x-1"
-                            />
-                        </Button>
-                    </Link>
-                </template>
-
-                <template v-else>
-                    <Button
-                        v-if="canInstall"
-                        variant="outline"
-                        size="sm"
-                        class="gap-2 font-semibold"
-                        @click="handleInstallClick"
-                    >
-                        <Download class="size-4" />
-                        Install App
-                    </Button>
-
-                    <Link :href="register.create()">
-                        <Button class="px-3 font-semibold">
-                            Register
-                            <ArrowRight
-                                class="size-4 transition-transform group-hover:translate-x-1"
-                            />
-                        </Button>
-                    </Link>
-                </template>
-            </div>
-
-            <p class="hero-hint mt-6 text-xs text-muted-foreground">
-                We shape the transparency · You decide for the best.
-            </p>
-        </div>
-
-        <!-- ═══════════════════════════════════ IMAGES ═══ -->
-        <div
-            class="flex min-h-[400px] items-center justify-center"
-        >
+        <section class="relative flex min-h-screen items-center overflow-hidden px-6 pt-20">
+            <!-- Garden background -->
             <div
-                class="flex h-[400px] w-full max-w-xl items-center justify-center rounded-3xl border border-white/20 bg-white/10 p-6 shadow-2xl backdrop-blur-sm"
-            >
-                <!--
+                class="absolute inset-0 bg-cover bg-center"
+                style="background-image: url('/images/welcome/background.webp');"
+            ></div>
+
+            <!-- Image overlay -->
+            <div class="absolute inset-0 bg-background/40"></div>
+
+            <!-- Fade into page background at bottom -->
+            <div class="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-background via-background/70 to-transparent"></div>
+
+            <!-- Hero content -->
+            <div class="relative z-10 mx-auto grid w-full max-w-7xl items-center gap-12 py-20 lg:grid-cols-2 lg:gap-20">
+                <!-- ═══════════════════════════════════ TEXT ═══ -->
+                <div class="max-w-2xl text-left">
+                    <Badge
+                        variant="outline"
+                        class="mb-6 border-primary bg-primary/10 px-4 py-1.5 text-xs font-bold tracking-widest text-primary"
+                    >
+                        <Sprout class="size-3.5 shrink-0" />
+                        TRADING POST · TEAM CRESCO
+                    </Badge>
+
+                    <h1 class="hero-title mb-6 text-5xl font-black leading-[1.05] tracking-tight sm:text-7xl lg:text-[5.5rem]">
+                        Trading Post<br />
+                        <span class="text-primary">Synchronizer</span>
+                    </h1>
+
+                    <p class="hero-sub mb-10 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+                        Hrvst is Trading Post's synchronizer where both sides commit
+                        forward-looking intentions before going to Trading Post.
+                        Built to surface the imbalance between supplies & demands
+                        early enough for either side to adjust — Created and preserved
+                        by team Cresco.
+                    </p>
+
+                    <div class="hero-cta flex flex-wrap items-center gap-4">
+                        <template v-if="page.props.auth.user">
+                            <Link
+                                :href="dashboard()"
+                                class="group transition-all duration-300"
+                            >
+                                <Button class="font-semibold">
+                                    Go to Dashboard
+                                    <ArrowRight class="size-4 transition-transform group-hover:translate-x-1"/>
+                                </Button>
+                            </Link>
+                        </template>
+
+                        <template v-else>
+                            <Button
+                                v-if="canInstall"
+                                variant="outline"
+                                size="sm"
+                                class="gap-2 font-semibold"
+                                @click="handleInstallClick"
+                            >
+                                <Download class="size-4" />
+                                Install App
+                            </Button>
+
+                            <Link :href="register.create()">
+                                <Button class="px-3 font-semibold">
+                                    Register
+                                    <ArrowRight class="size-4 transition-transform group-hover:translate-x-1"/>
+                                </Button>
+                            </Link>
+                        </template>
+                    </div>
+
+                    <p class="hero-hint mt-6 text-xs text-muted-foreground">
+                        We shape the transparency · You decide for the best.
+                    </p>
+                </div>
+
+                <!-- ═══════════════════════════════════ IMAGES ═══ -->
+                <div class="flex min-h-[400px] items-center justify-center">
+                    <div class="flex h-[400px] w-full max-w-xl items-center justify-center rounded-3xl border border-white/20 bg-white/10 p-6 shadow-2xl backdrop-blur-sm">
+                        <!--
                     PUT YOUR IMAGES HERE
 
                     Example:
@@ -308,13 +290,13 @@ const steps = [
                     />
                 -->
 
-                <span class="text-sm text-muted-foreground">
-                    Image / mockup container
-                </span>
+                        <span class="text-sm text-muted-foreground">
+                            Image / mockup container
+                        </span>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</section>
+        </section>
 
         <!-- ═══════════════════════════════════════ DUAL AUDIENCE ═══ -->
         <section class="px-6 py-24 bg-card border-y">

@@ -1,5 +1,13 @@
 <script setup lang="ts" generic="TData">
 import {
+	ChevronDown,
+	ChevronLeft,
+	ChevronRight,
+	ChevronsUpDown,
+	ChevronUp,
+	Search,
+} from '@lucide/vue'
+import {
 	type ColumnDef,
 	type ExpandedState,
 	FlexRender,
@@ -8,14 +16,6 @@ import {
 	getSortedRowModel,
 	useVueTable,
 } from '@tanstack/vue-table'
-import {
-	ChevronDown,
-	ChevronLeft,
-	ChevronRight,
-	ChevronsUpDown,
-	ChevronUp,
-	Search,
-} from '@lucide/vue'
 import { computed, ref } from 'vue'
 import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'

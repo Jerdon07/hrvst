@@ -3,13 +3,17 @@ import { Deferred, Head, router, useForm } from '@inertiajs/vue3'
 import { CalendarDate, today, getLocalTimeZone, DateFormatter } from '@internationalized/date'
 import { CalendarIcon, Check, ChevronsUpDown, Plus, Search, Trash2 } from '@lucide/vue'
 import { computed, watch } from 'vue'
+import { ref } from 'vue'
 import { store } from '@/actions/App/Http/Controllers/Farmer/Schedule/SupplyController'
 import Heading from '@/components/Heading.vue'
 import PosterRow from '@/components/shared/PosterRow.vue'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
+import { Card, CardContent } from '@/components/ui/card'
+import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
 import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxItemIndicator, ComboboxList, ComboboxTrigger, ComboboxViewport } from '@/components/ui/combobox'
+import { Item } from '@/components/ui/item'
 import { Label } from '@/components/ui/label'
 import { NumberField, NumberFieldContent, NumberFieldDecrement, NumberFieldIncrement, NumberFieldInput } from '@/components/ui/number-field'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -22,10 +26,6 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import farmer from '@/routes/farmer'
 import { create, index } from '@/routes/farmer/supplies'
 import type { BreadcrumbItem, PostTimeSlot, VarietyOptionsByVegetable, VegetableOverlapData } from '@/types'
-import { Card, CardContent } from '@/components/ui/card'
-import { ref } from 'vue'
-import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
-import { Item } from '@/components/ui/item'
 
 const props = defineProps<{
     varietyOptions?: VarietyOptionsByVegetable
@@ -147,7 +147,10 @@ function toggleItemExpanded(itemKey: number): void {
                         <div class="space-y-2">
                             <Label class="flex items-center gap-1.5">
                                 Delivery Day
-                                <Badge variant="destructive" class="text-xs font-normal">Required</Badge>
+                                <Badge
+                                    variant="destructive"
+                                    class="text-xs font-normal"
+                                >Required</Badge>
                             </Label>
                             <Popover v-slot="{ close }">
                                 <PopoverTrigger as-child>
@@ -163,7 +166,10 @@ function toggleItemExpanded(itemKey: number): void {
                                         {{ form.scheduled_date ? df.format(calendarDate!.toDate(getLocalTimeZone())) : 'Pick a date' }}
                                     </Button>
                                 </PopoverTrigger>
-                                <PopoverContent class="w-auto p-0" align="start">
+                                <PopoverContent
+                                    class="w-auto p-0"
+                                    align="start"
+                                >
                                     <Calendar
                                         v-model="calendarDate"
                                         layout="month-only"
@@ -174,13 +180,19 @@ function toggleItemExpanded(itemKey: number): void {
                                     />
                                 </PopoverContent>
                             </Popover>
-                            <p v-if="form.errors.scheduled_date" class="text-xs text-destructive">{{ form.errors.scheduled_date }}</p>
+                            <p
+                                v-if="form.errors.scheduled_date"
+                                class="text-xs text-destructive"
+                            >{{ form.errors.scheduled_date }}</p>
                         </div>
 
                         <div class="space-y-2">
                             <Label class="flex items-center gap-1.5">
                                 Time Slot
-                                <Badge variant="destructive" class="text-xs font-normal">Required</Badge>
+                                <Badge
+                                    variant="destructive"
+                                    class="text-xs font-normal"
+                                >Required</Badge>
                             </Label>
                             <Select v-model="form.time_slot">
                                 <SelectTrigger :class="{ 'border-destructive': form.errors.time_slot }">
@@ -192,7 +204,10 @@ function toggleItemExpanded(itemKey: number): void {
                                     <SelectItem value="evening">Evening (6 PM – 10 PM)</SelectItem>
                                 </SelectContent>
                             </Select>
-                            <p v-if="form.errors.time_slot" class="text-xs text-destructive">{{ form.errors.time_slot }}</p>
+                            <p
+                                v-if="form.errors.time_slot"
+                                class="text-xs text-destructive"
+                            >{{ form.errors.time_slot }}</p>
                         </div>
                     </div>
 
@@ -222,7 +237,10 @@ function toggleItemExpanded(itemKey: number): void {
                                     :filter-function="varietyFilterFunction"
                                     @update:model-value="(value) => (item.vegetable_id = value == null ? '' : String(value))"
                                 >
-                                    <ComboboxAnchor as-child class="w-full">
+                                    <ComboboxAnchor
+                                        as-child
+                                        class="w-full"
+                                    >
                                         <ComboboxTrigger as-child>
                                             <Button
                                                 type="button"
@@ -242,15 +260,26 @@ function toggleItemExpanded(itemKey: number): void {
 
                                     <ComboboxList class="w-(--reka-combobox-anchor-width)">
                                         <div class="relative">
-                                            <ComboboxInput class="pl-9" placeholder="Search vegetable or variety..." />
+                                            <ComboboxInput
+                                                class="pl-9"
+                                                placeholder="Search vegetable or variety..."
+                                            />
                                             <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                                                 <Search class="size-4 text-muted-foreground" />
                                             </span>
                                         </div>
                                         <ComboboxEmpty>No vegetable found.</ComboboxEmpty>
                                         <ComboboxViewport>
-                                            <ComboboxGroup v-for="(varieties, categoryName) in props.varietyOptions" :key="categoryName" :heading="categoryName">
-                                                <ComboboxItem v-for="v in varieties" :key="v.id" :value="String(v.id)">
+                                            <ComboboxGroup
+                                                v-for="(varieties, categoryName) in props.varietyOptions"
+                                                :key="categoryName"
+                                                :heading="categoryName"
+                                            >
+                                                <ComboboxItem
+                                                    v-for="v in varieties"
+                                                    :key="v.id"
+                                                    :value="String(v.id)"
+                                                >
                                                     {{ v.name }}
                                                     <ComboboxItemIndicator><Check class="size-4" /></ComboboxItemIndicator>
                                                 </ComboboxItem>
@@ -259,16 +288,28 @@ function toggleItemExpanded(itemKey: number): void {
                                     </ComboboxList>
                                 </Combobox>
 
-                                <div v-if="item.vegetable_id && form.scheduled_date" class="min-h-4 text-xs">
-                                    <Skeleton v-if="getState(item.vegetable_id).status === 'loading'" class="h-3.5 w-20 rounded" />
+                                <div
+                                    v-if="item.vegetable_id && form.scheduled_date"
+                                    class="min-h-4 text-xs"
+                                >
+                                    <Skeleton
+                                        v-if="getState(item.vegetable_id).status === 'loading'"
+                                        class="h-3.5 w-20 rounded"
+                                    />
                                     <template v-else-if="getData(item.vegetable_id)">
-                                        <span :class="netKgClassFarmer(getData(item.vegetable_id)!.net_kg)" class="text-xs font-medium tabular-nums">
+                                        <span
+                                            :class="netKgClassFarmer(getData(item.vegetable_id)!.net_kg)"
+                                            class="text-xs font-medium tabular-nums"
+                                        >
                                             {{ formatNetKgFarmer(getData(item.vegetable_id)!.net_kg) }}
                                         </span>
                                     </template>
                                 </div>
 
-                                <p v-if="form.errors[`items.${index}.vegetable_id`]" class="text-xs text-destructive">
+                                <p
+                                    v-if="form.errors[`items.${index}.vegetable_id`]"
+                                    class="text-xs text-destructive"
+                                >
                                     {{ form.errors[`items.${index}.vegetable_id`] }}
                                 </p>
                             </div>
@@ -283,11 +324,17 @@ function toggleItemExpanded(itemKey: number): void {
                                 >
                                     <NumberFieldContent class="w-full">
                                         <NumberFieldDecrement />
-                                        <NumberFieldInput :class="{ 'border-destructive': form.errors[`items.${index}.quantity_kg`] }" class="bg-card" />
+                                        <NumberFieldInput
+                                            :class="{ 'border-destructive': form.errors[`items.${index}.quantity_kg`] }"
+                                            class="bg-card"
+                                        />
                                         <NumberFieldIncrement />
                                     </NumberFieldContent>
                                 </NumberField>
-                                <p v-if="form.errors[`items.${index}.quantity_kg`]" class="text-xs text-destructive">
+                                <p
+                                    v-if="form.errors[`items.${index}.quantity_kg`]"
+                                    class="text-xs text-destructive"
+                                >
                                     {{ form.errors[`items.${index}.quantity_kg`] }}
                                 </p>
                             </div>
@@ -320,12 +367,21 @@ function toggleItemExpanded(itemKey: number): void {
                         <CollapsibleContent>
                             <Deferred data="overlap">
                                 <template #fallback>
-                                    <Skeleton v-if="item.vegetable_id" class="mt-4 h-7 w-full rounded" />
+                                    <Skeleton
+                                        v-if="item.vegetable_id"
+                                        class="mt-4 h-7 w-full rounded"
+                                    />
                                 </template>
 
-                                <div v-if="item.vegetable_id && overlap?.[Number(item.vegetable_id)]?.posters.length" class="mt-4 space-y-2 rounded-md bg-muted/30 p-2">
+                                <div
+                                    v-if="item.vegetable_id && overlap?.[Number(item.vegetable_id)]?.posters.length"
+                                    class="mt-4 space-y-2 rounded-md bg-muted/30 p-2"
+                                >
                                     <p class="text-xs font-medium text-muted-foreground">Other activity this slot</p>
-                                    <div v-if="overlap[Number(item.vegetable_id)].supply_posters.length" class="space-y-1.5">
+                                    <div
+                                        v-if="overlap[Number(item.vegetable_id)].supply_posters.length"
+                                        class="space-y-1.5"
+                                    >
                                         <p class="text-xs text-muted-foreground">Farmers supplying</p>
                                         <PosterRow
                                             v-for="(poster, i) in overlap[Number(item.vegetable_id)].supply_posters"
@@ -338,7 +394,10 @@ function toggleItemExpanded(itemKey: number): void {
                                             bg-class="bg-primary/5"
                                         />
                                     </div>
-                                    <div v-if="overlap[Number(item.vegetable_id)].demand_posters.length" class="space-y-1.5">
+                                    <div
+                                        v-if="overlap[Number(item.vegetable_id)].demand_posters.length"
+                                        class="space-y-1.5"
+                                    >
                                         <p class="text-xs text-muted-foreground">Dealers requesting</p>
                                         <PosterRow
                                             v-for="(poster, i) in overlap[Number(item.vegetable_id)].demand_posters"
@@ -358,10 +417,16 @@ function toggleItemExpanded(itemKey: number): void {
                 </Card>
 
                 <div class="flex justify-end gap-3">
-                    <Button variant="outline" as-child>
+                    <Button
+                        variant="outline"
+                        as-child
+                    >
                         <a :href="index().url">Cancel</a>
                     </Button>
-                    <Button :disabled="form.processing" @click="submit">
+                    <Button
+                        :disabled="form.processing"
+                        @click="submit"
+                    >
                         <Spinner v-if="form.processing" />
                         Create Schedule
                     </Button>

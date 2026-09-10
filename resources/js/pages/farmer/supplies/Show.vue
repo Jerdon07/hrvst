@@ -45,7 +45,11 @@ function toggleItemExpanded(itemId: number): void {
                     :title="supply.scheduled_date"
                     :description="`${supply.time_slot} slot`"
                 />
-                <Button v-if="supply.post_items?.some((item) => item.status === 'ongoing')" as-child variant="outline">
+                <Button
+                    v-if="supply.post_items?.some((item) => item.status === 'ongoing')"
+                    as-child
+                    variant="outline"
+                >
                     <Link :href="edit(supply.id).url">
                         <SquarePen class="size-4" />
                         Edit
@@ -63,7 +67,11 @@ function toggleItemExpanded(itemId: number): void {
                 <CardContent class="space-y-4">
                     <Deferred data="overlap">
                         <template #fallback>
-                            <div v-for="item in supply.post_items" :key="item.id" class="space-y-2 rounded-lg border p-3">
+                            <div
+                                v-for="item in supply.post_items"
+                                :key="item.id"
+                                class="space-y-2 rounded-lg border p-3"
+                            >
                                 <Item class="p-0">
                                     <ItemMedia variant="image">
                                         <Avatar>
@@ -76,7 +84,10 @@ function toggleItemExpanded(itemId: number): void {
                                     </ItemMedia>
                                     <ItemContent class="flex-row items-center justify-between">
                                         <ItemTitle>{{ item.display_name }}</ItemTitle>
-                                        <Badge variant="secondary" class="capitalize">{{ item.status }}</Badge>
+                                        <Badge
+                                            variant="secondary"
+                                            class="capitalize"
+                                        >{{ item.status }}</Badge>
                                     </ItemContent>
                                     <span class="font-mono text-sm">{{ item.quantity_kg }} kg</span>
                                 </Item>
@@ -84,7 +95,11 @@ function toggleItemExpanded(itemId: number): void {
                             </div>
                         </template>
 
-                        <div v-for="item in supply.post_items" :key="item.id" class="rounded-lg border p-4">
+                        <div
+                            v-for="item in supply.post_items"
+                            :key="item.id"
+                            class="rounded-lg border p-4"
+                        >
                             <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                                 <Item class="p-0">
                                     <ItemMedia variant="image">
@@ -101,7 +116,10 @@ function toggleItemExpanded(itemId: number): void {
                                             <ItemTitle>{{ item.display_name }}</ItemTitle>
                                             <p class="text-xs text-muted-foreground">{{ item.quantity_kg }} kg</p>
                                         </div>
-                                        <Badge variant="secondary" class="capitalize">{{ item.status }}</Badge>
+                                        <Badge
+                                            variant="secondary"
+                                            class="capitalize"
+                                        >{{ item.status }}</Badge>
                                     </ItemContent>
                                 </Item>
 
@@ -122,7 +140,10 @@ function toggleItemExpanded(itemId: number): void {
                                         <p class="mb-2 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                                             <Users class="size-3.5" />
                                             Other activity for {{ item.display_name }} this slot
-                                            <span v-if="overlap?.[item.id]" class="font-mono">
+                                            <span
+                                                v-if="overlap?.[item.id]"
+                                                class="font-mono"
+                                            >
                                                 ({{ overlap[item.id].total_kg }} kg)
                                             </span>
                                         </p>
@@ -133,8 +154,14 @@ function toggleItemExpanded(itemId: number): void {
                                             description="No other farmers or dealers are active for this vegetable in this slot."
                                         />
 
-                                        <div v-else class="space-y-3">
-                                            <div v-if="overlap[item.id].supply_posters.length" class="space-y-1.5">
+                                        <div
+                                            v-else
+                                            class="space-y-3"
+                                        >
+                                            <div
+                                                v-if="overlap[item.id].supply_posters.length"
+                                                class="space-y-1.5"
+                                            >
                                                 <p class="text-xs font-medium text-muted-foreground">Farmers supplying</p>
                                                 <PosterRow
                                                     v-for="(poster, i) in overlap[item.id].supply_posters"
@@ -147,7 +174,10 @@ function toggleItemExpanded(itemId: number): void {
                                                     bg-class="bg-primary/5"
                                                 />
                                             </div>
-                                            <div v-if="overlap[item.id].demand_posters.length" class="space-y-1.5">
+                                            <div
+                                                v-if="overlap[item.id].demand_posters.length"
+                                                class="space-y-1.5"
+                                            >
                                                 <p class="text-xs font-medium text-muted-foreground">Dealers requesting</p>
                                                 <PosterRow
                                                     v-for="(poster, i) in overlap[item.id].demand_posters"

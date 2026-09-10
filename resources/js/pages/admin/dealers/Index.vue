@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Deferred, Head, Link, router } from '@inertiajs/vue3'
-import axios from 'axios'
 import {
     Package,
     PackagePlus,
@@ -8,6 +7,7 @@ import {
     UserRoundPlus,
     Users,
 } from '@lucide/vue'
+import axios from 'axios'
 import { ref } from 'vue'
 import { toast } from 'vue-sonner'
 import { details as dealerDetails } from '@/actions/App/Http/Controllers/Admin/DealerController'
