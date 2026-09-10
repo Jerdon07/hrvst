@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { ref, watch } from 'vue'
 import type { PostTimeSlot, VegetableOverlapData } from '@/types'
+import PostOverlapController from '@/actions/App/Http/Controllers/Api/PostOverlapController'
 
 interface UseOverlapPreviewOptions {
     type: 'supply' | 'demand'
@@ -35,7 +36,7 @@ export function useOverlapPreview(options: UseOverlapPreviewOptions) {
         loading.value = true
 
         try {
-            const { data } = await axios.get<Record<number, VegetableOverlapData>>('/posts/overlap', {
+            const { data } = await axios.get<Record<number, VegetableOverlapData>>(PostOverlapController.url(), {
                 params: {
                     type: options.type,
                     scheduled_date: scheduledDate,
