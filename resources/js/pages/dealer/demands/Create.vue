@@ -2,7 +2,7 @@
 import { Deferred, Head, router, useForm } from '@inertiajs/vue3'
 import { CalendarDate, today, getLocalTimeZone, DateFormatter } from '@internationalized/date'
 import { CalendarIcon, Check, ChevronsUpDown, Plus, Search, Trash2 } from '@lucide/vue'
-import { computed, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { store } from '@/actions/App/Http/Controllers/Dealer/Schedule/DemandController'
 import Heading from '@/components/Heading.vue'
 import PosterRow from '@/components/shared/PosterRow.vue'
@@ -16,7 +16,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
-import { Table, TableBody, TableCell, TableEmpty, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Card } from '@/components/ui/card'
+import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
 import { useVegetableAvailability, netKgClassDealer, formatNetKgDealer } from '@/composables/useVegetableAvailability'
 import AppLayout from '@/layouts/AppLayout.vue'
 import dealer from '@/routes/dealer'
@@ -119,21 +120,28 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Demands', href: index().url },
     { title: 'New Schedule' },
 ]
+
+const expandedItems = ref<Record<number, boolean>>({})
+
+function toggleItemExpanded(itemKey: number): void {
+    expandedItems.value[itemKey] = !expandedItems.value[itemKey]
+}
 </script>
 
 <template>
     <Head title="New Demand Schedule" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex flex-col gap-6 p-4 lg:p-6">
+        <div class="mx-auto max-w-4xl space-y-6 p-4 lg:p-6">
             <Heading
                 title="New Demand Schedule"
                 description="Post the vegetables you need, and when you'll be there."
             />
 
             <div class="space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="col-span-1 space-y-2">
+                <div class="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_auto]">
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div class="space-y-2">
                         <Label class="flex items-center gap-1.5">
                             Transaction Day
                             <Badge variant="destructive" class="text-xs font-normal">Required</Badge>
@@ -166,7 +174,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <p v-if="form.errors.scheduled_date" class="text-xs text-destructive">{{ form.errors.scheduled_date }}</p>
                     </div>
 
-                    <div class="col-span-1 space-y-2">
+                        </div>
+
+                        <div class="space-y-2">
                         <Label class="flex items-center gap-1.5">
                             Time Slot
                             <Badge variant="destructive" class="text-xs font-normal">Required</Badge>
@@ -182,67 +192,25 @@ const breadcrumbs: BreadcrumbItem[] = [
                             </SelectContent>
                         </Select>
                         <p v-if="form.errors.time_slot" class="text-xs text-destructive">{{ form.errors.time_slot }}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-end justify-start lg:justify-end">
+                        <Button type="button" variant="outline" class="w-full sm:w-auto" @click="addItem">
+                            <Plus class="mr-2 size-4" />
+                            Add Vegetable
+                        </Button>
                     </div>
                 </div>
 
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Vegetables Needed <span class="text-destructive">*</span></TableHead>
-                            <TableHead class="text-center">Kilogram <span class="text-destructive">*</span></TableHead>
-                            <TableHead class="text-end">
-                                <Button type="button" variant="outline" size="icon-sm" class="h-7 gap-1.5 text-xs" @click="addItem">
-                                    <Plus class="size-3" />
-                                </Button>
-                            </TableHead>
-                        </TableRow>
-                        <TableRow v-for="item in form.items" :key="`overlap-${item._key}`">
-                            <TableCell colspan="3" class="border-b-0 pt-0">
-                                <Deferred data="overlap">
-                                    <template #fallback>
-                                        <Skeleton v-if="item.vegetable_id" class="h-7 w-full rounded" />
-                                    </template>
-                                    <div v-if="item.vegetable_id && overlap?.[Number(item.vegetable_id)]?.posters.length" class="space-y-2 rounded-md bg-muted/30 p-2">
-                                        <p class="text-xs font-medium text-muted-foreground">Other activity this slot</p>
-                                        <div v-if="overlap[Number(item.vegetable_id)].supply_posters.length" class="space-y-1.5">
-                                            <p class="text-xs text-muted-foreground">Farmers supplying</p>
-                                            <PosterRow
-                                                v-for="(poster, i) in overlap[Number(item.vegetable_id)].supply_posters"
-                                                :key="`supply-${i}`"
-                                                :poster-name="poster.poster_name"
-                                                :poster-phone="poster.poster_phone"
-                                                :total-kg="poster.quantity_kg"
-                                                status="ongoing"
-                                                accent-class="text-primary"
-                                                bg-class="bg-primary/5"
-                                            />
-                                        </div>
-                                        <div v-if="overlap[Number(item.vegetable_id)].demand_posters.length" class="space-y-1.5">
-                                            <p class="text-xs text-muted-foreground">Dealers requesting</p>
-                                            <PosterRow
-                                                v-for="(poster, i) in overlap[Number(item.vegetable_id)].demand_posters"
-                                                :key="`demand-${i}`"
-                                                :poster-name="poster.poster_name"
-                                                :poster-phone="poster.poster_phone"
-                                                :total-kg="poster.quantity_kg"
-                                                status="ongoing"
-                                                accent-class="text-orange-600"
-                                                bg-class="bg-orange-500/5"
-                                            />
-                                        </div>
-                                    </div>
-                                </Deferred>
-                            </TableCell>
-                        </TableRow>
-                    </TableHeader>
-
-                    <TableBody>
-                        <TableEmpty v-if="form.items.length === 0" :colspan="3">
-                            <span :class="form.errors.items ? 'text-destructive' : ''">No demand yet. Add at least one vegetable demand.</span>
-                        </TableEmpty>
-
-                        <TableRow v-for="(item, index) in form.items" :key="item._key">
-                            <TableCell class="relative px-0 pb-6 align-top">
+                <Card
+                    v-for="(item, index) in form.items"
+                    :key="item._key"
+                    class="relative overflow-hidden p-4 sm:p-5"
+                >
+                    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                        <div class="grid w-full gap-4 sm:grid-cols-[minmax(0,1.5fr)_minmax(170px,220px)]">
+                            <div class="space-y-2">
                                 <Combobox
                                     :model-value="item.vegetable_id"
                                     :filter-function="varietyFilterFunction"
@@ -285,7 +253,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     </ComboboxList>
                                 </Combobox>
 
-                                <div v-if="item.vegetable_id && form.scheduled_date" class="absolute bottom-1 text-xs">
+                                <div v-if="item.vegetable_id && form.scheduled_date" class="min-h-4 text-xs">
                                     <Skeleton v-if="getState(item.vegetable_id).status === 'loading'" class="h-3.5 w-20 rounded" />
                                     <template v-else-if="getData(item.vegetable_id)">
                                         <span :class="netKgClassDealer(getData(item.vegetable_id)!.net_kg)" class="text-xs font-medium tabular-nums">
@@ -294,12 +262,12 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     </template>
                                 </div>
 
-                                <p v-if="form.errors[`items.${index}.vegetable_id`]" class="absolute bottom-1 text-xs text-destructive">
+                                <p v-if="form.errors[`items.${index}.vegetable_id`]" class="text-xs text-destructive">
                                     {{ form.errors[`items.${index}.vegetable_id`] }}
                                 </p>
-                            </TableCell>
+                            </div>
 
-                            <TableCell class="relative px-0 pb-5 align-top">
+                            <div class="space-y-2">
                                 <NumberField
                                     v-model="item.quantity_kg"
                                     :min="0"
@@ -307,25 +275,50 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     :step="0.1"
                                     :format-options="{ style: 'unit', unit: 'kilogram', unitDisplay: 'short', minimumFractionDigits: 0, maximumFractionDigits: 1 }"
                                 >
-                                    <NumberFieldContent class="min-w-30 sm:max-w-fit">
+                                    <NumberFieldContent class="w-full">
                                         <NumberFieldDecrement />
-                                        <NumberFieldInput :class="{ 'border-destructive': form.errors[`items.${index}.quantity_kg`] }" />
+                                        <NumberFieldInput :class="{ 'border-destructive': form.errors[`items.${index}.quantity_kg`] }" class="bg-card" />
                                         <NumberFieldIncrement />
                                     </NumberFieldContent>
                                 </NumberField>
-                                <p v-if="form.errors[`items.${index}.quantity_kg`]" class="absolute bottom-1 text-xs text-destructive">
+                                <p v-if="form.errors[`items.${index}.quantity_kg`]" class="text-xs text-destructive">
                                     {{ form.errors[`items.${index}.quantity_kg`] }}
                                 </p>
-                            </TableCell>
+                            </div>
+                        </div>
 
-                            <TableCell class="text-end align-top">
-                                <Button type="button" variant="ghost" size="icon" class="size-9 text-muted-foreground hover:text-destructive" @click="removeItem(index)">
-                                    <Trash2 class="size-4" />
-                                </Button>
-                            </TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
+                        <div class="flex items-center gap-2 self-end sm:self-start">
+                            <Button type="button" variant="ghost" size="icon-lg" class="shrink-0" @click="toggleItemExpanded(item._key)">
+                                <ChevronsUpDown :class="[expandedItems[item._key] ? 'rotate-180' : '', 'size-4 transition-transform']" />
+                            </Button>
+                            <Button type="button" variant="ghost" size="icon-lg" class="text-destructive" @click="removeItem(index)">
+                                <Trash2 class="size-4" />
+                            </Button>
+                        </div>
+                    </div>
+
+                    <Collapsible v-model:open="expandedItems[item._key]">
+                        <CollapsibleContent>
+                            <Deferred data="overlap">
+                                <template #fallback>
+                                    <Skeleton v-if="item.vegetable_id" class="mt-4 h-7 w-full rounded" />
+                                </template>
+
+                                <div v-if="item.vegetable_id && overlap?.[Number(item.vegetable_id)]?.posters.length" class="mt-4 space-y-2 rounded-md bg-muted/30 p-2">
+                                    <p class="text-xs font-medium text-muted-foreground">Other activity this slot</p>
+                                    <div v-if="overlap[Number(item.vegetable_id)].supply_posters.length" class="space-y-1.5">
+                                        <p class="text-xs text-muted-foreground">Farmers supplying</p>
+                                        <PosterRow v-for="(poster, i) in overlap[Number(item.vegetable_id)].supply_posters" :key="`supply-${i}`" :poster-name="poster.poster_name" :poster-phone="poster.poster_phone" :total-kg="poster.quantity_kg" status="ongoing" accent-class="text-primary" bg-class="bg-primary/5" />
+                                    </div>
+                                    <div v-if="overlap[Number(item.vegetable_id)].demand_posters.length" class="space-y-1.5">
+                                        <p class="text-xs text-muted-foreground">Dealers requesting</p>
+                                        <PosterRow v-for="(poster, i) in overlap[Number(item.vegetable_id)].demand_posters" :key="`demand-${i}`" :poster-name="poster.poster_name" :poster-phone="poster.poster_phone" :total-kg="poster.quantity_kg" status="ongoing" accent-class="text-orange-600" bg-class="bg-orange-500/5" />
+                                    </div>
+                                </div>
+                            </Deferred>
+                        </CollapsibleContent>
+                    </Collapsible>
+                </Card>
 
                 <div class="flex justify-end gap-3">
                     <Button variant="outline" as-child>
