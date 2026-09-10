@@ -18,11 +18,11 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableBody, TableCell, TableEmpty, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { toInputDate } from '@/composables/useDateFormat'
 import { useVegetableAvailability, netKgClassDealer, formatNetKgDealer } from '@/composables/useVegetableAvailability'
-import type { DealerDemandDataFixed, PostTimeSlot, VarietyOptionsByVegetable, VegetableOptionsByCategory } from '@/types'
+import type { PostDataFixed, PostTimeSlot, VarietyOptionsByVegetable, VegetableOptionsByCategory } from '@/types'
 
 interface Props {
     open: boolean
-    demand?: DealerDemandDataFixed | null
+    demand?: PostDataFixed | null
     vegetableOptions?: VegetableOptionsByCategory | null
     varietyOptions?: VarietyOptionsByVegetable | null
 }

@@ -14,10 +14,10 @@ import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { daysOverdue, isDueToday, urgencyClass, urgencyLabel } from '@/composables/usePostItemUrgency';
 import farmer from '@/routes/farmer';
-import type { DealerExpiringDemandFixed } from '@/types';
+import type { ExpiringPostDataFixed } from '@/types';
 
 defineProps<{
-    expiringDemands: DealerExpiringDemandFixed[]
+    expiringDemands: ExpiringPostDataFixed[]
 }>()
 
 </script>

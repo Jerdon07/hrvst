@@ -24,10 +24,10 @@ import { useVegetableAvailability, netKgClassDealer, formatNetKgDealer } from '@
 import AppLayout from '@/layouts/AppLayout.vue'
 import dealer from '@/routes/dealer'
 import { index, show } from '@/routes/dealer/demands'
-import type { BreadcrumbItem, DealerDemandDataFixed, PostTimeSlot, VarietyOptionsByVegetable, VegetableOverlapData } from '@/types'
+import type { BreadcrumbItem, PostDataFixed, PostTimeSlot, VarietyOptionsByVegetable, VegetableOverlapData } from '@/types'
 
 const props = defineProps<{
-    demand: DealerDemandDataFixed
+    demand: PostDataFixed
     varietyOptions?: VarietyOptionsByVegetable
     overlap?: Record<number, VegetableOverlapData>
 }>()
@@ -35,7 +35,18 @@ const props = defineProps<{
 let _keyCounter = 0
 const nextKey = (): number => ++_keyCounter
 
-const form = useForm({
+type DemandFormItem = {
+    _key: number
+    id: number | null
+    vegetable_id: string
+    quantity_kg: number | null
+}
+
+const form = useForm<{
+    scheduled_date: string
+    time_slot: PostTimeSlot | ''
+    items: DemandFormItem[]
+}>({
     scheduled_date: toInputDate(props.demand.scheduled_date),
     time_slot: props.demand.time_slot as PostTimeSlot | '',
     items: (props.demand.post_items ?? []).map((item) => ({
@@ -232,7 +243,7 @@ function toggleItemExpanded(itemKey: number): void {
                                             :class="[
                                                 'justify-between font-normal',
                                                 !item.vegetable_id && 'text-muted-foreground',
-                                                form.errors[`items.${index}.vegetable_id`] && 'border-destructive text-destructive',
+                                                form.errors[`items.${itemIndex}.vegetable_id`] && 'border-destructive text-destructive',
                                             ]"
                                         >
                                             <span class="truncate">{{ varietyLabelById.get(item.vegetable_id) ?? 'Select vegetable...' }}</span>

@@ -9,18 +9,18 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import AppLayout from '@/layouts/AppLayout.vue'
 import dealer from '@/routes/dealer'
 import { archived, index } from '@/routes/dealer/demands'
-import type { BreadcrumbItem, DealerDemandDataFixed, Paginated } from '@/types'
+import type { BreadcrumbItem, PostDataFixed, Paginated } from '@/types'
 
 interface Props {
     filters: { status: string }
-    demands?: Paginated<DealerDemandDataFixed>
+    demands?: Paginated<PostDataFixed>
 }
 
 const props = defineProps<Props>()
 
 // ─── Column definitions ───────────────────────────────────────────────────────
 
-const columns: ColumnDef<DealerDemandDataFixed>[] = [
+const columns: ColumnDef<PostDataFixed>[] = [
     {
         id: 'items',
         header: 'Items',

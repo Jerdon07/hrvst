@@ -11,7 +11,7 @@ export interface PostVegetableSnapshot {
 
 export type PostItemSnapshot = App.Data.PostItem.PostItemData
 
-// ─── FarmerSupplyDataFixed / DealerDemandDataFixed ───────────────────────────
+// ─── PostDataFixed / PostDataFixed ───────────────────────────
 
 export type PostDataFixed = Omit<
     App.Data.Post.PostScheduleData,
@@ -20,16 +20,8 @@ export type PostDataFixed = Omit<
     post_items: App.Data.PostItem.PostItemLightData[]
 }
 
-export type FarmerExpiringSupplyFixed = Omit<
-    App.Data.Farmer.FarmerExpiringSupplyData,
-    'image_url' | 'items'
-> & {
-    image_url: string
-    items: App.Data.PostItem.PostItemLightData[]
-}
-
-export type DealerExpiringDemandFixed = Omit<
-    App.Data.Dealer.DealerExpiringDemandData,
+export type ExpiringPostDataFixed = Omit<
+    App.Data.Post.ExpiringPostData,
     'image_url' | 'items'
 > & {
     image_url: string

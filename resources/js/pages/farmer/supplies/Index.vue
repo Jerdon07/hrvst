@@ -14,7 +14,7 @@ import { create, destroy, index } from '@/routes/farmer/supplies'
 import type {
     BreadcrumbItem,
     FarmerSuppliesProps,
-    FarmerSupplyDataFixed,
+    PostDataFixed,
 } from '@/types'
 
 defineProps<FarmerSuppliesProps>()
@@ -22,10 +22,10 @@ defineProps<FarmerSuppliesProps>()
 // ─── Delete ───────────────────────────────────────────────────────────────────
 
 const deleteDialogOpen = ref(false)
-const supplyToDelete = ref<FarmerSupplyDataFixed | null>(null)
+const supplyToDelete = ref<PostDataFixed | null>(null)
 const deleteForm = useForm({})
 
-function openDelete(supply: FarmerSupplyDataFixed) {
+function openDelete(supply: PostDataFixed) {
     supplyToDelete.value = supply
     deleteDialogOpen.value = true
 }

@@ -17,11 +17,11 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableBody, TableCell, TableEmpty, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { toInputDate } from '@/composables/useDateFormat'
 import { useVegetableAvailability, netKgClassFarmer, formatNetKgFarmer } from '@/composables/useVegetableAvailability'
-import type { FarmerSupplyDataFixed, PostTimeSlot, VarietyOptionsByVegetable, VegetableOptionsByCategory } from '@/types'
+import type { PostDataFixed, PostTimeSlot, VarietyOptionsByVegetable, VegetableOptionsByCategory } from '@/types'
 
 interface Props {
     open: boolean
-    supply?: FarmerSupplyDataFixed | null
+    supply?: PostDataFixed | null
     vegetableOptions?: VegetableOptionsByCategory | null
     varietyOptions?: VarietyOptionsByVegetable | null
 }

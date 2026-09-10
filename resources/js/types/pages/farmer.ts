@@ -1,7 +1,7 @@
 import type { PostItemStatus } from '../enums'
 import type {
     DealerPostItemResource,
-    FarmerSupplyDataFixed,
+    PostDataFixed,
     VarietyOptionsByVegetable,
     VegetableOptionsByCategory,
 } from '../resources/marketplace'
@@ -34,8 +34,8 @@ export interface FarmerSuppliesProps {
     summary: FarmerSupplySummary
     vegetableOptions: VegetableOptionsByCategory
     varietyOptions: VarietyOptionsByVegetable
-    needsAction?: FarmerSupplyDataFixed[]
-    supplies: Paginated<FarmerSupplyDataFixed> | null
+    needsAction?: PostDataFixed[]
+    supplies: Paginated<PostDataFixed> | null
 }
 
 // ─── farmer/marketplace/Index ─────────────────────────────────────────────────

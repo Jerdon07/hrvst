@@ -24,10 +24,10 @@ import { useVegetableAvailability, netKgClassFarmer, formatNetKgFarmer } from '@
 import AppLayout from '@/layouts/AppLayout.vue'
 import farmer from '@/routes/farmer'
 import { index, show } from '@/routes/farmer/supplies'
-import type { BreadcrumbItem, FarmerSupplyDataFixed, PostTimeSlot, VarietyOptionsByVegetable, VegetableOverlapData } from '@/types'
+import type { BreadcrumbItem, PostDataFixed, PostTimeSlot, VarietyOptionsByVegetable, VegetableOverlapData } from '@/types'
 
 const props = defineProps<{
-    supply: FarmerSupplyDataFixed
+    supply: PostDataFixed
     varietyOptions?: VarietyOptionsByVegetable
 }>()
 

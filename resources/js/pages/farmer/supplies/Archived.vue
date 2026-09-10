@@ -9,18 +9,18 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import AppLayout from '@/layouts/AppLayout.vue'
 import farmer from '@/routes/farmer'
 import { archived, index } from '@/routes/farmer/supplies'
-import type { BreadcrumbItem, FarmerSupplyDataFixed, Paginated } from '@/types'
+import type { BreadcrumbItem, PostDataFixed, Paginated } from '@/types'
 
 interface Props {
     filters: { status: string }
-    supplies?: Paginated<FarmerSupplyDataFixed>
+    supplies?: Paginated<PostDataFixed>
 }
 
 const props = defineProps<Props>()
 
 // ─── Column definitions ───────────────────────────────────────────────────────
 
-const columns: ColumnDef<FarmerSupplyDataFixed>[] = [
+const columns: ColumnDef<PostDataFixed>[] = [
     {
         id: 'items',
         header: 'Items',

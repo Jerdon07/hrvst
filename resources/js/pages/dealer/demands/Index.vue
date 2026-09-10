@@ -14,7 +14,7 @@ import { create, destroy, index } from '@/routes/dealer/demands'
 import type {
     BreadcrumbItem,
     DealerDemandsProps,
-    DealerDemandDataFixed,
+    PostDataFixed,
 } from '@/types'
 
 defineProps<DealerDemandsProps>()
@@ -22,10 +22,10 @@ defineProps<DealerDemandsProps>()
 // ─── Delete ───────────────────────────────────────────────────────────────────
 
 const deleteDialogOpen = ref(false)
-const demandToDelete = ref<DealerDemandDataFixed | null>(null)
+const demandToDelete = ref<PostDataFixed | null>(null)
 const deleteForm = useForm({})
 
-function openDelete(demand: DealerDemandDataFixed) {
+function openDelete(demand: PostDataFixed) {
     demandToDelete.value = demand
     deleteDialogOpen.value = true
 }

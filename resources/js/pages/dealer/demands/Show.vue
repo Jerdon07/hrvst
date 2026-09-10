@@ -15,10 +15,10 @@ import { Skeleton } from '@/components/ui/skeleton'
 import AppLayout from '@/layouts/AppLayout.vue'
 import dealer from '@/routes/dealer'
 import { edit, index } from '@/routes/dealer/demands'
-import type { BreadcrumbItem, DealerDemandDataFixed, VegetableOverlapData } from '@/types'
+import type { BreadcrumbItem, PostDataFixed, VegetableOverlapData } from '@/types'
 
 const props = defineProps<{
-    demand: DealerDemandDataFixed
+    demand: PostDataFixed
     overlap?: Record<number, VegetableOverlapData>
 }>()
 

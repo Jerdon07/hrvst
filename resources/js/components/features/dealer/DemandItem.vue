@@ -26,13 +26,13 @@ import { Item, ItemActions, ItemContent, ItemDescription, ItemGroup, ItemMedia, 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { edit, show } from '@/routes/dealer/demands'
-import type { DealerDemandDataFixed } from '@/types'
+import type { PostDataFixed } from '@/types'
 
-defineProps<{ demand: DealerDemandDataFixed }>()
+defineProps<{ demand: PostDataFixed }>()
 
 const emit = defineEmits<{
-    edit: [demand: DealerDemandDataFixed]
-    delete: [demand: DealerDemandDataFixed]
+    edit: [demand: PostDataFixed]
+    delete: [demand: PostDataFixed]
 }>()
 </script>
 

@@ -25,13 +25,13 @@ import { Item, ItemActions, ItemContent, ItemDescription, ItemGroup, ItemMedia, 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { edit, show } from '@/routes/farmer/supplies'
-import type { FarmerSupplyDataFixed } from '@/types'
+import type { PostDataFixed } from '@/types'
 
-defineProps<{ supply: FarmerSupplyDataFixed }>()
+defineProps<{ supply: PostDataFixed }>()
 
 const emit = defineEmits<{
-    edit: [supply: FarmerSupplyDataFixed]
-    delete: [supply: FarmerSupplyDataFixed]
+    edit: [supply: PostDataFixed]
+    delete: [supply: PostDataFixed]
 }>()
 </script>
 
