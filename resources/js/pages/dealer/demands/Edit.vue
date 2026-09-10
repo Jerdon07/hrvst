@@ -110,24 +110,6 @@ const expandedItems = ref<Record<number, boolean>>({})
 function toggleItemExpanded(itemKey: number): void {
     expandedItems.value[itemKey] = !expandedItems.value[itemKey]
 }
-
-watch(
-    () => [form.scheduled_date, form.time_slot, ...form.items.map((item) => item.vegetable_id)],
-    ([scheduledDate, timeSlot, ...vegetableIds]) => {
-        router.visit(edit(props.demand.id, {
-            query: {
-                scheduled_date: scheduledDate,
-                time_slot: timeSlot,
-                vegetable_ids: vegetableIds.filter(Boolean),
-            },
-        }).url, {
-            only: ['overlap'],
-            preserveState: true,
-            preserveScroll: true,
-            replace: true,
-        })
-    },
-)
 </script>
 
 <template>
@@ -365,16 +347,14 @@ watch(
 
                 <Collapsible v-model:open="expandedItems[item._key]">
                     <CollapsibleContent>
-                        <Deferred data="overlap">
-                            <template #fallback>
+                        
                                 <Skeleton
-                                    v-if="item.vegetable_id"
+                                    v-if="overlapLoading"
                                     class="mt-4 h-7 w-full rounded"
                                 />
-                            </template>
 
                             <div
-                                v-if="item.vegetable_id && overlapFor(item.vegetable_id)?.posters.length"
+                                v-else-if="item.vegetable_id && overlapFor(item.vegetable_id)?.posters.length"
                                 class="mt-4 space-y-2 rounded-md bg-muted/30 p-2"
                             >
                                 <p class="text-xs font-medium text-muted-foreground">Other activity this slot</p>
@@ -411,7 +391,6 @@ watch(
                                     />
                                 </div>
                             </div>
-                        </Deferred>
                     </CollapsibleContent>
                 </Collapsible>
             </Card>

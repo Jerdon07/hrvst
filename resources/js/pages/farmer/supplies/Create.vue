@@ -26,10 +26,10 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import farmer from '@/routes/farmer'
 import { create, index } from '@/routes/farmer/supplies'
 import type { BreadcrumbItem, PostTimeSlot, VarietyOptionsByVegetable, VegetableOverlapData } from '@/types'
+import { useOverlapPreview } from '@/composables/useOverlapPreview'
 
 const props = defineProps<{
     varietyOptions?: VarietyOptionsByVegetable
-    overlap?: Record<number, VegetableOverlapData>
 }>()
 
 let _keyCounter = 0
@@ -54,6 +54,13 @@ const { getState, getData } = useVegetableAvailability(
     () => form.time_slot,
     () => form.items.map((i) => i.vegetable_id),
 )
+
+const { overlap, loading: overlapLoading } = useOverlapPreview({
+    type: 'supply',
+    scheduledDate: () => form.scheduled_date,
+    timeSlot: () => form.time_slot,
+    vegetableIds: () => form.items.map((i) => i.vegetable_id),
+})
 
 const varietyLabelById = computed(() => {
     const map = new Map<string, string>()
@@ -84,24 +91,6 @@ function removeItem(index: number): void {
 function submit(): void {
     form.post(store().url)
 }
-
-watch(
-    () => [form.scheduled_date, form.time_slot, ...form.items.map((item) => item.vegetable_id)],
-    ([scheduledDate, timeSlot, ...vegetableIds]) => {
-        router.visit(create({
-            query: {
-                scheduled_date: scheduledDate,
-                time_slot: timeSlot,
-                vegetable_ids: vegetableIds.filter(Boolean),
-            },
-        }).url, {
-            only: ['overlap'],
-            preserveState: true,
-            preserveScroll: true,
-            replace: true,
-        })
-    },
-)
 
 const df = new DateFormatter('en-US', { dateStyle: 'long' })
 const minDateValue = computed(() => today(getLocalTimeZone()).add({ days: 1 }))
@@ -365,53 +354,49 @@ function toggleItemExpanded(itemKey: number): void {
 
                     <Collapsible v-model:open="expandedItems[item._key]">
                         <CollapsibleContent>
-                            <Deferred data="overlap">
-                                <template #fallback>
-                                    <Skeleton
-                                        v-if="item.vegetable_id"
-                                        class="mt-4 h-7 w-full rounded"
-                                    />
-                                </template>
+                            <Skeleton
+                                v-if="overlapLoading"
+                                class="mt-4 h-7 w-full rounded"
+                            />
 
+                            <div
+                                v-if="item.vegetable_id && overlap?.[Number(item.vegetable_id)]?.posters.length"
+                                class="mt-4 space-y-2 rounded-md bg-muted/30 p-2"
+                            >
+                                <p class="text-xs font-medium text-muted-foreground">Other activity this slot</p>
                                 <div
-                                    v-if="item.vegetable_id && overlap?.[Number(item.vegetable_id)]?.posters.length"
-                                    class="mt-4 space-y-2 rounded-md bg-muted/30 p-2"
+                                    v-if="overlap[Number(item.vegetable_id)].supply_posters.length"
+                                    class="space-y-1.5"
                                 >
-                                    <p class="text-xs font-medium text-muted-foreground">Other activity this slot</p>
-                                    <div
-                                        v-if="overlap[Number(item.vegetable_id)].supply_posters.length"
-                                        class="space-y-1.5"
-                                    >
-                                        <p class="text-xs text-muted-foreground">Farmers supplying</p>
-                                        <PosterRow
-                                            v-for="(poster, i) in overlap[Number(item.vegetable_id)].supply_posters"
-                                            :key="`supply-${i}`"
-                                            :poster-name="poster.poster_name"
-                                            :poster-phone="poster.poster_phone"
-                                            :total-kg="poster.quantity_kg"
-                                            status="ongoing"
-                                            accent-class="text-primary"
-                                            bg-class="bg-primary/5"
-                                        />
-                                    </div>
-                                    <div
-                                        v-if="overlap[Number(item.vegetable_id)].demand_posters.length"
-                                        class="space-y-1.5"
-                                    >
-                                        <p class="text-xs text-muted-foreground">Dealers requesting</p>
-                                        <PosterRow
-                                            v-for="(poster, i) in overlap[Number(item.vegetable_id)].demand_posters"
-                                            :key="`demand-${i}`"
-                                            :poster-name="poster.poster_name"
-                                            :poster-phone="poster.poster_phone"
-                                            :total-kg="poster.quantity_kg"
-                                            status="ongoing"
-                                            accent-class="text-orange-600"
-                                            bg-class="bg-orange-500/5"
-                                        />
-                                    </div>
+                                    <p class="text-xs text-muted-foreground">Farmers supplying</p>
+                                    <PosterRow
+                                        v-for="(poster, i) in overlap[Number(item.vegetable_id)].supply_posters"
+                                        :key="`supply-${i}`"
+                                        :poster-name="poster.poster_name"
+                                        :poster-phone="poster.poster_phone"
+                                        :total-kg="poster.quantity_kg"
+                                        status="ongoing"
+                                        accent-class="text-primary"
+                                        bg-class="bg-primary/5"
+                                    />
                                 </div>
-                            </Deferred>
+                                <div
+                                    v-if="overlap[Number(item.vegetable_id)].demand_posters.length"
+                                    class="space-y-1.5"
+                                >
+                                    <p class="text-xs text-muted-foreground">Dealers requesting</p>
+                                    <PosterRow
+                                        v-for="(poster, i) in overlap[Number(item.vegetable_id)].demand_posters"
+                                        :key="`demand-${i}`"
+                                        :poster-name="poster.poster_name"
+                                        :poster-phone="poster.poster_phone"
+                                        :total-kg="poster.quantity_kg"
+                                        status="ongoing"
+                                        accent-class="text-orange-600"
+                                        bg-class="bg-orange-500/5"
+                                    />
+                                </div>
+                            </div>
                         </CollapsibleContent>
                     </Collapsible>
                 </Card>
