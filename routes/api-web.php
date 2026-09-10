@@ -12,5 +12,5 @@ Route::middleware(['auth', 'verified'])
             ->name('vegetables.slot-summary');
 
         Route::middleware(['auth'])->get('/posts/overlap', PostOverlapController::class)
-            ->name('api.posts.overlap');
+            ->name('posts.overlap');
     });
