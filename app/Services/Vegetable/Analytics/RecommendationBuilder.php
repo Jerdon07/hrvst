@@ -10,6 +10,7 @@ use App\Enums\Analytics\VegetableViewerRole;
 class RecommendationBuilder
 {
     private const float LOW_FULFILLMENT_THRESHOLD = 0.50;
+
     private const float SUPPLY_DECLINE_THRESHOLD = -20.0;
 
     public function fulfillmentRate(array $months, string $type): ?float

@@ -7,6 +7,7 @@ use App\Enums\Analytics\ImbalanceBand;
 class ImbalanceBandClassifier
 {
     private const float OVERSUPPLY_THRESHOLD = 0.20;
+
     private const float UNDERSUPPLY_THRESHOLD = -0.20;
 
     /** Schmitt-trigger margin — see class docblock on OutlookEvaluator for why. */

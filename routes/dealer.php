@@ -14,10 +14,10 @@ Route::middleware(['auth', 'verified', 'dealer'])->prefix('dealer')->name('deale
         Route::get('/archived', [DemandController::class, 'archived'])->name('archived');
         Route::get('/create', [DemandController::class, 'create'])->name('create');
         Route::post('/', [DemandController::class, 'store'])->name('store');
-        Route::get('/{demand}', [DemandController::class, 'show'])->name('show');
-        Route::get('/{demand}/edit', [DemandController::class, 'edit'])->name('edit');
-        Route::put('/{demand}', [DemandController::class, 'update'])->name('update');
-        Route::delete('/{demand}', [DemandController::class, 'destroy'])->name('destroy');
+        Route::get('/{post}', [DemandController::class, 'show'])->name('show');
+        Route::get('/{post}/edit', [DemandController::class, 'edit'])->name('edit');
+        Route::put('/{post}', [DemandController::class, 'update'])->name('update');
+        Route::delete('/{post}', [DemandController::class, 'destroy'])->name('destroy');
 
         Route::prefix('items')->name('items.')->group(function () {
             Route::post('/{postItem}/fulfill', [PostItemController::class, 'fulfill'])->name('fulfill');

@@ -6,7 +6,6 @@ use App\Enums\Analytics\ImbalanceBand;
 use App\Models\Vegetable\Vegetable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use NotificationChannels\WebPush\WebPushChannel;
 
 class VegetableOutlookAlert extends Notification
 {

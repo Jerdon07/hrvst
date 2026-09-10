@@ -127,11 +127,11 @@ it('rejects a supporting document larger than 5MB', function () {
 it('succeeds with no id verification or document fields at all', function () {
     if (config('app.auto_approve_registrations')) {
         $this->markTestSkipped('Auto-approve registrations is enabled.');
-    };
+    }
 
     $this->post('/register', validRegistrationPayload())
-    ->assertSessionHasNoErrors()
-    ->assertRedirect();
-    
+        ->assertSessionHasNoErrors()
+        ->assertRedirect();
+
     expect(RegistrationRequest::count())->toBe(1);
 });
