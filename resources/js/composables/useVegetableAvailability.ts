@@ -103,17 +103,29 @@ export function useVegetableAvailability(
         }
     }
 
-    watch(getVegetableIds, (newIds, oldIds = []) => {
-        newIds.forEach((id, index) => {
-            if (id && id !== oldIds[index]) void fetchOne(id)
-        })
-    })
+    // `immediate: true` on both watchers: Edit pages mount with vegetable_id /
+    // scheduled_date / time_slot already populated from the loaded record, so
+    // without an immediate first run nothing fetches until the user changes a
+    // field. On an edit form that's often never — the user just hits Save.
+    watch(
+        getVegetableIds,
+        (newIds, oldIds = []) => {
+            newIds.forEach((id, index) => {
+                if (id && id !== oldIds[index]) void fetchOne(id)
+            })
+        },
+        { immediate: true },
+    )
 
-    watch([getDate, getTimeSlot], () => {
-        getVegetableIds()
-            .filter(Boolean)
-            .forEach((id) => void fetchOne(id))
-    })
+    watch(
+        [getDate, getTimeSlot],
+        () => {
+            getVegetableIds()
+                .filter(Boolean)
+                .forEach((id) => void fetchOne(id))
+        },
+        { immediate: true },
+    )
 
     return { getState, getData }
 }

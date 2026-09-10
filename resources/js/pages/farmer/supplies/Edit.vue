@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { Deferred, Head, router, useForm } from '@inertiajs/vue3'
+import { Head, useForm } from '@inertiajs/vue3'
 import { CalendarDate, today, getLocalTimeZone, DateFormatter } from '@internationalized/date'
 import { CalendarIcon, Check, ChevronsUpDown, Plus, Search, Trash2 } from '@lucide/vue'
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { update } from '@/actions/App/Http/Controllers/Farmer/Schedule/SupplyController'
 import Heading from '@/components/Heading.vue'
 import PosterRow from '@/components/shared/PosterRow.vue'
@@ -19,12 +19,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { toInputDate } from '@/composables/useDateFormat'
+import { useOverlapPreview } from '@/composables/useOverlapPreview'
 import { useVegetableAvailability, netKgClassFarmer, formatNetKgFarmer } from '@/composables/useVegetableAvailability'
 import AppLayout from '@/layouts/AppLayout.vue'
 import farmer from '@/routes/farmer'
-import { edit, index, show } from '@/routes/farmer/supplies'
+import { index, show } from '@/routes/farmer/supplies'
 import type { BreadcrumbItem, FarmerSupplyDataFixed, PostTimeSlot, VarietyOptionsByVegetable, VegetableOverlapData } from '@/types'
-import { useOverlapPreview } from '@/composables/useOverlapPreview'
 
 const props = defineProps<{
     supply: FarmerSupplyDataFixed
@@ -216,7 +216,7 @@ function toggleItemExpanded(itemKey: number): void {
                 </div>
 
                 <Card
-                    v-for="(item, index) in form.items"
+                    v-for="(item, itemIndex) in form.items"
                     :key="item._key"
                     class="relative overflow-hidden p-4 sm:p-5"
                 >
@@ -240,7 +240,7 @@ function toggleItemExpanded(itemKey: number): void {
                                                 :class="[
                                                     'w-full justify-between font-normal',
                                                     !item.vegetable_id && 'text-muted-foreground',
-                                                    form.errors[`items.${index}.vegetable_id`] && 'border-destructive text-destructive',
+                                                    form.errors[`items.${itemIndex}.vegetable_id`] && 'border-destructive text-destructive',
                                                 ]"
                                             >
                                                 <span class="truncate">{{ varietyLabelById.get(item.vegetable_id) ?? 'Select supply...' }}</span>
@@ -298,10 +298,10 @@ function toggleItemExpanded(itemKey: number): void {
                                 </div>
 
                                 <p
-                                    v-if="form.errors[`items.${index}.vegetable_id`]"
+                                    v-if="form.errors[`items.${itemIndex}.vegetable_id`]"
                                     class="text-xs text-destructive"
                                 >
-                                    {{ form.errors[`items.${index}.vegetable_id`] }}
+                                    {{ form.errors[`items.${itemIndex}.vegetable_id`] }}
                                 </p>
                             </div>
 
@@ -316,17 +316,17 @@ function toggleItemExpanded(itemKey: number): void {
                                     <NumberFieldContent class="w-full">
                                         <NumberFieldDecrement />
                                         <NumberFieldInput
-                                            :class="{ 'border-destructive': form.errors[`items.${index}.quantity_kg`] }"
+                                            :class="{ 'border-destructive': form.errors[`items.${itemIndex}.quantity_kg`] }"
                                             class="bg-card"
                                         />
                                         <NumberFieldIncrement />
                                     </NumberFieldContent>
                                 </NumberField>
                                 <p
-                                    v-if="form.errors[`items.${index}.quantity_kg`]"
+                                    v-if="form.errors[`items.${itemIndex}.quantity_kg`]"
                                     class="text-xs text-destructive"
                                 >
-                                    {{ form.errors[`items.${index}.quantity_kg`] }}
+                                    {{ form.errors[`items.${itemIndex}.quantity_kg`] }}
                                 </p>
                             </div>
                         </div>
@@ -347,7 +347,7 @@ function toggleItemExpanded(itemKey: number): void {
                                 variant="ghost"
                                 size="icon-lg"
                                 class="text-destructive"
-                                @click="removeItem(index)"
+                                @click="removeItem(itemIndex)"
                             >
                                 <Trash2 class="size-4" />
                             </Button>

@@ -25,6 +25,7 @@ function flatHistory(float $supply, float $demand, int $months = 24): array
             'demand_expired_kg' => 0.0,
         ];
     }
+
     return $rows;
 }
 

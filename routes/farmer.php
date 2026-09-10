@@ -14,10 +14,10 @@ Route::middleware(['auth', 'verified', 'farmer'])->prefix('farmer')->name('farme
         Route::get('/archived', [SupplyController::class, 'archived'])->name('archived');
         Route::get('/create', [SupplyController::class, 'create'])->name('create');
         Route::post('/', [SupplyController::class, 'store'])->name('store');
-        Route::get('/{supply}', [SupplyController::class, 'show'])->name('show');
-        Route::get('/{supply}/edit', [SupplyController::class, 'edit'])->name('edit');
-        Route::put('/{supply}', [SupplyController::class, 'update'])->name('update');
-        Route::delete('/{supply}', [SupplyController::class, 'destroy'])->name('destroy');
+        Route::get('/{post}', [SupplyController::class, 'show'])->name('show');
+        Route::get('/{post}/edit', [SupplyController::class, 'edit'])->name('edit');
+        Route::put('/{post}', [SupplyController::class, 'update'])->name('update');
+        Route::delete('/{post}', [SupplyController::class, 'destroy'])->name('destroy');
 
         Route::prefix('items')->name('items.')->group(function () {
             Route::post('/{postItem}/fulfill', [PostItemController::class, 'fulfill'])->name('fulfill');

@@ -13,15 +13,8 @@ export type PostItemSnapshot = App.Data.PostItem.PostItemData
 
 // ─── FarmerSupplyDataFixed / DealerDemandDataFixed ───────────────────────────
 
-export type FarmerSupplyDataFixed = Omit<
-    App.Data.Post.FarmerSupplyData,
-    'post_items'
-> & {
-    post_items: App.Data.PostItem.PostItemLightData[]
-}
-
-export type DealerDemandDataFixed = Omit<
-    App.Data.Post.DealerDemandData,
+export type PostDataFixed = Omit<
+    App.Data.Post.PostScheduleData,
     'post_items'
 > & {
     post_items: App.Data.PostItem.PostItemLightData[]

@@ -8,11 +8,17 @@ use Illuminate\Support\Collection;
 class SeasonalForecaster
 {
     private const float TREND_FLOOR = 0.60;
+
     private const float TREND_CEIL = 1.40;
+
     private const int MIN_MONTHS_FOR_TREND = 12;
+
     private const int MIN_MONTHS_FOR_FORECAST = 12;
+
     private const int CONFIDENCE_ESTABLISHED_MONTHS = 36;
+
     private const int CONFIDENCE_STRONG_MONTHS = 60;
+
     private const int FORECAST_HORIZON_MONTHS = 6;
 
     public function __construct(private PlatformActivityService $platformActivity) {}

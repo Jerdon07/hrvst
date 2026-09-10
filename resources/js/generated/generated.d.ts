@@ -116,6 +116,17 @@ declare namespace App {
                 image_url: undefined | string
                 items: App.Data.PostItem.PostItemData[] | undefined
             }
+            export type PostScheduleData = {
+                id: number
+                user_id: number
+                type: App.Enums.PostType
+                scheduled_date: string
+                time_slot: App.Enums.PostTimeSlot
+                created_at: string
+                created_at_human: string
+                needs_action: boolean
+                post_items: App.Data.PostItem.PostItemLightData[] | unknown
+            }
             export type VegetableOverlapData = {
                 post_item_id: number
                 vegetable_id: number
