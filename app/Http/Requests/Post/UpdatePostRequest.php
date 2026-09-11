@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Schedule;
+namespace App\Http\Requests\Post;
 
 use App\Enums\PostTimeSlot;
 use App\Models\Schedule\Post;
