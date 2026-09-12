@@ -40,12 +40,15 @@ class PostScheduleOverlapService
 
         return $post->postItems
             ->mapWithKeys(function (PostItem $item) use ($othersByVegetable): array {
-                $posters = $this->posterGroups($othersByVegetable->get($item->vegetable_id, collect()));
+                $others = $othersByVegetable->get($item->vegetable_id, collect());
+                $posters = $this->posterGroups($others);
 
                 return [$item->id => new VegetableOverlapData(
                     post_item_id: $item->id,
                     vegetable_id: $item->vegetable_id,
-                    total_kg: (float) $othersByVegetable->get($item->vegetable_id, collect())->sum('quantity_kg'),
+                    total_kg: (float) $others->sum('quantity_kg'),
+                    total_supplies_kg: $posters['total_supplies_kg'],
+                    total_demands_kg: $posters['total_demands_kg'],
                     posters: $posters['posters'],
                     supply_posters: $posters['supply_posters'],
                     demand_posters: $posters['demand_posters'],
@@ -89,12 +92,15 @@ class PostScheduleOverlapService
 
         return $vegetableIds
             ->mapWithKeys(function (int $vegetableId) use ($post, $othersByVegetable): array {
-                $posters = $this->posterGroups($othersByVegetable->get($vegetableId, collect()));
+                $others = $othersByVegetable->get($vegetableId, collect());
+                $posters = $this->posterGroups($others);
 
                 return [$vegetableId => new VegetableOverlapData(
                     post_item_id: (int) ($post->postItems->firstWhere('vegetable_id', $vegetableId)?->id ?? 0),
                     vegetable_id: $vegetableId,
-                    total_kg: (float) $othersByVegetable->get($vegetableId, collect())->sum('quantity_kg'),
+                    total_kg: (float) $others->sum('quantity_kg'),
+                    total_supplies_kg: $posters['total_supplies_kg'],
+                    total_demands_kg: $posters['total_demands_kg'],
                     posters: $posters['posters'],
                     supply_posters: $posters['supply_posters'],
                     demand_posters: $posters['demand_posters'],
@@ -109,6 +115,8 @@ class PostScheduleOverlapService
      *     posters: array<int, OverlapPosterData>,
      *     supply_posters: array<int, OverlapPosterData>,
      *     demand_posters: array<int, OverlapPosterData>,
+     *     total_supplies_kg: float,
+     *     total_demands_kg: float,
      * }
      */
     private function posterGroups(Collection $items): array
@@ -118,18 +126,21 @@ class PostScheduleOverlapService
             ->values()
             ->all();
 
+        $supplyItems = $items->filter(fn (PostItem $item): bool => $item->post->type === PostType::Supply);
+        $demandItems = $items->filter(fn (PostItem $item): bool => $item->post->type === PostType::Demand);
+
         return [
             'posters' => $posters,
-            'supply_posters' => $items
-                ->filter(fn (PostItem $item): bool => $item->post->type === PostType::Supply)
+            'supply_posters' => $supplyItems
                 ->map(fn (PostItem $item) => OverlapPosterData::fromPostItem($item))
                 ->values()
                 ->all(),
-            'demand_posters' => $items
-                ->filter(fn (PostItem $item): bool => $item->post->type === PostType::Demand)
+            'demand_posters' => $demandItems
                 ->map(fn (PostItem $item) => OverlapPosterData::fromPostItem($item))
                 ->values()
                 ->all(),
+            'total_supplies_kg' => (float) $supplyItems->sum('quantity_kg'),
+            'total_demands_kg' => (float) $demandItems->sum('quantity_kg'),
         ];
     }
 }
