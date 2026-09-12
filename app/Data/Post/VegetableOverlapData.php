@@ -13,6 +13,8 @@ class VegetableOverlapData extends Data
         public int $post_item_id,
         public int $vegetable_id,
         public float $total_kg,
+        public float $total_supplies_kg,
+        public float $total_demands_kg,
         /** @var OverlapPosterData[] */
         #[DataCollectionOf(OverlapPosterData::class)]
         public array $posters,
