@@ -15,10 +15,10 @@ import { Skeleton } from '@/components/ui/skeleton'
 import AppLayout from '@/layouts/AppLayout.vue'
 import farmer from '@/routes/farmer'
 import { edit, index } from '@/routes/farmer/supplies'
-import type { BreadcrumbItem, ExpiringPostDataFixed, VegetableOverlapData } from '@/types'
+import type { BreadcrumbItem, PostDataFixed, VegetableOverlapData } from '@/types'
 
 const props = defineProps<{
-    supply: ExpiringPostDataFixed
+    supply: PostDataFixed
     overlap?: Record<number, VegetableOverlapData>
 }>()
 
@@ -46,7 +46,7 @@ function toggleItemExpanded(itemId: number): void {
                     :description="`${supply.time_slot} slot`"
                 />
                 <Button
-                    v-if="supply.items?.some((item) => item.status === 'ongoing')"
+                    v-if="supply.post_items?.some((item) => item.status === 'ongoing')"
                     as-child
                     variant="outline"
                 >
@@ -61,14 +61,14 @@ function toggleItemExpanded(itemId: number): void {
                 <CardHeader>
                     <CardTitle class="flex items-center gap-2 text-sm">
                         <Calendar1 class="size-4" />
-                        Items ({{ supply.items?.length ?? 0 }})
+                        Items ({{ supply.post_items?.length ?? 0 }})
                     </CardTitle>
                 </CardHeader>
                 <CardContent class="space-y-4">
                     <Deferred data="overlap">
                         <template #fallback>
                             <div
-                                v-for="item in supply.items"
+                                v-for="item in supply.post_items"
                                 :key="item.id"
                                 class="space-y-2 rounded-lg border p-3"
                             >
@@ -96,7 +96,7 @@ function toggleItemExpanded(itemId: number): void {
                         </template>
 
                         <div
-                            v-for="item in supply.items"
+                            v-for="item in supply.post_items"
                             :key="item.id"
                             class="rounded-lg border p-4"
                         >
