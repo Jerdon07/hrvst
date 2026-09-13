@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import { Head, useForm } from '@inertiajs/vue3'
 import { CalendarDate, today, getLocalTimeZone, DateFormatter } from '@internationalized/date'
-import { CalendarIcon, Check, ChevronsUpDown, Plus, Search, Trash2 } from '@lucide/vue'
+import { CalendarIcon, Check, ChevronsUpDown, Menu, Plus, Search, Trash2 } from '@lucide/vue'
 import { computed, ref } from 'vue'
 import { update } from '@/actions/App/Http/Controllers/Farmer/Schedule/SupplyController'
 import Heading from '@/components/Heading.vue'
-import PosterRow from '@/components/shared/PosterRow.vue'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
-import { Card } from '@/components/ui/card'
-import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxItemIndicator, ComboboxList, ComboboxTrigger, ComboboxViewport } from '@/components/ui/combobox'
 import { Label } from '@/components/ui/label'
 import { NumberField, NumberFieldContent, NumberFieldDecrement, NumberFieldIncrement, NumberFieldInput } from '@/components/ui/number-field'
@@ -23,8 +21,9 @@ import { useOverlapPreview } from '@/composables/useOverlapPreview'
 import { useVegetableAvailability, netKgClassFarmer, formatNetKgFarmer } from '@/composables/useVegetableAvailability'
 import AppLayout from '@/layouts/AppLayout.vue'
 import farmer from '@/routes/farmer'
-import { index, show } from '@/routes/farmer/supplies'
+import { edit, index, show } from '@/routes/farmer/supplies'
 import type { BreadcrumbItem, PostDataFixed, PostTimeSlot, VarietyOptionsByVegetable, VegetableOverlapData } from '@/types'
+import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item'
 
 const props = defineProps<{
     supply: PostDataFixed
@@ -112,7 +111,8 @@ const calendarDate = computed({
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Farmer', href: farmer.dashboard().url },
     { title: 'Supplies', href: index().url },
-    { title: `Edit — ${props.supply.scheduled_date}`, href: show(props.supply.id).url },
+    { title: `${props.supply.scheduled_date}`, href: show(props.supply.id).url },
+    { title: 'Edit', href: edit(props.supply.id).url },
 ]
 
 const expandedItems = ref<Record<number, boolean>>({})
@@ -126,14 +126,14 @@ function toggleItemExpanded(itemKey: number): void {
     <Head title="Edit Supply Schedule" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-4xl space-y-6 p-4 lg:p-6">
+        <div class="flex flex-col gap-6 p-4 lg:p-6">
             <Heading
                 title="Edit Supply Schedule"
                 :description="`Originally posted for ${supply.scheduled_date}`"
             />
 
             <div class="space-y-6">
-                <div class="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_auto]">
+                <div class="grid grid-cols-1 bg-muted p-4 rounded gap-4 lg:grid-cols-[minmax(0,1fr)_auto]">
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div class="space-y-2">
                             <Label class="flex items-center gap-1.5">
@@ -141,8 +141,11 @@ function toggleItemExpanded(itemKey: number): void {
                                 <Badge
                                     variant="destructive"
                                     class="text-xs font-normal"
-                                >Required</Badge>
+                                >
+                                    Required
+                                </Badge>
                             </Label>
+
                             <Popover v-slot="{ close }">
                                 <PopoverTrigger as-child>
                                     <Button
@@ -183,10 +186,13 @@ function toggleItemExpanded(itemKey: number): void {
                                 <Badge
                                     variant="destructive"
                                     class="text-xs font-normal"
-                                >Required</Badge>
+                                >
+                                    Required
+                                </Badge>
                             </Label>
+
                             <Select v-model="form.time_slot">
-                                <SelectTrigger :class="{ 'border-destructive': form.errors.time_slot }">
+                                <SelectTrigger :class="{ 'border-destructive': form.errors.time_slot }" class="w-full bg-background">
                                     <SelectValue placeholder="Select time..." />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -201,27 +207,64 @@ function toggleItemExpanded(itemKey: number): void {
                             >{{ form.errors.time_slot }}</p>
                         </div>
                     </div>
-
-                    <div class="flex items-end justify-start lg:justify-end">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            class="w-full sm:w-auto"
-                            @click="addItem"
-                        >
-                            <Plus class="mr-2 size-4" />
-                            Add Vegetable
-                        </Button>
-                    </div>
                 </div>
 
-                <Card
-                    v-for="(item, itemIndex) in form.items"
+                <p class="font-medium text-sm">Vegetables ({{ form.items.length ?? 0 }})</p>
+
+                <Collapsible
+                    v-for="(item, i) in form.items"
                     :key="item._key"
-                    class="relative overflow-hidden p-4 sm:p-5"
                 >
-                    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                        <div class="grid w-full gap-4 sm:grid-cols-[minmax(0,1.5fr)_minmax(170px,220px)]">
+                    <Item
+                        variant="outline"
+                    >
+                        <ItemContent>
+                            <ItemTitle class="line-clamp-1">
+                                {{ varietyLabelById.get(item.vegetable_id) ?? '' }}
+                            </ItemTitle>
+
+                            <ItemDescription v-if="item.vegetable_id && form.scheduled_date">
+                                <Skeleton
+                                    v-if="getState(item.vegetable_id).status === 'loading'"
+                                    class="h-3.5 w-20 rounded"
+                                />
+                                <template v-else-if="getData(item.vegetable_id)">
+                                    <span
+                                        :class="netKgClassFarmer(getData(item.vegetable_id)!.net_kg)"
+                                        class="text-xs font-medium tabular-nums"
+                                    >
+                                        {{ formatNetKgFarmer(getData(item.vegetable_id)!.net_kg) }}
+                                    </span>
+                                </template>
+                            </ItemDescription>
+                        </ItemContent>
+
+                        <ItemActions>
+                            <Button 
+                                type="button"
+                                variant="ghost"
+                                size="icon-lg"
+                                class="text-destructive"
+                                @click="removeItem(i)"
+                            >
+                                <Trash2 class="size-4" />
+                            </Button>
+
+                            <CollapsibleTrigger as-child>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    class="shrink-0"
+                                    @click="toggleItemExpanded(item.id!)"
+                                >
+                                    <ChevronsUpDown class="size-4" />
+                                </Button>
+                            </CollapsibleTrigger>
+                        </ItemActions>
+                    </Item>
+
+                    <CollapsibleContent>
+                        <div class="mt-4 rounded bg-muted p-3 space-y-2">
                             <div class="space-y-2">
                                 <Combobox
                                     :model-value="item.vegetable_id"
@@ -240,11 +283,11 @@ function toggleItemExpanded(itemKey: number): void {
                                                 :class="[
                                                     'w-full justify-between font-normal',
                                                     !item.vegetable_id && 'text-muted-foreground',
-                                                    form.errors[`items.${itemIndex}.vegetable_id`] && 'border-destructive text-destructive',
+                                                    form.errors[`items.${i}.vegetable_id`] && 'border-destructive text-destructive',
                                                 ]"
                                             >
                                                 <span class="truncate">{{ varietyLabelById.get(item.vegetable_id) ?? 'Select supply...' }}</span>
-                                                <ChevronsUpDown class="ml-2 size-4 shrink-0 text-muted-foreground" />
+                                                <Menu class="ml-2 size-4 shrink-0 text-muted-foreground" />
                                             </Button>
                                         </ComboboxTrigger>
                                     </ComboboxAnchor>
@@ -279,29 +322,11 @@ function toggleItemExpanded(itemKey: number): void {
                                     </ComboboxList>
                                 </Combobox>
 
-                                <div
-                                    v-if="item.vegetable_id && form.scheduled_date"
-                                    class="min-h-4 text-xs"
-                                >
-                                    <Skeleton
-                                        v-if="getState(item.vegetable_id).status === 'loading'"
-                                        class="h-3.5 w-20 rounded"
-                                    />
-                                    <template v-else-if="getData(item.vegetable_id)">
-                                        <span
-                                            :class="netKgClassFarmer(getData(item.vegetable_id)!.net_kg)"
-                                            class="text-xs font-medium tabular-nums"
-                                        >
-                                            {{ formatNetKgFarmer(getData(item.vegetable_id)!.net_kg) }}
-                                        </span>
-                                    </template>
-                                </div>
-
                                 <p
-                                    v-if="form.errors[`items.${itemIndex}.vegetable_id`]"
+                                    v-if="form.errors[`items.${i}.vegetable_id`]"
                                     class="text-xs text-destructive"
                                 >
-                                    {{ form.errors[`items.${itemIndex}.vegetable_id`] }}
+                                    {{ form.errors[`items.${i}.vegetable_id`] }}
                                 </p>
                             </div>
 
@@ -316,92 +341,34 @@ function toggleItemExpanded(itemKey: number): void {
                                     <NumberFieldContent class="w-full">
                                         <NumberFieldDecrement />
                                         <NumberFieldInput
-                                            :class="{ 'border-destructive': form.errors[`items.${itemIndex}.quantity_kg`] }"
+                                            :class="{ 'border-destructive': form.errors[`items.${i}.quantity_kg`] }"
                                             class="bg-card"
                                         />
                                         <NumberFieldIncrement />
                                     </NumberFieldContent>
                                 </NumberField>
                                 <p
-                                    v-if="form.errors[`items.${itemIndex}.quantity_kg`]"
+                                    v-if="form.errors[`items.${i}.quantity_kg`]"
                                     class="text-xs text-destructive"
                                 >
-                                    {{ form.errors[`items.${itemIndex}.quantity_kg`] }}
+                                    {{ form.errors[`items.${i}.quantity_kg`] }}
                                 </p>
                             </div>
                         </div>
+                    </CollapsibleContent>
+                </Collapsible>
 
-                        <div class="flex items-center gap-2 self-end sm:self-start">
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon-lg"
-                                class="shrink-0"
-                                @click="toggleItemExpanded(item._key)"
-                            >
-                                <ChevronsUpDown :class="[expandedItems[item._key] ? 'rotate-180' : '', 'size-4 transition-transform']" />
-                            </Button>
-
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon-lg"
-                                class="text-destructive"
-                                @click="removeItem(itemIndex)"
-                            >
-                                <Trash2 class="size-4" />
-                            </Button>
-                        </div>
-                    </div>
-
-                    <Collapsible v-model:open="expandedItems[item._key]">
-                        <CollapsibleContent>
-                            <Skeleton
-                                v-if="overlapLoading"
-                                class="mt-4 h-7 w-full rounded"
-                            />
-
-                            <div
-                                v-if-else="item.vegetable_id && overlapFor(item.vegetable_id)?.posters.length"
-                                class="mt-4 space-y-2 rounded-md bg-muted/30 p-2"
-                            >
-                                <p class="text-xs font-medium text-muted-foreground">Other activity this slot</p>
-                                <div
-                                    v-if="overlapFor(item.vegetable_id)?.supply_posters.length"
-                                    class="space-y-1.5"
-                                >
-                                    <p class="text-xs text-muted-foreground">Farmers supplying</p>
-                                    <PosterRow
-                                        v-for="(poster, i) in overlapFor(item.vegetable_id)!.supply_posters"
-                                        :key="`supply-${i}`"
-                                        :poster-name="poster.poster_name"
-                                        :poster-phone="poster.poster_phone"
-                                        :total-kg="poster.quantity_kg"
-                                        status="ongoing"
-                                        accent-class="text-primary"
-                                        bg-class="bg-primary/5"
-                                    />
-                                </div>
-                                <div
-                                    v-if="overlapFor(item.vegetable_id)?.demand_posters.length"
-                                    class="space-y-1.5"
-                                >
-                                    <p class="text-xs text-muted-foreground">Dealers requesting</p>
-                                    <PosterRow
-                                        v-for="(poster, i) in overlapFor(item.vegetable_id)!.demand_posters"
-                                        :key="`demand-${i}`"
-                                        :poster-name="poster.poster_name"
-                                        :poster-phone="poster.poster_phone"
-                                        :total-kg="poster.quantity_kg"
-                                        status="ongoing"
-                                        accent-class="text-orange-600"
-                                        bg-class="bg-orange-500/5"
-                                    />
-                                </div>
-                            </div>
-                        </CollapsibleContent>
-                    </Collapsible>
-                </Card>
+                <div class="flex items-end justify-end lg:justify-end">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        class="w-auto"
+                        @click="addItem"
+                    >
+                        <Plus class="mr-2 size-4" />
+                        Add Vegetable
+                    </Button>
+                </div>
 
                 <div class="flex justify-end gap-3">
                     <Button
