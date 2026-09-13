@@ -46,7 +46,6 @@ class PostScheduleOverlapService
                 return [$item->id => new VegetableOverlapData(
                     post_item_id: $item->id,
                     vegetable_id: $item->vegetable_id,
-                    total_kg: (float) $others->sum('quantity_kg'),
                     total_supplies_kg: $posters['total_supplies_kg'],
                     total_demands_kg: $posters['total_demands_kg'],
                     posters: $posters['posters'],
@@ -98,7 +97,6 @@ class PostScheduleOverlapService
                 return [$vegetableId => new VegetableOverlapData(
                     post_item_id: (int) ($post->postItems->firstWhere('vegetable_id', $vegetableId)?->id ?? 0),
                     vegetable_id: $vegetableId,
-                    total_kg: (float) $others->sum('quantity_kg'),
                     total_supplies_kg: $posters['total_supplies_kg'],
                     total_demands_kg: $posters['total_demands_kg'],
                     posters: $posters['posters'],
