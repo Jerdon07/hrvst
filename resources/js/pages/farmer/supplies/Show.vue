@@ -144,7 +144,7 @@ function toggleItemExpanded(itemId: number): void {
                                                 v-if="overlap?.[item.id]"
                                                 class="font-mono"
                                             >
-                                                ({{ overlap[item.id].total_kg }} kg)
+                                                ({{ overlap[item.id].total_supplies_kg }} kg supply, {{ overlap[item.id].total_demands_kg }} kg demand)
                                             </span>
                                         </p>
 
