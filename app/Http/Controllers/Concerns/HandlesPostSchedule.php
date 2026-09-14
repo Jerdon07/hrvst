@@ -6,6 +6,7 @@ use App\Actions\Post\DeletePostAction;
 use App\Enums\PostItemStatus;
 use App\Enums\PostType;
 use App\Models\Schedule\Post;
+use App\Services\Post\PostScheduleOverlapService;
 use App\Services\Post\PostService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,7 +17,8 @@ use Inertia\Response;
 trait HandlesPostSchedule
 {
     public function __construct(
-        private PostService $postService
+        private PostService $postService,
+        private PostScheduleOverlapService $overlapService,
     ) {}
 
     abstract protected function postType(): PostType;
