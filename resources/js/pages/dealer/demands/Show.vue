@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
 import { Item, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item'
+import { netKgClassDealer, formatNetKgDealer } from '@/composables/useVegetableAvailability'
 import AppLayout from '@/layouts/AppLayout.vue'
 import dealer from '@/routes/dealer'
 import { edit, index } from '@/routes/dealer/demands'
@@ -30,6 +31,12 @@ const expandedItems = ref<Record<number, boolean>>({})
 
 function toggleItemExpanded(itemId: number): void {
     expandedItems.value[itemId] = !expandedItems.value[itemId]
+}
+
+function netKgFor(itemId: number): number | null {
+    const o = props.overlap?.[itemId]
+    if (!o) return null
+    return o.total_supplies_kg - o.total_demands_kg
 }
 </script>
 
@@ -81,6 +88,14 @@ function toggleItemExpanded(itemId: number): void {
 
                     <ItemContent>
                         <ItemTitle>{{ item.display_name }}</ItemTitle>
+                        <ItemDescription v-if="netKgFor(item.id) !== null">
+                            <span
+                                :class="netKgClassDealer(netKgFor(item.id)!)"
+                                class="text-xs font-medium tabular-nums"
+                            >
+                                {{ formatNetKgDealer(netKgFor(item.id)!) }}
+                            </span>
+                        </ItemDescription>
                     </ItemContent>
 
                     <ItemActions>
@@ -127,7 +142,7 @@ function toggleItemExpanded(itemId: number): void {
                                     </div>
 
                                     <SchedulePosters
-                                        v-for="(poster, i) in overlap[item.id].demand_posters"
+                                        v-for="(poster, i) in overlap[item.id].supply_posters"
                                         :key="`supply-${i}`"
                                         :poster-name="poster.poster_name"
                                         :quantity-kg="poster.quantity_kg"

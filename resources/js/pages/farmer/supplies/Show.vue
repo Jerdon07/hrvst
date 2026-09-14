@@ -9,7 +9,8 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
-import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item'
+import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/components/ui/item'
+import { netKgClassFarmer, formatNetKgFarmer } from '@/composables/useVegetableAvailability'
 import AppLayout from '@/layouts/AppLayout.vue'
 import farmer from '@/routes/farmer'
 import { edit, index } from '@/routes/farmer/supplies'
@@ -30,6 +31,12 @@ const expandedItems = ref<Record<number, boolean>>({})
 
 function toggleItemExpanded(itemId: number): void {
     expandedItems.value[itemId] = !expandedItems.value[itemId]
+}
+
+function netKgFor(itemId: number): number | null {
+    const o = props.overlap?.[itemId]
+    if (!o) return null
+    return o.total_supplies_kg - o.total_demands_kg
 }
 </script>
 
@@ -81,6 +88,14 @@ function toggleItemExpanded(itemId: number): void {
 
                     <ItemContent>
                         <ItemTitle>{{ item.display_name }}</ItemTitle>
+                        <ItemDescription v-if="netKgFor(item.id) !== null">
+                            <span
+                                :class="netKgClassFarmer(netKgFor(item.id)!)"
+                                class="text-xs font-medium tabular-nums"
+                            >
+                                {{ formatNetKgFarmer(netKgFor(item.id)!) }}
+                            </span>
+                        </ItemDescription>
                     </ItemContent>
 
                     <ItemActions>
@@ -127,7 +142,7 @@ function toggleItemExpanded(itemId: number): void {
                                     </div>
 
                                     <SchedulePosters
-                                        v-for="(poster, i) in overlap[item.id].demand_posters"
+                                        v-for="(poster, i) in overlap[item.id].supply_posters"
                                         :key="`supply-${i}`"
                                         :poster-name="poster.poster_name"
                                         :quantity-kg="poster.quantity_kg"
