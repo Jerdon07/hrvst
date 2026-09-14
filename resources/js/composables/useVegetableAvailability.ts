@@ -42,7 +42,7 @@ export function formatNetKgDealer(net: number): string {
         minimumFractionDigits: 0,
         maximumFractionDigits: 2,
     })
-    if (net > 0) return `${formatted} kg supply`
+    if (net > 0) return `${formatted} kg excess supply`
     if (net < 0) return `${formatted} kg excess demand`
     return 'Balanced'
 }
