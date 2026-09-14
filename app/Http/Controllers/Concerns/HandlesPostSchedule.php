@@ -6,8 +6,8 @@ use App\Actions\Post\DeletePostAction;
 use App\Actions\Post\UpdatePostAction;
 use App\Enums\PostItemStatus;
 use App\Enums\PostType;
-use App\Http\Requests\Post\UpdatePostRequest;
 use App\Models\Schedule\Post;
+use App\Services\Post\PostService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -16,6 +16,10 @@ use Inertia\Response;
 
 trait HandlesPostSchedule
 {
+    public function __construct(
+        private PostService $postService
+    ) {}
+
     abstract protected function postType(): PostType;
 
     /** e.g. 'farmer/supplies' or 'dealer/demands' — matches the Inertia page folder. */
