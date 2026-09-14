@@ -133,6 +133,12 @@ function openItemDialog(index: number): void {
 function closeItemDialog(): void {
     editingIndex.value = null
 }
+
+function editingItemError(field: 'vegetable_id' | 'quantity_kg'): string | undefined {
+    const index = editingIndex.value
+
+    return index === null ? undefined : form.errors[`items.${index}.${field}`]
+}
 </script>
 
 <template>
@@ -352,7 +358,7 @@ function closeItemDialog(): void {
                                     :class="[
                                         'w-full justify-between font-normal',
                                         !editingItem.vegetable_id && 'text-muted-foreground',
-                                        form.errors[`items.${editingIndex}.vegetable_id`] && 'border-destructive text-destructive',
+                                        editingItemError('vegetable_id') && 'border-destructive text-destructive',
                                     ]"
                                 >
                                     <span class="truncate">{{ varietyLabelById.get(editingItem.vegetable_id) ?? 'Select demand...' }}</span>
@@ -392,10 +398,10 @@ function closeItemDialog(): void {
                     </Combobox>
 
                     <p
-                        v-if="form.errors[`items.${editingIndex}.vegetable_id`]"
+                        v-if="editingItemError('vegetable_id')"
                         class="text-xs text-destructive"
                     >
-                        {{ form.errors[`items.${editingIndex}.vegetable_id`] }}
+                        {{ editingItemError('vegetable_id') }}
                     </p>
                 </div>
 
@@ -411,17 +417,17 @@ function closeItemDialog(): void {
                         <NumberFieldContent class="w-full">
                             <NumberFieldDecrement />
                             <NumberFieldInput
-                                :class="{ 'border-destructive': form.errors[`items.${editingIndex}.quantity_kg`] }"
+                                :class="{ 'border-destructive': editingItemError('quantity_kg') }"
                                 class="bg-card"
                             />
                             <NumberFieldIncrement />
                         </NumberFieldContent>
                     </NumberField>
                     <p
-                        v-if="form.errors[`items.${editingIndex}.quantity_kg`]"
+                        v-if="editingItemError('quantity_kg')"
                         class="text-xs text-destructive"
                     >
-                        {{ form.errors[`items.${editingIndex}.quantity_kg`] }}
+                        {{ editingItemError('quantity_kg') }}
                     </p>
                 </div>
 
