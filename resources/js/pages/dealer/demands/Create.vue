@@ -5,13 +5,12 @@ import { CalendarIcon, Check, ChevronsUpDown, Menu, Plus, Search, Trash2 } from 
 import { computed, ref } from 'vue'
 import { store } from '@/actions/App/Http/Controllers/Dealer/Schedule/DemandController'
 import Heading from '@/components/Heading.vue'
-import PosterRow from '@/components/shared/PosterRow.vue'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
-import { Card } from '@/components/ui/card'
-import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
 import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxItemIndicator, ComboboxList, ComboboxTrigger, ComboboxViewport } from '@/components/ui/combobox'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from '@/components/ui/item'
 import { Label } from '@/components/ui/label'
 import { NumberField, NumberFieldContent, NumberFieldDecrement, NumberFieldIncrement, NumberFieldInput } from '@/components/ui/number-field'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -24,8 +23,6 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import dealer from '@/routes/dealer'
 import { index } from '@/routes/dealer/demands'
 import type { BreadcrumbItem, PostTimeSlot, VarietyOptionsByVegetable, VegetableOverlapData } from '@/types'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from '@/components/ui/item'
 
 const props = defineProps<{
     varietyOptions?: VarietyOptionsByVegetable
@@ -202,7 +199,10 @@ function closeItemDialog(): void {
                             </Label>
 
                             <Select v-model="form.time_slot">
-                                <SelectTrigger :class="{ 'border-destructive': form.errors.time_slot }" class="w-full bg-background">
+                                <SelectTrigger
+                                    :class="{ 'border-destructive': form.errors.time_slot }"
+                                    class="w-full bg-background"
+                                >
                                     <SelectValue placeholder="Select time..." />
                                 </SelectTrigger>
                                 <SelectContent>

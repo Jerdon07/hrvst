@@ -29,7 +29,7 @@ import { useOverlapPreview } from '@/composables/useOverlapPreview'
 import { useVegetableAvailability, netKgClassFarmer, formatNetKgFarmer } from '@/composables/useVegetableAvailability'
 import AppLayout from '@/layouts/AppLayout.vue'
 import farmer from '@/routes/farmer'
-import { edit, index, show } from '@/routes/farmer/supplies'
+import { index, show } from '@/routes/farmer/supplies'
 import type { BreadcrumbItem, PostDataFixed, PostTimeSlot, VarietyOptionsByVegetable, VegetableOverlapData } from '@/types'
 
 const props = defineProps<{
@@ -209,7 +209,10 @@ function closeItemDialog(): void {
                             </Label>
 
                             <Select v-model="form.time_slot">
-                                <SelectTrigger :class="{ 'border-destructive': form.errors.time_slot }" class="w-full bg-background">
+                                <SelectTrigger
+                                    :class="{ 'border-destructive': form.errors.time_slot }"
+                                    class="w-full bg-background"
+                                >
                                     <SelectValue placeholder="Select time..." />
                                 </SelectTrigger>
                                 <SelectContent>

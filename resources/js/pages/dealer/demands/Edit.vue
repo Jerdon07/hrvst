@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Deferred, Head, useForm } from '@inertiajs/vue3'
+import { Head, useForm } from '@inertiajs/vue3'
 import { CalendarDate, today, getLocalTimeZone, DateFormatter } from '@internationalized/date'
 import { CalendarIcon, Check, ChevronsUpDown, Menu, Plus, Search, Trash2 } from '@lucide/vue'
 import { computed, ref } from 'vue'
@@ -8,8 +8,9 @@ import Heading from '@/components/Heading.vue'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxItemIndicator, ComboboxList, ComboboxTrigger, ComboboxViewport } from '@/components/ui/combobox'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle } from '@/components/ui/dialog'
+import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from '@/components/ui/item'
 import { Label } from '@/components/ui/label'
 import { NumberField, NumberFieldContent, NumberFieldDecrement, NumberFieldIncrement, NumberFieldInput } from '@/components/ui/number-field'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -21,10 +22,8 @@ import { useOverlapPreview } from '@/composables/useOverlapPreview'
 import { useVegetableAvailability, netKgClassDealer, formatNetKgDealer } from '@/composables/useVegetableAvailability'
 import AppLayout from '@/layouts/AppLayout.vue'
 import dealer from '@/routes/dealer'
-import { edit, index, show } from '@/routes/dealer/demands'
+import { index, show } from '@/routes/dealer/demands'
 import type { BreadcrumbItem, PostDataFixed, PostTimeSlot, VarietyOptionsByVegetable, VegetableOverlapData } from '@/types'
-import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from '@/components/ui/item'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle } from '@/components/ui/dialog'
 
 const props = defineProps<{
     demand: PostDataFixed
@@ -204,7 +203,10 @@ function closeItemDialog(): void {
                             </Label>
 
                             <Select v-model="form.time_slot">
-                                <SelectTrigger :class="{ 'border-destructive': form.errors.time_slot }" class="w-full bg-background">
+                                <SelectTrigger
+                                    :class="{ 'border-destructive': form.errors.time_slot }"
+                                    class="w-full bg-background"
+                                >
                                     <SelectValue placeholder="Select time..." />
                                 </SelectTrigger>
                                 <SelectContent>

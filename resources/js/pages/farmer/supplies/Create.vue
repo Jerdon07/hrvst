@@ -206,7 +206,10 @@ function closeItemDialog(): void {
                             </Label>
 
                             <Select v-model="form.time_slot">
-                                <SelectTrigger :class="{ 'border-destructive': form.errors.time_slot }" class="w-full bg-background">
+                                <SelectTrigger
+                                    :class="{ 'border-destructive': form.errors.time_slot }"
+                                    class="w-full bg-background"
+                                >
                                     <SelectValue placeholder="Select time..." />
                                 </SelectTrigger>
                                 <SelectContent>

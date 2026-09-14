@@ -277,37 +277,37 @@ const steps = [
 
                 <!-- ═══════════════════════════════════ IMAGES ═══ -->
                 <div class="relative min-h-[400px] items-center justify-center">
-                        <div class="h-full w-full flex justify-center items-center">
-                            <img 
-                                src="/images/welcome/screen.png" 
-                                alt=""
-                                class="w-fit rounded-lg border-4 m-4"
-                            >
-                        </div>
+                    <div class="h-full w-full flex justify-center items-center">
+                        <img 
+                            src="/images/welcome/screen.png" 
+                            alt=""
+                            class="w-fit rounded-lg border-4 m-4"
+                        >
+                    </div>
                         
-                        <img
-                            src="/images/welcome/morning.png"
-                            alt="Schedule your supply and demand"
-                            class="hero-card hero-card-1 absolute right-0 top-30 z-10 w-50 rounded-lg border border-white/20 shadow-2xl"
-                        />
+                    <img
+                        src="/images/welcome/morning.png"
+                        alt="Schedule your supply and demand"
+                        class="hero-card hero-card-1 absolute right-0 top-30 z-10 w-50 rounded-lg border border-white/20 shadow-2xl"
+                    />
 
-                        <img
-                            src="/images/welcome/afternoon.png"
-                            alt="View the daily and monthly supply and demand forecast"
-                            class="hero-card hero-card-2 hidden sm:block sm:absolute left-0 top-62 z-20 w-50 rounded-lg border border-white/20 shadow-2xl"
-                        />
+                    <img
+                        src="/images/welcome/afternoon.png"
+                        alt="View the daily and monthly supply and demand forecast"
+                        class="hero-card hero-card-2 hidden sm:block sm:absolute left-0 top-62 z-20 w-50 rounded-lg border border-white/20 shadow-2xl"
+                    />
 
-                        <img
-                            src="/images/welcome/evening.png"
-                            alt="Schedule your Supply and Demand"
-                            class="hero-card hero-card-3 hidden sm:block sm:absolute right-0 top-90 z-30 w-50 rounded-lg border border-white/20 shadow-2xl"
-                        />
+                    <img
+                        src="/images/welcome/evening.png"
+                        alt="Schedule your Supply and Demand"
+                        class="hero-card hero-card-3 hidden sm:block sm:absolute right-0 top-90 z-30 w-50 rounded-lg border border-white/20 shadow-2xl"
+                    />
 
-                        <img
-                            src="/images/welcome/monthly-forecast.png"
-                            alt="Schedule your Supply and Demand"
-                            class="hero-card hero-card-4 absolute left-0 top-120 z-30 w-80 rounded-lg border border-white/20 shadow-2xl"
-                        />
+                    <img
+                        src="/images/welcome/monthly-forecast.png"
+                        alt="Schedule your Supply and Demand"
+                        class="hero-card hero-card-4 absolute left-0 top-120 z-30 w-80 rounded-lg border border-white/20 shadow-2xl"
+                    />
                 </div>
             </div>
         </section>

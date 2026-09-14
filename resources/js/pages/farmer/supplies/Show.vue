@@ -1,22 +1,19 @@
 <script setup lang="ts">
 import { Deferred, Head, Link } from '@inertiajs/vue3'
-import { Calendar1, ChevronsUpDown, SquarePen, User, Users } from '@lucide/vue'
+import { Calendar1, ChevronsUpDown, SquarePen } from '@lucide/vue'
 import { ref } from 'vue'
 import EmptyState from '@/components/EmptyState.vue'
 import Heading from '@/components/Heading.vue'
-import PosterRow from '@/components/shared/PosterRow.vue'
+import SchedulePosters from '@/components/shared/vegetables/SchedulePosters.vue'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
 import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item'
-import { Skeleton } from '@/components/ui/skeleton'
 import AppLayout from '@/layouts/AppLayout.vue'
 import farmer from '@/routes/farmer'
 import { edit, index } from '@/routes/farmer/supplies'
 import type { BreadcrumbItem, PostDataFixed, VegetableOverlapData } from '@/types'
-import SchedulePosters from '@/components/shared/vegetables/SchedulePosters.vue'
 
 const props = defineProps<{
     supply: PostDataFixed
@@ -93,7 +90,7 @@ function toggleItemExpanded(itemId: number): void {
                                 size="icon"
                                 class="shrink-0"
                                 @click="toggleItemExpanded(item.id)"
-                                >
+                            >
                                 <ChevronsUpDown class="size-4"/>
                             </Button>
                         </CollapsibleTrigger>
@@ -135,13 +132,12 @@ function toggleItemExpanded(itemId: number): void {
                                         :poster-name="poster.poster_name"
                                         :quantity-kg="poster.quantity_kg"
                                         bg-class="bg-green-500/5"
-                                        
                                     />
                                 </div>
 
                                 <div
                                     v-if="overlap[item.id].demand_posters.length"
-                                        class="space-y-2"
+                                    class="space-y-2"
                                 >
                                     <div class="flex justify-between items-center">
                                         <p class="text-xs font-medium text-muted-foreground">

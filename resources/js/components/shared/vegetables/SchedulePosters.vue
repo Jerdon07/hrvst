@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { Badge } from '@/components/ui/badge';
 import { User } from '@lucide/vue';
+import { Badge } from '@/components/ui/badge';
 
-const props = defineProps<{
+defineProps<{
     posterName: string
     quantityKg: number
     bgClass: string
@@ -22,7 +22,7 @@ const props = defineProps<{
         <Badge
             variant="outline"
             class="tabular-nums"
-            >
+        >
             {{ quantityKg.toLocaleString() }} kg
         </Badge>
     </div>
