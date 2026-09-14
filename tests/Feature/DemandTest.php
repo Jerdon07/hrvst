@@ -178,9 +178,28 @@ describe('UpdateDemand', function () {
 
         actingAs($dealer)
             ->put(route('dealer.demands.update', $post), ['scheduled_date' => $newDate])
-            ->assertRedirect(route('dealer.demands.index'));
+            ->assertRedirect(route('dealer.demands.show', $post));
 
         expect($post->fresh()->scheduled_date->toDateString())->toBe($newDate);
+    });
+
+    // Regression test. HandlesPostSchedule::update() used to type-hint the
+    // abstract UpdatePostRequest directly — the container can't instantiate
+    // it (BindingResolutionException, 500 in prod). DemandController now
+    // overrides update() with the concrete UpdateDemandRequest, same as it
+    // already did for store(). Asserting the concrete class's validation
+    // rules actually fire is proof the right class is being resolved, not
+    // just that *a* class resolves.
+    it('resolves the concrete UpdateDemandRequest and enforces its validation rules', function () {
+        $dealer = dealerWithProfile();
+        $item = createDemandViaRoute($dealer, createVegetable());
+        $post = $item->post;
+
+        actingAs($dealer)
+            ->put(route('dealer.demands.update', $post), [
+                'time_slot' => 'not-a-real-slot',
+            ])
+            ->assertSessionHasErrors('time_slot');
     });
 
     it('dealer cannot update post that is not ongoing', function () {

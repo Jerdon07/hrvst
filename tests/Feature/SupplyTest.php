@@ -248,9 +248,28 @@ describe('UpdateSupply', function () {
 
         actingAs($farmer)
             ->put(route('farmer.supplies.update', $post), ['scheduled_date' => $newDate])
-            ->assertRedirect(route('farmer.supplies.index'));
+            ->assertRedirect(route('farmer.supplies.show', $post));
 
         expect($post->fresh()->scheduled_date->toDateString())->toBe($newDate);
+    });
+
+    // Regression test. HandlesPostSchedule::update() used to type-hint the
+    // abstract UpdatePostRequest directly — the container can't instantiate
+    // it (BindingResolutionException, 500 in prod). SupplyController now
+    // overrides update() with the concrete UpdateSupplyRequest, same as it
+    // already did for store(). Asserting the concrete class's validation
+    // rules actually fire is proof the right class is being resolved, not
+    // just that *a* class resolves.
+    it('resolves the concrete UpdateSupplyRequest and enforces its validation rules', function () {
+        $farmer = farmerWithProfile();
+        $item = createSupplyViaRoute($farmer, createVegetable());
+        $post = $item->post;
+
+        actingAs($farmer)
+            ->put(route('farmer.supplies.update', $post), [
+                'time_slot' => 'not-a-real-slot',
+            ])
+            ->assertSessionHasErrors('time_slot');
     });
 
     it('farmer cannot update another farmer\'s supply', function () {
@@ -267,13 +286,13 @@ describe('UpdateSupply', function () {
     });
 
     it('updating quantity on an overdue supply does not fail because scheduled_date is unchanged', function () {
-        $dealer = farmerWithProfile();
+        $farmer = farmerWithProfile();
         $vegetable = createVegetable();
-        $item = createSupplyViaRoute($dealer, $vegetable);
+        $item = createSupplyViaRoute($farmer, $vegetable);
         $post = $item->post;
         $post->update(['scheduled_date' => now()->subDay()->toDateString()]); // force overdue
 
-        actingAs($dealer)
+        actingAs($farmer)
             ->put(route('farmer.supplies.update', $post), [
                 'scheduled_date' => $post->scheduled_date->format('Y-m-d'),
                 'items' => [['vegetable_id' => $vegetable->id, 'quantity_kg' => 75]],
