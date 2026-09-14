@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Concerns;
 
 use App\Actions\Post\DeletePostAction;
-use App\Actions\Post\UpdatePostAction;
 use App\Enums\PostItemStatus;
 use App\Enums\PostType;
 use App\Models\Schedule\Post;

@@ -52,42 +52,7 @@ ends_at: string | null,
 ends_at_human: string | null,
 };
 }
-namespace Dealer {
-export type DealerExpiringDemandData = {
-id: number,
-scheduled_date: string | null,
-time_slot: App.Enums.PostTimeSlot | null,
-time_slot_label: string | null,
-created_at: string,
-created_at_human: string,
-image_url: undefined | string,
-items: App.Data.PostItem.PostItemLightData[] | undefined,
-};
-}
-namespace Farmer {
-export type FarmerExpiringSupplyData = {
-id: number,
-scheduled_date: string | null,
-time_slot: App.Enums.PostTimeSlot | null,
-time_slot_label: string | null,
-created_at: string,
-created_at_human: string,
-image_url: undefined | string,
-items: App.Data.PostItem.PostItemLightData[] | undefined,
-};
-}
 namespace Post {
-export type DealerDemandData = {
-id: number,
-user_id: number,
-type: App.Enums.PostType,
-scheduled_date: string,
-time_slot: App.Enums.PostTimeSlot,
-created_at: string,
-created_at_human: string,
-needs_action: boolean,
-post_items: App.Data.PostItem.PostItemLightData[] | unknown,
-};
 export type ExpiringPostData = {
 id: number,
 scheduled_date: string,
@@ -97,17 +62,6 @@ created_at: string,
 created_at_human: string,
 image_url: undefined | string,
 items: App.Data.PostItem.PostItemLightData[] | undefined,
-};
-export type FarmerSupplyData = {
-id: number,
-user_id: number,
-type: App.Enums.PostType,
-scheduled_date: string,
-time_slot: App.Enums.PostTimeSlot,
-created_at: string,
-created_at_human: string,
-needs_action: boolean,
-post_items: App.Data.PostItem.PostItemLightData[],
 };
 export type OverlapPosterData = {
 poster_name: string,
@@ -140,7 +94,8 @@ post_items: App.Data.PostItem.PostItemLightData[] | unknown,
 export type VegetableOverlapData = {
 post_item_id: number,
 vegetable_id: number,
-total_kg: number,
+total_supplies_kg: number,
+total_demands_kg: number,
 posters: App.Data.Post.OverlapPosterData[],
 supply_posters: App.Data.Post.OverlapPosterData[],
 demand_posters: App.Data.Post.OverlapPosterData[],

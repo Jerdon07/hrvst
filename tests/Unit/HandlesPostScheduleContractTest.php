@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Concerns\HandlesPostSchedule;
 use App\Http\Controllers\Dealer\Schedule\DemandController;
 use App\Http\Controllers\Farmer\Schedule\SupplyController;
 use App\Http\Requests\Post\UpdatePostRequest;
