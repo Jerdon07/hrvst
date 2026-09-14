@@ -57,8 +57,6 @@ class DemandController extends Controller
 
     public function store(StoreDemandRequest $request, CreatePostAction $action): RedirectResponse
     {
-        Gate::authorize('create', Post::class);
-
         $action->handle(
             userId: $request->user()->id,
             type: $this->postType(),
