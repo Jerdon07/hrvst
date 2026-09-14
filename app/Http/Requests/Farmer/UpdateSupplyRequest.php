@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Farmer;
 
-use App\Http\Requests\Schedule\UpdatePostRequest;
+use App\Http\Requests\Post\UpdatePostRequest;
 
 class UpdateSupplyRequest extends UpdatePostRequest
 {

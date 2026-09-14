@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Dealer;
 
-use App\Http\Requests\Schedule\UpdatePostRequest;
+use App\Http\Requests\Post\UpdatePostRequest;
 
 class UpdateDemandRequest extends UpdatePostRequest
 {
