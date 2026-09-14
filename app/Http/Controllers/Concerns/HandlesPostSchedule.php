@@ -105,16 +105,6 @@ trait HandlesPostSchedule
         ]);
     }
 
-    public function update(UpdatePostRequest $request, Post $post, UpdatePostAction $action): RedirectResponse
-    {
-        Gate::authorize('update', $post);
-
-        $action->handle(post: $post, validated: $request->validated());
-
-        return redirect()->route("{$this->routePrefix()}.show", $post)
-            ->with('flash', ['type' => 'success', 'message' => $this->updatedMessage()]);
-    }
-
     public function destroy(Post $post, DeletePostAction $action): RedirectResponse
     {
         Gate::authorize('delete', $post);

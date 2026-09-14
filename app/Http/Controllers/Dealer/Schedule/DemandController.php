@@ -3,24 +3,22 @@
 namespace App\Http\Controllers\Dealer\Schedule;
 
 use App\Actions\Post\CreatePostAction;
+use App\Actions\Post\UpdatePostAction;
 use App\Data\Post\PostScheduleData;
 use App\Enums\PostType;
 use App\Http\Controllers\Concerns\HandlesPostSchedule;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dealer\StoreDemandRequest;
+use App\Http\Requests\Dealer\UpdateDemandRequest;
 use App\Models\Schedule\Post;
 use App\Services\Post\PostScheduleOverlapService;
 use App\Services\Post\PostService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 
 class DemandController extends Controller
 {
     use HandlesPostSchedule;
-
-    public function __construct(
-        private PostService $postService,
-        private PostScheduleOverlapService $overlapService,
-    ) {}
 
     protected function postType(): PostType
     {
@@ -57,13 +55,10 @@ class DemandController extends Controller
         return PostScheduleData::from($post);
     }
 
-    /**
-     * See SupplyController::store() for why this override is required —
-     * HandlesPostSchedule::store() type-hints the abstract StorePostRequest,
-     * which the container cannot instantiate on its own.
-     */
     public function store(StoreDemandRequest $request, CreatePostAction $action): RedirectResponse
     {
+        Gate::authorize('create', Post::class);
+
         $action->handle(
             userId: $request->user()->id,
             type: $this->postType(),
@@ -72,5 +67,15 @@ class DemandController extends Controller
 
         return redirect()->route($this->indexRouteName())
             ->with('flash', ['type' => 'success', 'message' => $this->createdMessage()]);
+    }
+
+    public function update(UpdateDemandRequest $request, Post $post, UpdatePostAction $action): RedirectResponse
+    {
+        Gate::authorize('update', $post);
+
+        $action->handle(post: $post, validated: $request->validated());
+
+        return redirect()->route("{$this->routePrefix()}.show", $post)
+            ->with('flash', ['type' => 'success', 'message' => $this->updatedMessage()]);
     }
 }
