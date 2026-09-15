@@ -109,10 +109,10 @@ function handleSearchInput() {
 <template>
     <div class="flex flex-col gap-4">
         <!-- toolbar -->
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col sm:flex-row space-y-2 items-end justify-between">
             <InputGroup
                 v-if="enableSearch"
-                class="max-w-xs"
+                class="w-full sm:max-w-xs"
             >
                 <InputGroupInput
                     v-model="localSearchQuery"
@@ -131,7 +131,7 @@ function handleSearchInput() {
         </div>
 
         <!-- table -->
-        <div class="rounded border overflow-hidden">
+        <div class="rounded border overflow-x-scroll md:overflow-hidden">
             <table class="w-full text-sm">
                 <thead class="bg-muted">
                     <tr>
