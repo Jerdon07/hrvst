@@ -22,8 +22,15 @@ defineProps<Props>()
     >
         <Item
             variant="outline"
-            class="transition-all hover:shadow-sm bg-primary/10 hover:bg-card hover:border-l-4 hover:border-l-primary"
+            class="group relative overflow-hidden transition-[box-shadow,border] duration-300 hover:shadow-sm hover:border-l-4 hover:border-l-primary"
         >
+            <!-- Gradient overlay -->
+            <div
+                :class="[
+                    'absolute inset-0 z-0 transition-opacity duration-300 group-hover:opacity-0 bg-linear-to-l from-transparent to-primary/20',
+                ]"
+            />
+
             <ItemMedia variant="image">
                 <Avatar>
                     <AvatarImage 

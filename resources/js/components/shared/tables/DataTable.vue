@@ -9,10 +9,8 @@ import {
 } from '@lucide/vue'
 import {
 	type ColumnDef,
-	type ExpandedState,
 	FlexRender,
 	getCoreRowModel,
-	getExpandedRowModel,
 	getSortedRowModel,
 	useVueTable,
 } from '@tanstack/vue-table'
@@ -35,7 +33,6 @@ interface Props<TData> {
 	emptyMessage?: string
 	entityName?: string
 	enableSearch?: boolean
-	enableExpand?: boolean
 	searchQuery?: string
 }
 
@@ -44,7 +41,6 @@ const props = withDefaults(defineProps<Props<TData>>(), {
 	emptyMessage: 'No items found.',
 	entityName: 'items',
 	enableSearch: true,
-	enableExpand: false,
 	searchQuery: '',
 })
 
@@ -54,31 +50,16 @@ const emit = defineEmits<{
 }>()
 
 const localSearchQuery = ref(props.searchQuery)
-const expanded = ref<ExpandedState>({})
 
 const table = useVueTable({
 	get data() {
 		return props.data.data
 	},
 	columns: props.columns,
-	state: {
-		get expanded() {
-			return expanded.value
-		},
-		set expanded(value) {
-			expanded.value = value
-		},
-	},
-	onExpandedChange: (updaterOrValue) => {
-		expanded.value =
-			typeof updaterOrValue === 'function' ? updaterOrValue(expanded.value) : updaterOrValue
-	},
-	getExpandedRowModel: getExpandedRowModel(),
 	getCoreRowModel: getCoreRowModel(),
 	getSortedRowModel: getSortedRowModel(),
-	...(props.enableExpand ? { getExpandedRowModel: getExpandedRowModel() } : {}),
 	manualPagination: true,
-	manualFiltering: true, // ✅ NEW: Tell TanStack we're handling filtering server-side
+	manualFiltering: true,
 })
 
 const hasPrevPage = computed(() => props.data.current_page > 1)
@@ -131,7 +112,7 @@ function handleSearchInput() {
         </div>
 
         <!-- table -->
-        <div class="rounded border overflow-x-scroll md:overflow-hidden">
+        <div class="rounded border overflow-x-scroll md:overflow-hidden border-l-teal-400 border-l-4">
             <table class="w-full text-sm">
                 <thead class="bg-muted">
                     <tr>
@@ -172,7 +153,6 @@ function handleSearchInput() {
                         v-for="row in table.getRowModel().rows"
                         :key="row.id"
                     >
-                        <!-- main row -->
                         <tr class="border-t hover:bg-primary/10 transition-colors">
                             <td
                                 v-for="cell in row.getVisibleCells()"
@@ -193,14 +173,6 @@ function handleSearchInput() {
                                 </slot>
                             </td>
                         </tr>
-
-                        <!-- expandable row (optional) -->
-                        <slot
-                            v-if="enableExpand && row.getIsExpanded()"
-                            name="expanded-row"
-                            :row="row.original"
-                            :colspan="columns.length"
-                        />
                     </template>
 
                     <!-- empty state -->

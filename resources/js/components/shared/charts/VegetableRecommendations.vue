@@ -34,21 +34,21 @@ function severityConfig(severity: RecommendationSeverity): SeverityConfig {
         icon: OctagonX,
         iconClass: 'text-red-600 dark:text-red-400',
         containerClass:
-          'bg-red-50 border-red-200 dark:bg-red-950/20 dark:border-red-800/50',
+          'from-transparent to-red-600/20 border-red-200 dark:border-red-800/50',
       }
     case 'warning':
       return {
         icon: TriangleAlert,
         iconClass: 'text-amber-600 dark:text-amber-400',
         containerClass:
-          'bg-amber-50 border-amber-200 dark:bg-amber-950/20 dark:border-amber-800/50',
+          'from-transparent to-amber-600/20 border-amber-200 dark:border-amber-800/50',
       }
     default:
       return {
         icon: Info,
         iconClass: 'text-blue-600 dark:text-blue-400',
         containerClass:
-          'bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800/50',
+          'from-transparent to-sky-600/20 border-blue-200 dark:border-blue-800/50',
       }
   }
 }
@@ -70,7 +70,7 @@ function severityConfig(severity: RecommendationSeverity): SeverityConfig {
             <Item
                 v-for="rec in visible"
                 :key="rec.type"
-                :class="['flex items-start gap-3 rounded-lg border p-3 transition-all', severityConfig(rec.severity).containerClass]"
+                :class="['flex items-start gap-3 rounded-lg border p-3 transition-all bg-linear-to-l', severityConfig(rec.severity).containerClass]"
             >
                 <ItemMedia variant="icon">
                     <component
