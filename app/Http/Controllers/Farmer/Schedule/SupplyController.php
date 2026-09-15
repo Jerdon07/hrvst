@@ -28,7 +28,7 @@ class SupplyController extends Controller
         return 'farmer.supplies.index';
     }
 
-    protected function collectData($items)
+    protected function collectData(mixed $items)
     {
         return PostScheduleData::collect($items);
     }
@@ -56,7 +56,9 @@ class SupplyController extends Controller
 
         $action->handle(post: $post, validated: $request->validated());
 
-        return redirect()->route("{$this->routePrefix()}.show", $post)
+        $routeName = $this->routePrefix() . '.show';
+
+        return redirect()->route($routeName, $post)
             ->with('flash', ['type' => 'success', 'message' => $this->updatedMessage()]);
     }
 }

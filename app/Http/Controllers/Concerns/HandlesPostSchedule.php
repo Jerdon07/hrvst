@@ -27,7 +27,7 @@ trait HandlesPostSchedule
     abstract protected function indexRouteName(): string;
 
     /** @return mixed */
-    abstract protected function collectData($items);
+    abstract protected function collectData(mixed $items);
 
     /** @return mixed Data::from() call for the concrete Data class. */
     abstract protected function fromModel(Post $post);
