@@ -23,24 +23,9 @@ class SupplyController extends Controller
         return PostType::Supply;
     }
 
-    protected function pageNamespace(): string
-    {
-        return 'farmer/supplies';
-    }
-
     protected function indexRouteName(): string
     {
         return 'farmer.supplies.index';
-    }
-
-    protected function itemsPropKey(): string
-    {
-        return 'supplies';
-    }
-
-    protected function itemPropKey(): string
-    {
-        return 'supply';
     }
 
     protected function collectData($items)

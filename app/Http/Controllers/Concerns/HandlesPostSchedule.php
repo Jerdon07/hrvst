@@ -23,23 +23,19 @@ trait HandlesPostSchedule
 
     abstract protected function postType(): PostType;
 
-    /** e.g. 'farmer/supplies' or 'dealer/demands' — matches the Inertia page folder. */
-    abstract protected function pageNamespace(): string;
-
     /** e.g. 'farmer.supplies.index' or 'dealer.demands.index' */
     abstract protected function indexRouteName(): string;
-
-    /** Prop key the Index/Archived/Show pages expect ('supplies' or 'demands'). */
-    abstract protected function itemsPropKey(): string;
-
-    /** Prop key the Show/Edit pages expect ('supply' or 'demand', singular). */
-    abstract protected function itemPropKey(): string;
 
     /** @return mixed */
     abstract protected function collectData($items);
 
     /** @return mixed Data::from() call for the concrete Data class. */
     abstract protected function fromModel(Post $post);
+
+    protected function pageNamespace(): string
+    {
+        return 'shared/schedule';
+    }
 
     public function index(Request $request): Response
     {
@@ -48,11 +44,12 @@ trait HandlesPostSchedule
         $userId = $request->user()->id;
 
         return Inertia::render("{$this->pageNamespace()}/Index", [
+            'type' => $this->postType()->value,
             'varietyOptions' => Inertia::defer(fn () => $this->postService->varietyOptions($this->postType())),
             'needsAction' => Inertia::defer(fn () => $this->collectData(
                 $this->postService->needsAction($this->postType(), $userId)
             )),
-            $this->itemsPropKey() => Inertia::defer(fn () => $this->collectData(
+            'items' => Inertia::defer(fn () => $this->collectData(
                 $this->postService->paginated($this->postType(), $userId, PostItemStatus::Ongoing)
             )),
         ]);
@@ -70,8 +67,9 @@ trait HandlesPostSchedule
         }
 
         return Inertia::render("{$this->pageNamespace()}/Archived", [
+            'type' => $this->postType()->value,
             'filters' => ['status' => $status->value],
-            $this->itemsPropKey() => Inertia::defer(fn () => $this->collectData(
+            'items' => Inertia::defer(fn () => $this->collectData(
                 $this->postService->paginated($this->postType(), $userId, $status)
             )),
         ]);
@@ -82,6 +80,7 @@ trait HandlesPostSchedule
         Gate::authorize('create', [Post::class, $this->postType()]);
 
         return Inertia::render("{$this->pageNamespace()}/Create", [
+            'type' => $this->postType()->value,
             'varietyOptions' => Inertia::defer(fn () => $this->postService->varietyOptions($this->postType())),
         ]);
     }
@@ -93,7 +92,8 @@ trait HandlesPostSchedule
         $post->load('postItems.vegetable');
 
         return Inertia::render("{$this->pageNamespace()}/Show", [
-            $this->itemPropKey() => $this->fromModel($post),
+            'type' => $this->postType()->value,
+            'schedule' => $this->fromModel($post),
             'overlap' => Inertia::defer(fn () => $this->overlapService->forPost($post)),
         ]);
     }
@@ -105,7 +105,8 @@ trait HandlesPostSchedule
         $post->load('postItems.vegetable');
 
         return Inertia::render("{$this->pageNamespace()}/Edit", [
-            $this->itemPropKey() => $this->fromModel($post),
+            'type' => $this->postType()->value,
+            'schedule' => $this->fromModel($post),
             'varietyOptions' => Inertia::defer(fn () => $this->postService->varietyOptions($this->postType())),
         ]);
     }

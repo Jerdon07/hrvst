@@ -23,24 +23,9 @@ class DemandController extends Controller
         return PostType::Demand;
     }
 
-    protected function pageNamespace(): string
-    {
-        return 'dealer/demands';
-    }
-
     protected function indexRouteName(): string
     {
         return 'dealer.demands.index';
-    }
-
-    protected function itemsPropKey(): string
-    {
-        return 'demands';
-    }
-
-    protected function itemPropKey(): string
-    {
-        return 'demand';
     }
 
     protected function collectData($items)
