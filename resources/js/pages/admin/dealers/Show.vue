@@ -153,9 +153,9 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
                             :locked="dealer.analytics_locked"
                             :total-quantity="totalQuantity"
                             feature-label="Platform Analytics License"
-                            waste-title="Most Ordered Varieties"
+                            waste-title="Most Ordered Vegetables"
                             waste-description="By total kilograms demands"
-                            waste-unit-label="kg of demands"
+                            waste-unit-label="kg"
                             waste-guide-question="What does this dealer order most?"
                             volume-title="6-Month Demand Volume"
                         />

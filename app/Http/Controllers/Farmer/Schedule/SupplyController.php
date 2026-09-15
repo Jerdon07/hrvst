@@ -23,27 +23,12 @@ class SupplyController extends Controller
         return PostType::Supply;
     }
 
-    protected function pageNamespace(): string
-    {
-        return 'farmer/supplies';
-    }
-
     protected function indexRouteName(): string
     {
         return 'farmer.supplies.index';
     }
 
-    protected function itemsPropKey(): string
-    {
-        return 'supplies';
-    }
-
-    protected function itemPropKey(): string
-    {
-        return 'supply';
-    }
-
-    protected function collectData($items)
+    protected function collectData(mixed $items)
     {
         return PostScheduleData::collect($items);
     }
@@ -71,7 +56,9 @@ class SupplyController extends Controller
 
         $action->handle(post: $post, validated: $request->validated());
 
-        return redirect()->route("{$this->routePrefix()}.show", $post)
+        $routeName = $this->routePrefix() . '.show';
+
+        return redirect()->route($routeName, $post)
             ->with('flash', ['type' => 'success', 'message' => $this->updatedMessage()]);
     }
 }

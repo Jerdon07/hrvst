@@ -32,6 +32,7 @@ import {
 import {
     Sheet,
     SheetContent,
+    SheetDescription,
     SheetHeader,
     SheetTitle,
     SheetTrigger,
@@ -217,6 +218,7 @@ const rightNavItems = computed<NavItem[]>(() => {
                             class="w-[300px] p-6"
                         >
                             <SheetTitle class="sr-only">Navigation Menu</SheetTitle>
+                            <SheetDescription class="sr-only">Main navigation links</SheetDescription>
                             <SheetHeader class="flex justify-start text-left">
                                 <AppLogoIcon class="size-6 fill-current text-black dark:text-white" />
                             </SheetHeader>

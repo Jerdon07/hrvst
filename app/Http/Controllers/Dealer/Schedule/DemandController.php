@@ -23,27 +23,12 @@ class DemandController extends Controller
         return PostType::Demand;
     }
 
-    protected function pageNamespace(): string
-    {
-        return 'dealer/demands';
-    }
-
     protected function indexRouteName(): string
     {
         return 'dealer.demands.index';
     }
 
-    protected function itemsPropKey(): string
-    {
-        return 'demands';
-    }
-
-    protected function itemPropKey(): string
-    {
-        return 'demand';
-    }
-
-    protected function collectData($items)
+    protected function collectData(mixed $items)
     {
         return PostScheduleData::collect($items);
     }
@@ -71,7 +56,9 @@ class DemandController extends Controller
 
         $action->handle(post: $post, validated: $request->validated());
 
-        return redirect()->route("{$this->routePrefix()}.show", $post)
+        $routeName = $this->routePrefix() . '.show';
+
+        return redirect()->route($routeName, $post)
             ->with('flash', ['type' => 'success', 'message' => $this->updatedMessage()]);
     }
 }

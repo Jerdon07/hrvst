@@ -30,8 +30,10 @@ const emit = defineEmits<{ delete: [post: PostDataFixed] }>()
     <Item
         variant="outline"
         :class="[
-            'group transition-all hover:bg-background hover:shadow-sm',
-            post.needs_action ? 'bg-destructive/5 hover:border-l-4 hover:border-l-destructive' : 'bg-primary/10 hover:border-l-4 hover:border-l-primary',
+            'group bg-linear-to-r bg-size-[200%_100%] bg-left transition-all duration-300 hover:bg-right hover:shadow-sm',
+            post.needs_action
+            ? 'from-destructive/10 via-white to-white hover:border-l-4 hover:border-l-destructive'
+            : 'from-primary/10 via-white to-white hover:border-l-4 hover:border-l-primary'
         ]"
     >
         <ItemMedia variant="icon" :class="post.needs_action ? 'bg-destructive/10' : 'bg-primary/10'">
@@ -58,13 +60,13 @@ const emit = defineEmits<{ delete: [post: PostDataFixed] }>()
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent align="end" class="w-80 p-0">
-                    <ScrollArea class="max-h-80 overflow-hidden rounded-t-md">
+                    <ScrollArea class="max-h-80 overflow-y-scroll rounded-t-md">
                         <ItemGroup>
                             <template
                                 v-for="(item, index) in post.post_items"
                                 :key="item.id"
                             >
-                                <Item size="sm">
+                                <Item>
                                     <ItemMedia variant="image">
                                         <img
                                             :src="item.vegetable_image_url!"

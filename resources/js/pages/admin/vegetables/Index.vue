@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Deferred, Head, router } from '@inertiajs/vue3'
-import { Plus } from '@lucide/vue'
+import { Plus, Vegan } from '@lucide/vue'
 import { ref } from 'vue'
 import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
 import VegetableForm from '@/components/features/admin/forms/VegetableForm.vue'
@@ -105,7 +105,7 @@ function handleCategoryFilterChange(value: unknown): void {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-6 p-4 lg:p-6">
-            <div class="flex items-end justify-between">
+            <div class="flex flex-col sm:flex-row space-y-2 items-end justify-between">
                 <Heading
                     title="Vegetables"
                     description="Manage all vegetable entries across every category."
@@ -149,8 +149,9 @@ function handleCategoryFilterChange(value: unknown): void {
                         >
                             <SelectTrigger
                                 size="sm"
-                                class="w-44"
+                                class="w-full sm:w-60"
                             >
+                                <Vegan />
                                 <SelectValue placeholder="All categories" />
                             </SelectTrigger>
                             <SelectContent>

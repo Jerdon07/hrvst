@@ -167,10 +167,10 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
                             :locked="farmer.analytics_locked"
                             :total-quantity="totalQuantity"
                             feature-label="Platform Analytics License"
-                            waste-title="Most Supplied Varieties"
+                            waste-title="Most Supplied Vegetables"
                             waste-description="By total kilograms supplied"
-                            waste-unit-label="kg supplied"
-                            waste-guide-question="What does this farmer grow most?"
+                            waste-unit-label="kg"
+                            waste-guide-question="What does this farmer sell most?"
                             volume-title="6-Month Supply Volume"
                         />
 

@@ -19,7 +19,7 @@ withDefaults(
         valueClass: null,
 		subtext: null,
 		icon: undefined,
-		iconClass: 'size-6',  // sensible default; callers override with e.g. 'size-4 text-green-500'
+		iconClass: 'size-6',
 		cardClass: 'grid-span-1',
 		subtextBelow: false,
 	},
@@ -28,7 +28,7 @@ withDefaults(
 
 <template>
     <Card
-        class="gap-0 py-4 overflow-hidden justify-center hover:shadow-md transition-all"
+        class="relative gap-0 py-4 overflow-hidden justify-center hover:shadow-md transition-all"
         :class="cardClass"
     >
         <CardContent class="px-4">
@@ -61,5 +61,17 @@ withDefaults(
                 <slot name="subtext">{{ subtext }}</slot>
             </span>
         </CardContent>
+
+        <div
+            class="pointer-events-none absolute -bottom-44 -right-16 size-56 rounded-full opacity-20"
+            aria-hidden="true"
+            style="
+                background: radial-gradient(
+                    circle,
+                    #2563eb,
+                    transparent
+                );
+            "
+        />
     </Card>
 </template>

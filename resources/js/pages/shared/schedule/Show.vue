@@ -1,31 +1,35 @@
 <script setup lang="ts">
 import { Deferred, Head, Link } from '@inertiajs/vue3'
 import { Calendar1, ChevronsUpDown, SquarePen } from '@lucide/vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import EmptyState from '@/components/EmptyState.vue'
 import Heading from '@/components/Heading.vue'
 import SchedulePosters from '@/components/shared/vegetables/SchedulePosters.vue'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/components/ui/item'
-import { netKgClassFarmer, formatNetKgFarmer } from '@/composables/useVegetableAvailability'
+import { formatNetKgDealer, formatNetKgFarmer, netKgClassDealer, netKgClassFarmer } from '@/composables/useVegetableAvailability'
 import AppLayout from '@/layouts/AppLayout.vue'
-import farmer from '@/routes/farmer'
-import { edit, index } from '@/routes/farmer/supplies'
+import { scheduleRegistry, type ScheduleType } from '@/lib/scheduleRegistry'
 import type { BreadcrumbItem, PostDataFixed, VegetableOverlapData } from '@/types'
 
 const props = defineProps<{
-    supply: PostDataFixed
+    type: ScheduleType
+    schedule: PostDataFixed
     overlap?: Record<number, VegetableOverlapData>
 }>()
 
-const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Farmer', href: farmer.dashboard().url },
-    { title: 'Supplies', href: index().url },
-    { title: props.supply.scheduled_date },
-]
+const config = computed(() => scheduleRegistry[props.type])
+const netKgClass = computed(() => (props.type === 'supply' ? netKgClassFarmer : netKgClassDealer))
+const formatNetKg = computed(() => (props.type === 'supply' ? formatNetKgFarmer : formatNetKgDealer))
+
+const breadcrumbs = computed<BreadcrumbItem[]>(() => [
+    { title: config.value.roleLabel, href: config.value.dashboard().url },
+    { title: config.value.noun.plural, href: config.value.routes.index().url },
+    { title: props.schedule.scheduled_date },
+])
 
 const expandedItems = ref<Record<number, boolean>>({})
 
@@ -41,34 +45,34 @@ function netKgFor(itemId: number): number | null {
 </script>
 
 <template>
-    <Head :title="`Supply — ${supply.scheduled_date}`" />
+    <Head :title="`${config.entityLabel} — ${schedule.scheduled_date}`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-6 p-4 lg:p-6">
             <div class="flex items-end justify-between gap-4">
                 <Heading
-                    :title="supply.scheduled_date"
-                    :description="`${supply.time_slot} slot for this schedule`"
+                    :title="schedule.scheduled_date"
+                    :description="`${schedule.time_slot} slot for this schedule`"
                 />
                 <Button
-                    v-if="supply.post_items?.some((item) => item.status === 'ongoing')"
+                    v-if="schedule.post_items?.some((item) => item.status === 'ongoing')"
                     as-child
                     variant="outline"
                 >
-                    <Link :href="edit(supply.id).url">
+                    <Link :href="config.routes.edit(schedule.id).url">
                         <SquarePen class="size-4" />
                         Edit
                     </Link>
                 </Button>
             </div>
 
-            <p class="flex gap-2 items-center font-bold">
+            <p class="flex items-center gap-2 font-bold">
                 <Calendar1 class="size-4" />
-                <span>Items ({{ supply.post_items?.length ?? 0 }})</span>
+                <span>Items ({{ schedule.post_items?.length ?? 0 }})</span>
             </p>
 
             <Collapsible
-                v-for="item in supply.post_items"
+                v-for="item in schedule.post_items"
                 :key="item.id"
                 v-model:open="expandedItems[item.id]"
             >
@@ -90,10 +94,10 @@ function netKgFor(itemId: number): number | null {
                         <ItemTitle>{{ item.display_name }}</ItemTitle>
                         <ItemDescription v-if="netKgFor(item.id) !== null">
                             <span
-                                :class="netKgClassFarmer(netKgFor(item.id)!)"
+                                :class="netKgClass(netKgFor(item.id)!)"
                                 class="text-xs font-medium tabular-nums"
                             >
-                                {{ formatNetKgFarmer(netKgFor(item.id)!) }}
+                                {{ formatNetKg(netKgFor(item.id)!) }}
                             </span>
                         </ItemDescription>
                     </ItemContent>
@@ -106,7 +110,7 @@ function netKgFor(itemId: number): number | null {
                                 class="shrink-0"
                                 @click="toggleItemExpanded(item.id)"
                             >
-                                <ChevronsUpDown class="size-4"/>
+                                <ChevronsUpDown class="size-4" />
                             </Button>
                         </CollapsibleTrigger>
                     </ItemActions>
@@ -116,7 +120,7 @@ function netKgFor(itemId: number): number | null {
                     <div class="mt-4 rounded-md bg-muted/30 p-3">
                         <Deferred data="overlap">
                             <template #fallback>
-                                <div>Defering..</div>
+                                <div>Deferring…</div>
                             </template>
 
                             <EmptyState
@@ -125,22 +129,18 @@ function netKgFor(itemId: number): number | null {
                                 description="No other farmers or dealers are active for this vegetable in this slot."
                             />
 
-                            <div 
+                            <div
                                 v-else
                                 class="space-y-2"
                             >
-                                <div 
+                                <div
                                     v-if="overlap[item.id].supply_posters.length"
                                     class="space-y-2"
                                 >
-                                    <div class="flex justify-between items-center">
-                                        <p class="text-xs font-medium text-muted-foreground">
-                                            Farmers supplying
-                                        </p>
-
+                                    <div class="flex items-center justify-between">
+                                        <p class="text-xs font-medium text-muted-foreground">Farmers supplying</p>
                                         <Badge class="tabular-nums">{{ overlap[item.id].total_supplies_kg.toLocaleString() }} kg total supplies</Badge>
                                     </div>
-
                                     <SchedulePosters
                                         v-for="(poster, i) in overlap[item.id].supply_posters"
                                         :key="`supply-${i}`"
@@ -154,16 +154,12 @@ function netKgFor(itemId: number): number | null {
                                     v-if="overlap[item.id].demand_posters.length"
                                     class="space-y-2"
                                 >
-                                    <div class="flex justify-between items-center">
-                                        <p class="text-xs font-medium text-muted-foreground">
-                                            Dealers demanding
-                                        </p>
-
+                                    <div class="flex items-center justify-between">
+                                        <p class="text-xs font-medium text-muted-foreground">Dealers demanding</p>
                                         <Badge class="tabular-nums">
                                             {{ overlap[item.id].total_demands_kg.toLocaleString() }} kg total demands
                                         </Badge>
                                     </div>
-
                                     <SchedulePosters
                                         v-for="(poster, i) in overlap[item.id].demand_posters"
                                         :key="`demand-${i}`"
