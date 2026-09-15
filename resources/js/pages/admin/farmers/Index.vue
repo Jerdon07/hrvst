@@ -227,16 +227,6 @@ if (storedView === 'map' && props.view !== 'map') {
                 />
 
                 <div class="flex items-center gap-2">
-                    <Button
-                        as-child
-                        variant="outline"
-                    >
-                        <Link :href="users.farmers.create()">
-                            <UserRoundPlus :size="20" />
-                            Register Farmer
-                        </Link>
-                    </Button>
-
                     <ToggleGroup
                         :model-value="currentView"
                         variant="outline"
@@ -259,6 +249,13 @@ if (storedView === 'map' && props.view !== 'map') {
                             <span class="hidden sm:inline">Map</span>
                         </ToggleGroupItem>
                     </ToggleGroup>
+
+                    <Button as-child >
+                        <Link :href="users.farmers.create()">
+                            <UserRoundPlus :size="20" />
+                            Register Farmer
+                        </Link>
+                    </Button>
                 </div>
             </div>
 

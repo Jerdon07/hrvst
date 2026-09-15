@@ -20,14 +20,6 @@ defineProps<{
 
 <template>
     <div class="flex flex-col gap-4">
-        <!--
-            Summary cards are free for every admin, subscribed or not — these
-            are operational basics (is this user active, are they fulfilling
-            what they post), not the premium product. Gating these too would
-            leave admins blind on day-to-day moderation calls just to upsell
-            a $2,500 license. Only the deeper cuts (variety ranking, 6-month
-            trend) are paywalled below.
-        -->
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <SmallCard
                 title="Fulfillment Rate"

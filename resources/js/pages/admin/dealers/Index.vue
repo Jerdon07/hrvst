@@ -95,10 +95,7 @@ function handleSearch(query: string) {
                     description="Manage approved dealers and their activity metrics"
                 />
 
-                <Button
-                    as-child
-                    variant="outline"
-                >
+                <Button as-child >
                     <Link :href="users.dealers.create()">
                         <UserRoundPlus :size="20" />
                         Register Dealer
