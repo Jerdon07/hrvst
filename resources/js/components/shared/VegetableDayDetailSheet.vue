@@ -29,9 +29,6 @@ interface PosterGroup {
     status: string
 }
 
-// Lower number = more "active"/relevant. When a post somehow contributes
-// multiple items to the same group, we surface the most actionable status
-// rather than silently keeping whichever happened to arrive first.
 const STATUS_PRIORITY: Record<string, number> = {
     ongoing: 0,
     expired: 1,

@@ -15,7 +15,7 @@ import type { BreadcrumbItem, Paginated, PostDataFixed } from '@/types'
 const props = defineProps<{
     type: ScheduleType
     needsAction?: PostDataFixed[]
-    items: Paginated<PostDataFixed> | null
+    items?: Paginated<PostDataFixed> | null
 }>()
 
 const config = computed(() => scheduleRegistry[props.type])

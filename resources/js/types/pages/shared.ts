@@ -9,5 +9,5 @@ export interface SharedVegetablesFilters {
 export interface SharedVegetablesProps {
     categories: CategoryOption[]
     filters: SharedVegetablesFilters
-    vegetables: Paginated<App.Data.Vegetable.VegetableIndexData>
+    vegetables?: Paginated<App.Data.Vegetable.VegetableIndexData>
 }
