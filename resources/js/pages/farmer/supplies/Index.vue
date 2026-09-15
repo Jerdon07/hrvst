@@ -4,22 +4,17 @@ import { Package, Plus } from '@lucide/vue'
 import { ref } from 'vue'
 import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
 import EmptyState from '@/components/EmptyState.vue'
-import SupplyItem from '@/components/features/farmer/SupplyItem.vue'
+import PostItem from '@/components/shared/schedule/PostItem.vue'
 import Heading from '@/components/Heading.vue'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import AppLayout from '@/layouts/AppLayout.vue'
 import farmer from '@/routes/farmer'
-import { create, destroy, index } from '@/routes/farmer/supplies'
-import type {
-    BreadcrumbItem,
-    FarmerSuppliesProps,
-    PostDataFixed,
-} from '@/types'
+import { create, destroy, edit, index, show } from '@/routes/farmer/supplies'
+import { fulfill, expire } from '@/actions/App/Http/Controllers/Farmer/Schedule/PostItemController'
+import type { BreadcrumbItem, FarmerSuppliesProps, PostDataFixed } from '@/types'
 
 defineProps<FarmerSuppliesProps>()
-
-// ─── Delete ───────────────────────────────────────────────────────────────────
 
 const deleteDialogOpen = ref(false)
 const supplyToDelete = ref<PostDataFixed | null>(null)
@@ -40,8 +35,6 @@ function handleDelete() {
         },
     })
 }
-
-// ─── Pagination ───────────────────────────────────────────────────────────────
 
 function handlePageChange(page: number) {
     router.visit(index({ query: { page } }).url, {
@@ -95,17 +88,23 @@ const breadcrumbs: BreadcrumbItem[] = [
                     </div>
 
                     <div class="flex flex-col gap-2">
-                        <SupplyItem
+                        <PostItem
                             v-for="supply in needsAction"
                             :key="supply.id"
-                            :supply="supply"
+                            :post="supply"
+                            item-noun-singular="supply"
+                            item-noun-plural="supplies"
+                            entity-label="Supply"
+                            :show-url="show(supply.id).url"
+                            :edit-url="edit(supply.id).url"
+                            :fulfill-url="(id) => fulfill(id).url"
+                            :expire-url="(id) => expire(id).url"
                             @delete="openDelete(supply)"
                         />
                     </div>
                 </div>
             </Deferred>
 
-            <!-- ── Supply list (Ongoing only) ─────────────────────────── -->
             <Deferred data="supplies">
                 <template #fallback>
                     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -126,10 +125,17 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                 <template v-else>
                     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        <SupplyItem
+                        <PostItem
                             v-for="supply in supplies!.data"
                             :key="supply.id"
-                            :supply="supply"
+                            :post="supply"
+                            item-noun-singular="supply"
+                            item-noun-plural="supplies"
+                            entity-label="Supply"
+                            :show-url="show(supply.id).url"
+                            :edit-url="edit(supply.id).url"
+                            :fulfill-url="(id) => fulfill(id).url"
+                            :expire-url="(id) => expire(id).url"
                             @delete="openDelete(supply)"
                         />
                     </div>
@@ -147,15 +153,12 @@ const breadcrumbs: BreadcrumbItem[] = [
                             Previous
                         </Button>
                         <span class="text-sm text-muted-foreground">
-                            Page {{ supplies.current_page }} of
-                            {{ supplies.last_page }}
+                            Page {{ supplies.current_page }} of {{ supplies.last_page }}
                         </span>
                         <Button
                             variant="outline"
                             size="sm"
-                            :disabled="
-                                supplies.current_page === supplies.last_page
-                            "
+                            :disabled="supplies.current_page === supplies.last_page"
                             @click="handlePageChange(supplies.current_page + 1)"
                         >
                             Next
