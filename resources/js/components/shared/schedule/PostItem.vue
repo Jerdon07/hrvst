@@ -30,12 +30,22 @@ const emit = defineEmits<{ delete: [post: PostDataFixed] }>()
     <Item
         variant="outline"
         :class="[
-            'group bg-linear-to-r bg-size-[200%_100%] bg-left transition-all duration-300 hover:bg-right hover:shadow-sm',
+            'group relative overflow-hidden transition-[box-shadow,border] duration-300 hover:shadow-sm',
             post.needs_action
-            ? 'from-destructive/10 via-white to-white hover:border-l-4 hover:border-l-destructive'
-            : 'from-primary/10 via-white to-white hover:border-l-4 hover:border-l-primary'
+                ? 'hover:border-l-4 hover:border-l-destructive'
+                : 'hover:border-l-4 hover:border-l-primary',
         ]"
     >
+        <!-- Gradient overlay -->
+        <div
+            :class="[
+                'absolute inset-0 z-0 transition-opacity duration-300 group-hover:opacity-0',
+                post.needs_action
+                    ? 'bg-linear-to-l from-transparent to-destructive/20'
+                    : 'bg-linear-to-l from-transparent to-primary/20',
+            ]"
+        />
+        
         <ItemMedia variant="icon" :class="post.needs_action ? 'bg-destructive/10' : 'bg-primary/10'">
             <TriangleAlert v-if="post.needs_action" class="text-destructive" />
             <CalendarClock v-else />
@@ -52,7 +62,7 @@ const emit = defineEmits<{ delete: [post: PostDataFixed] }>()
             </ItemDescription>
         </ItemContent>
 
-        <ItemActions class="flex items-center gap-1">
+        <ItemActions class="z-10 flex items-center gap-1">
             <Popover>
                 <PopoverTrigger as-child>
                     <Button variant="ghost" size="icon-sm">
