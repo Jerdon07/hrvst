@@ -42,8 +42,9 @@ trait HandlesPostSchedule
         Gate::authorize('viewAny', Post::class);
 
         $userId = $request->user()->id;
+        $index = $this->pageNamespace() . '/Index';
 
-        return Inertia::render("{$this->pageNamespace()}/Index", [
+        return Inertia::render($index, [
             'type' => $this->postType()->value,
             'varietyOptions' => Inertia::defer(fn () => $this->postService->varietyOptions($this->postType())),
             'needsAction' => Inertia::defer(fn () => $this->collectData(
@@ -66,7 +67,9 @@ trait HandlesPostSchedule
             $status = PostItemStatus::Expired;
         }
 
-        return Inertia::render("{$this->pageNamespace()}/Archived", [
+        $archived = $this->pageNamespace() . '/Archived';
+
+        return Inertia::render($archived, [
             'type' => $this->postType()->value,
             'filters' => ['status' => $status->value],
             'items' => Inertia::defer(fn () => $this->collectData(
@@ -79,7 +82,9 @@ trait HandlesPostSchedule
     {
         Gate::authorize('create', [Post::class, $this->postType()]);
 
-        return Inertia::render("{$this->pageNamespace()}/Create", [
+        $create = $this->pageNamespace() . '/Create';
+
+        return Inertia::render($create, [
             'type' => $this->postType()->value,
             'varietyOptions' => Inertia::defer(fn () => $this->postService->varietyOptions($this->postType())),
         ]);
@@ -90,8 +95,9 @@ trait HandlesPostSchedule
         Gate::authorize('view', $post);
 
         $post->load('postItems.vegetable');
+        $show = $this->pageNamespace() . '/Show';
 
-        return Inertia::render("{$this->pageNamespace()}/Show", [
+        return Inertia::render($show, [
             'type' => $this->postType()->value,
             'schedule' => $this->fromModel($post),
             'overlap' => Inertia::defer(fn () => $this->overlapService->forPost($post)),
@@ -103,8 +109,9 @@ trait HandlesPostSchedule
         Gate::authorize('update', $post);
 
         $post->load('postItems.vegetable');
+        $edit = $this->pageNamespace() . '/Edit';
 
-        return Inertia::render("{$this->pageNamespace()}/Edit", [
+        return Inertia::render($edit, [
             'type' => $this->postType()->value,
             'schedule' => $this->fromModel($post),
             'varietyOptions' => Inertia::defer(fn () => $this->postService->varietyOptions($this->postType())),
