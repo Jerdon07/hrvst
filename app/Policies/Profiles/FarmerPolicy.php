@@ -12,9 +12,11 @@ class FarmerPolicy
         return true;
     }
 
-    public function view(): bool
+    public function view(User $user, FarmerProfile $farmerProfile): bool
     {
-        return true;
+        return $user->hasRole('farmer')
+            || $user->hasRole('dealer')
+            || $user->hasRole('admin') === false;
     }
 
     public function update(User $user, FarmerProfile $farmerProfile): bool
