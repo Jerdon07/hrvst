@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Deferred, Head, Link } from '@inertiajs/vue3'
-import { Calendar1, ChevronsUpDown, SquarePen } from '@lucide/vue'
+import { Calendar1, ChevronsUpDown, Ghost, SquarePen } from '@lucide/vue'
 import { computed, ref } from 'vue'
 import EmptyState from '@/components/EmptyState.vue'
 import Heading from '@/components/Heading.vue'
@@ -14,6 +14,8 @@ import { formatNetKgDealer, formatNetKgFarmer, netKgClassDealer, netKgClassFarme
 import AppLayout from '@/layouts/AppLayout.vue'
 import { scheduleRegistry, type ScheduleType } from '@/lib/scheduleRegistry'
 import type { BreadcrumbItem, PostDataFixed, VegetableOverlapData } from '@/types'
+import farmers from '@/routes/farmers'
+import dealers from '@/routes/dealers'
 
 const props = defineProps<{
     type: ScheduleType
@@ -125,8 +127,8 @@ function netKgFor(itemId: number): number | null {
 
                             <EmptyState
                                 v-if="!overlap?.[item.id]?.posters.length"
-                                title="Schedule is Empty"
-                                description="No other farmers or dealers are active for this vegetable in this slot."
+                                :icon="Ghost"
+                                title="You're alone..."
                             />
 
                             <div
@@ -144,7 +146,9 @@ function netKgFor(itemId: number): number | null {
                                     <SchedulePosters
                                         v-for="(poster, i) in overlap[item.id].supply_posters"
                                         :key="`supply-${i}`"
+                                        :link="farmers.show(poster.poster_id).url"
                                         :poster-name="poster.poster_name"
+                                        :poster-phone="poster.poster_phone"
                                         :quantity-kg="poster.quantity_kg"
                                         bg-class="bg-green-500/5"
                                     />
@@ -163,7 +167,9 @@ function netKgFor(itemId: number): number | null {
                                     <SchedulePosters
                                         v-for="(poster, i) in overlap[item.id].demand_posters"
                                         :key="`demand-${i}`"
+                                        :link="dealers.show(poster.poster_id).url"
                                         :poster-name="poster.poster_name"
+                                        :poster-phone="poster.poster_phone"
                                         :quantity-kg="poster.quantity_kg"
                                         bg-class="bg-orange-500/5"
                                     />
