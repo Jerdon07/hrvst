@@ -59,11 +59,7 @@ class BillingController extends Controller
 
     private function resolveFeatureFor($user): SubscriptionFeature
     {
-        return match (true) {
-            $user->hasRole('admin') => SubscriptionFeature::AdminAnalytics,
-            $user->hasRole('farmer') => SubscriptionFeature::FarmerForecasts,
-            $user->hasRole('dealer') => SubscriptionFeature::DealerMarketIntel,
-            default => throw new \RuntimeException('User has no subscribable feature.'),
-        };
+        return SubscriptionFeature::forUser($user)
+            ?? throw new \RuntimeException('User has no subscribable feature.');
     }
 }
