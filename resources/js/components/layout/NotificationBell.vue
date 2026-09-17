@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3'
+import { Link, router } from '@inertiajs/vue3'
 import { Bell, Lock, ThumbsUp } from '@lucide/vue'
 import axios from 'axios'
 import { onMounted, onUnmounted, ref } from 'vue'
@@ -14,9 +14,12 @@ import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemSeparator
 
 interface NotificationItem {
     id: string
-    vegetable_id: number
-    vegetable_name: string
+    kind: 'outlook_alert' | 'schedule_overlap' | 'unknown'
+    vegetable_id?: number
+    vegetable_name?: string
+    quantity_kg?: number
     message: string
+    url?: string
     detail_locked: boolean
     read_at: string | null
     created_at: string
@@ -43,6 +46,20 @@ async function markRead(item: NotificationItem): Promise<void> {
     await axios.post(`/notifications/${item.id}/read`)
     item.read_at = new Date().toISOString()
     unreadCount.value = Math.max(0, unreadCount.value - 1)
+}
+
+// Schedule-overlap notifications deep-link straight to the vegetable page.
+// Outlook alerts intentionally do NOT navigate on a generic click — their
+// detail is subscription-gated, and only the explicit "See exact timing"
+// link (guarded by @click.stop) is allowed to route to billing/unlock flow.
+// Making the whole item clickable-and-navigating for both kinds would let an
+// unsubscribed user bypass the paywall by clicking anywhere but the lock link.
+function handleItemClick(item: NotificationItem): void {
+    markRead(item)
+
+    if (item.kind === 'schedule_overlap' && item.url) {
+        router.visit(item.url)
+    }
 }
 
 onMounted(() => {
@@ -99,7 +116,7 @@ onUnmounted(() => {
                         <Item
                             :variant="item.read_at ? 'default' : 'muted' "
                             class="cursor-pointer hover:bg-accent rounded-none"
-                            @click="markRead(item)"
+                            @click="handleItemClick(item)"
                         >
                             <ItemContent>
                                 <ItemTitle>
@@ -114,7 +131,7 @@ onUnmounted(() => {
                                 </ItemDescription>
 
                                 <Link
-                                    v-if="item.detail_locked"
+                                    v-if="item.kind === 'outlook_alert' && item.detail_locked"
                                     :href="billingShow().url"
                                     class="flex items-center gap-1 text-xs text-primary"
                                     @click.stop
