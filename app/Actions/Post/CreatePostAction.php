@@ -9,9 +9,11 @@ use Illuminate\Support\Facades\DB;
 
 final class CreatePostAction
 {
+    public function __construct(private NotifyPostScheduleOverlapAction $notifyOverlap) {}
+
     public function handle(int $userId, PostType $type, array $validated): Post
     {
-        return DB::transaction(function () use ($userId, $type, $validated) {
+        $post = DB::transaction(function () use ($userId, $type, $validated) {
             $post = Post::create([
                 'user_id' => $userId,
                 'type' => $type,
@@ -29,5 +31,9 @@ final class CreatePostAction
 
             return $post->load('postItems.vegetable');
         });
+
+        $this->notifyOverlap->handle($post);
+
+        return $post;
     }
 }

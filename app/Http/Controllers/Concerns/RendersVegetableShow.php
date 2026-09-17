@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Concerns;
 use App\Data\Vegetable\VegetableDetailData;
 use App\Enums\Analytics\VegetableViewerRole;
 use App\Enums\Billing\SubscriptionFeature;
-use App\Models\Billing\Subscription;
 use App\Models\Vegetable\Vegetable;
 use App\Services\Vegetable\VegetableActivityService;
 use App\Services\Vegetable\VegetableDetailService;
@@ -34,14 +33,15 @@ trait RendersVegetableShow
         $month = (int) ($validated['month'] ?? now()->month);
         $user = $request->user();
 
-        [$role, $gateFeature] = match (true) {
-            $user->hasRole('admin') => [VegetableViewerRole::Admin, SubscriptionFeature::AdminAnalytics],
-            $user->hasRole('farmer') => [VegetableViewerRole::Farmer, SubscriptionFeature::FarmerForecasts],
-            $user->hasRole('dealer') => [VegetableViewerRole::Dealer, SubscriptionFeature::DealerMarketIntel],
+        $role = match (true) {
+            $user->hasRole('admin') => VegetableViewerRole::Admin,
+            $user->hasRole('farmer') => VegetableViewerRole::Farmer,
+            $user->hasRole('dealer') => VegetableViewerRole::Dealer,
             default => throw new \RuntimeException('User has no recognized role for vegetable viewer context.'),
         };
 
-        $hasForecastAccess = $gateFeature === null || Subscription::hasAccess($user, $gateFeature);
+        $gateFeature = SubscriptionFeature::forUser($user);
+        $hasForecastAccess = SubscriptionFeature::hasAccessFor($user);
 
         $activityOffset = $hasForecastAccess ? (int) ($validated['activity_offset'] ?? 0) : 0;
 

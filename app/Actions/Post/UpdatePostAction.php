@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\DB;
 
 final class UpdatePostAction
 {
+    public function __construct(private NotifyPostScheduleOverlapAction $notifyOverlap) {}
+
     public function handle(Post $post, array $validated): Post
     {
-        return DB::transaction(function () use ($post, $validated) {
+        $updated = DB::transaction(function () use ($post, $validated) {
             $post->update(Arr::only($validated, ['scheduled_date', 'time_slot']));
 
             if (array_key_exists('items', $validated)) {
@@ -19,6 +21,10 @@ final class UpdatePostAction
 
             return $post->fresh(['postItems.vegetable']);
         });
+
+        $this->notifyOverlap->handle($updated);
+
+        return $updated;
     }
 
     private function syncItems(Post $post, array $items): void

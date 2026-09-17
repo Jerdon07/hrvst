@@ -2,13 +2,14 @@
 
 namespace App\Enums\Billing;
 
+use App\Models\Billing\Subscription;
 use App\Models\User;
 
 enum SubscriptionFeature: string
 {
-    case AdminAnalytics = 'admin_analytics';       // LTVTP institutional license
-    case FarmerForecasts = 'farmer_forecasts';     // premium demand forecasting for farmers
-    case DealerMarketIntel = 'dealer_market_intel'; // premium supply/imbalance intel for dealers
+    case AdminAnalytics = 'admin_analytics';
+    case FarmerForecasts = 'farmer_forecasts';
+    case DealerMarketIntel = 'dealer_market_intel';
 
     public function label(): string
     {
@@ -37,5 +38,12 @@ enum SubscriptionFeature: string
             $user->hasRole('dealer') => self::DealerMarketIntel,
             default => null,
         };
+    }
+
+    public static function hasAccessFor(User $user): bool
+    {
+        $feature = self::forUser($user);
+
+        return $feature !== null && Subscription::hasAccess($user, $feature);
     }
 }

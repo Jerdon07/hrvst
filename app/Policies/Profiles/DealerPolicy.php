@@ -12,9 +12,11 @@ class DealerPolicy
         return true;
     }
 
-    public function view(): bool
+    public function view(User $user, DealerProfile $dealerProfile): bool
     {
-        return true;
+        return $user->hasRole('farmer')
+            || $user->hasRole('dealer')
+            || $user->hasRole('admin') === false;
     }
 
     public function update(User $user, DealerProfile $dealerProfile): bool
