@@ -23,37 +23,97 @@ import { getInitials } from '@/composables/useInitials'
 import AppLayout from '@/layouts/AppLayout.vue'
 import { useCapitalize } from '@/lib/utils'
 import { dashboard } from '@/routes'
-import type { BreadcrumbItem, FarmerResource } from '@/types'
+import type { BreadcrumbItem, DealerResource, FarmerResource } from '@/types'
+import type { UserResource } from '@/types/resources/user'
+
+type ProfileType = 'farmer' | 'dealer' | 'basic'
 
 const props = defineProps<{
-    farmer?: FarmerResource
+    profileType: ProfileType
+    meta: {
+        userId: number
+        name: string
+    }
+    profile?: FarmerResource | DealerResource | UserResource
 }>()
 
-const ongoingItems = computed<App.Data.PostItem.PostItemData[]>(
-    () => props.farmer?.supply_items?.filter((i) => i.status === 'ongoing') ?? [],
+// Narrowing helpers — profileType (not deferred) is always present on first
+// load, so these are safe to use even before the deferred `profile` prop
+// resolves.
+const farmer = computed<FarmerResource | null>(() =>
+    props.profileType === 'farmer' ? (props.profile as FarmerResource) : null,
 )
-const archivedItems = computed<App.Data.PostItem.PostItemData[]>(
-    () => props.farmer?.supply_items?.filter((i) => i.status === 'expired') ?? [],
+const dealer = computed<DealerResource | null>(() =>
+    props.profileType === 'dealer' ? (props.profile as DealerResource) : null,
 )
-const fulfilledItems = computed<App.Data.PostItem.PostItemData[]>(
-    () => props.farmer?.supply_items?.filter((i) => i.status === 'fulfilled') ?? [],
+const basicUser = computed<UserResource | null>(() =>
+    props.profileType === 'basic' ? (props.profile as UserResource) : null,
 )
-const totalQuantity = computed(
-    () => props.farmer?.supply_items?.reduce((sum, i) => sum + i.quantity_kg, 0) ?? 0,
+
+// Shared header fields, regardless of which of the three shapes resolved.
+const displayName = computed(
+    () => farmer.value?.user?.name ?? dealer.value?.user?.name ?? basicUser.value?.name ?? props.meta.name,
+)
+const avatarUrl = computed(
+    () => farmer.value?.user?.avatar_url ?? dealer.value?.user?.avatar_url ?? basicUser.value?.avatar_url ?? null,
+)
+const phoneNumber = computed(
+    () => farmer.value?.user?.phone_number ?? dealer.value?.user?.phone_number ?? basicUser.value?.phone_number ?? null,
+)
+const email = computed(
+    () => farmer.value?.user?.email ?? dealer.value?.user?.email ?? basicUser.value?.email ?? null,
+)
+
+const ongoingItems = computed<App.Data.PostItem.PostItemData[]>(() => {
+    const items = farmer.value?.supply_items ?? dealer.value?.demand_items ?? []
+    return items.filter((i) => i.status === 'ongoing')
+})
+const archivedItems = computed<App.Data.PostItem.PostItemData[]>(() => {
+    const items = farmer.value?.supply_items ?? dealer.value?.demand_items ?? []
+    return items.filter((i) => i.status === 'expired')
+})
+const fulfilledItems = computed<App.Data.PostItem.PostItemData[]>(() => {
+    const items = farmer.value?.supply_items ?? dealer.value?.demand_items ?? []
+    return items.filter((i) => i.status === 'fulfilled')
+})
+const totalQuantity = computed(() => {
+    const items = farmer.value?.supply_items ?? dealer.value?.demand_items ?? []
+    return items.reduce((sum, i) => sum + i.quantity_kg, 0)
+})
+
+const historyLabel = computed(() => (props.profileType === 'farmer' ? 'Full Post History' : 'Full Demand History'))
+const insights = computed(() => farmer.value?.insights ?? dealer.value?.insights ?? null)
+const analyticsLocked = computed(() => farmer.value?.analytics_locked ?? dealer.value?.analytics_locked ?? true)
+const teaserProps = computed(() =>
+    props.profileType === 'farmer'
+        ? {
+              featureLabel: 'Premium Demand Forecasts',
+              wasteTitle: 'Most Supplied Vegetables',
+              wasteDescription: 'By total kilograms supplied',
+              wasteGuideQuestion: 'What does this farmer sell most?',
+              volumeTitle: '6-Month Supply Volume',
+          }
+        : {
+              featureLabel: 'Premium Market Intelligence',
+              wasteTitle: 'Most Ordered Vegetables',
+              wasteDescription: 'By total kilograms demanded',
+              wasteGuideQuestion: 'What does this dealer order most?',
+              volumeTitle: '6-Month Demand Volume',
+          },
 )
 
 const breadcrumbs = computed<BreadcrumbItem[]>(() => [
     { title: useCapitalize(usePage().props.auth.user.roles[0]), href: dashboard().url },
-    { title: props.farmer?.user?.name ?? 'Farmer' },
+    { title: displayName.value },
 ])
 </script>
 
 <template>
-    <Head :title="farmer?.user?.name ?? 'Farmer'" />
+    <Head :title="displayName" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-6 p-4 lg:p-6">
-            <Deferred data="farmer">
+            <Deferred data="profile">
                 <template #fallback>
                     <div class="grid grid-cols-12 gap-5">
                         <div class="col-span-12 lg:col-span-3">
@@ -78,49 +138,49 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
                 </template>
 
                 <div
-                    v-if="farmer"
+                    v-if="profile"
                     class="md:grid grid-cols-12 gap-5"
                 >
-                    <!-- Sidebar -->
+                    <!-- Sidebar — identical across all three profile types -->
                     <div class="md:sticky h-fit top-6 col-span-12 lg:col-span-3">
                         <Card class="h-fit pt-0 overflow-hidden">
-                            <!-- Image -->
                             <div class="h-15 w-full bg-primary/10 mb-6" />
                             <Avatar class="absolute top-5 right-5 size-20 border-4 border-background">
                                 <AvatarImage
-                                    v-if="farmer.user?.avatar_url"
-                                    :src="farmer.user?.avatar_url"
-                                    :alt="farmer.user.name"
+                                    v-if="avatarUrl"
+                                    :src="avatarUrl"
+                                    :alt="displayName"
                                 />
                                 <AvatarFallback class="bg-primary text-base font-semibold text-background">
-                                    {{ getInitials(farmer.user?.name) }}
+                                    {{ getInitials(displayName) }}
                                 </AvatarFallback>
                             </Avatar>
 
-                            <!-- Personal Info — no edit affordances here, unlike admin/farmers/Show -->
                             <CardHeader>
-                                <CardTitle class="uppercase">{{ farmer.user?.name }}</CardTitle>
+                                <CardTitle class="uppercase">{{ displayName }}</CardTitle>
                                 <CardDescription class="space-y-1">
                                     <div
-                                        v-if="farmer.user"
+                                        v-if="phoneNumber"
                                         class="flex items-center gap-2 text-xs"
                                     >
                                         <Phone class="size-3.5 shrink-0" />
-                                        <span>{{ farmer.user.phone_number }}</span>
+                                        <span>{{ phoneNumber }}</span>
                                     </div>
                                     <div
-                                        v-if="farmer.user?.email"
-                                        class="flex items-center gap-2"
+                                        v-if="email"
+                                        class="flex items-center gap-2 text-xs"
                                     >
-                                        <Mail class="size-4 shrink-0" /><span class="truncate">{{ farmer.user?.email }}</span>
+                                        <Mail class="size-4 shrink-0" /><span class="truncate">{{ email }}</span>
                                     </div>
                                 </CardDescription>
                             </CardHeader>
 
-                            <!-- Map -->
-                            <CardContent class="rounded overflow-hidden">
+                            <!-- Farm location — farmer only, dealers/admins have no coordinates -->
+                            <CardContent
+                                v-if="farmer?.coordinates"
+                                class="rounded overflow-hidden"
+                            >
                                 <LeafletMap
-                                    v-if="farmer.coordinates"
                                     :lat="farmer.coordinates.lat"
                                     :lng="farmer.coordinates.lng"
                                     :markers="[
@@ -138,28 +198,25 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
                     <!-- Main -->
                     <div class="col-span-12 space-y-4 lg:col-span-9">
                         <!--
-                            farmer.analytics_locked is driven by the VIEWER's own
-                            subscription (see Shared\FarmerController::show —
-                            SubscriptionFeature::hasAccessFor($request->user())),
-                            not the profile owner's. Two farmers looking at the
-                            same profile can see different lock states.
+                            analyticsLocked is driven by the VIEWER's own
+                            subscription (SubscriptionFeature::hasAccessFor in
+                            Shared\UserController), not the profile owner's.
                         -->
                         <UserTeaser
-                            v-if="farmer.insights"
-                            :insights="farmer.insights"
-                            :locked="farmer.analytics_locked"
+                            v-if="insights"
+                            :insights="insights"
+                            :locked="analyticsLocked"
                             :total-quantity="totalQuantity"
-                            feature-label="Premium Demand Forecasts"
-                            waste-title="Most Supplied Vegetables"
-                            waste-description="By total kilograms supplied"
-                            waste-unit-label="kg"
-                            waste-guide-question="What does this farmer sell most?"
-                            volume-title="6-Month Supply Volume"
+                            v-bind="teaserProps"
                         />
 
-                        <Collapsible :default-open="false">
+                        <!-- Basic (admin / roleless) profiles have no post history to show -->
+                        <Collapsible
+                            v-if="profileType !== 'basic'"
+                            :default-open="false"
+                        >
                             <CollapsibleTrigger class="flex w-full items-center justify-between rounded-lg border bg-muted/20 px-4 py-2.5 text-sm font-medium hover:bg-muted/40">
-                                Full Post History
+                                {{ historyLabel }}
                                 <ChevronDown class="size-4 text-muted-foreground transition-transform duration-200 data-[state=open]:rotate-180" />
                             </CollapsibleTrigger>
                             <CollapsibleContent class="pt-4">
@@ -258,6 +315,12 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
                                 </Card>
                             </CollapsibleContent>
                         </Collapsible>
+
+                        <Card v-else>
+                            <CardContent class="flex h-24 items-center justify-center text-sm text-muted-foreground">
+                                No supply or demand activity for this account.
+                            </CardContent>
+                        </Card>
                     </div>
                 </div>
             </Deferred>

@@ -7,6 +7,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\RegistrationRequestController;
+use App\Http\Controllers\Shared\UserController;
 use App\Http\Controllers\VegetableExportController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -37,6 +38,8 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('dashboard', DashboardController::class)->name('dashboard');
+
+    Route::get('users/{user}', [UserController::class, 'show'])->name('users.show');
 
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('notifications/{id}/read', [NotificationController::class, 'markRead'])->name('notifications.read');

@@ -16,6 +16,7 @@ use App\Policies\Profiles\DealerPolicy;
 use App\Policies\Profiles\FarmerPolicy;
 use App\Policies\Schedule\PostItemPolicy;
 use App\Policies\Schedule\PostPolicy;
+use App\Policies\UserPolicy;
 use App\Policies\VegetablePolicy;
 use App\Policies\VegetableWatchPolicy;
 use App\Services\Billing\MockPaymentGateway;
@@ -56,6 +57,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Post::class, PostPolicy::class);
         Gate::policy(PostItem::class, PostItemPolicy::class);
         Gate::policy(VegetableWatch::class, VegetableWatchPolicy::class);
+        Gate::policy(User::class, UserPolicy::class);
 
         Gate::define('not-admin', function (User $user) {
             return $user->hasRole('admin') === false;

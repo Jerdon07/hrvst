@@ -14,9 +14,7 @@ class DealerPolicy
 
     public function view(User $user, DealerProfile $dealerProfile): bool
     {
-        return $user->hasRole('farmer')
-            || $user->hasRole('dealer')
-            || $user->hasRole('admin') === false;
+        return true;
     }
 
     public function update(User $user, DealerProfile $dealerProfile): bool

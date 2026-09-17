@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Data\Profile\DealerData;
-use App\Enums\Billing\SubscriptionFeature;
 use App\Http\Controllers\Controller;
-use App\Models\Billing\Subscription;
 use App\Models\Profiles\DealerProfile;
 use App\Services\Admin\DealerService;
 use Illuminate\Http\JsonResponse;
@@ -39,19 +37,6 @@ class DealerController extends Controller
         Gate::authorize('view', $dealer);
 
         return response()->json(DealerData::from($this->dealerService->details($dealer)));
-    }
-
-    public function show(Request $request, DealerProfile $dealer): Response
-    {
-        Gate::authorize('view', $dealer);
-
-        $hasAnalyticsAccess = Subscription::hasAccess($request->user(), SubscriptionFeature::AdminAnalytics);
-
-        return Inertia::render('admin/dealers/Show', [
-            'dealer' => Inertia::defer(
-                fn () => DealerData::from($this->dealerService->show($dealer, $hasAnalyticsAccess))
-            ),
-        ]);
     }
 
     public function destroy(DealerProfile $dealer): RedirectResponse

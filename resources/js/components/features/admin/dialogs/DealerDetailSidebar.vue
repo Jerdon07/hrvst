@@ -9,11 +9,9 @@ import {
     Trash,
 } from '@lucide/vue'
 import { ref, watch } from 'vue'
-import {
-    destroy,
-    show,
-} from '@/actions/App/Http/Controllers/Admin/DealerController'
+import { destroy } from '@/actions/App/Http/Controllers/Admin/DealerController'
 import { resetPin } from '@/actions/App/Http/Controllers/Admin/UserController'
+import { show } from '@/actions/App/Http/Controllers/Shared/UserController'
 import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
 import DetailSheet from '@/components/dialogs/DetailSheet.vue'
 import EmptyState from '@/components/EmptyState.vue'
@@ -197,7 +195,6 @@ const handleDelete = () => {
                                 <Badge>{{ item.quantity_kg }} kg</Badge>
                             </ItemActions>
                         </Item>
-                        
                     </template>
                 </ItemGroup>
 
@@ -218,11 +215,16 @@ const handleDelete = () => {
                 v-else-if="dealer"
                 class="flex justify-end gap-3"
             >
+                <!--
+                    Points at the unified profile route (Shared\UserController)
+                    keyed by USER id, not the DealerProfile id — the old
+                    admin.dealers.show route this used to hit no longer exists.
+                -->
                 <Button
                     variant="outline"
                     size="sm"
                     class="cursor-pointer"
-                    @click="router.visit(show(dealer.id).url)"
+                    @click="router.visit(show(dealer.user?.id ?? 0).url)"
                 >
                     <Info />
                     More Details
