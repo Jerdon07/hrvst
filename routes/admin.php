@@ -46,7 +46,6 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
 
     Route::prefix('farmers')->name('farmers.')->group(function () {
         Route::get('/', [FarmerController::class, 'index'])->name('index');
-        Route::get('/{farmer}', [FarmerController::class, 'show'])->name('show');
         Route::delete('/{farmer}', [FarmerController::class, 'destroy'])->name('destroy');
 
         Route::prefix('api')->name('api.')->group(function () {
@@ -59,7 +58,6 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
 
     Route::prefix('dealers')->name('dealers.')->group(function () {
         Route::get('/', [DealerController::class, 'index'])->name('index');
-        Route::get('/{dealer}', [DealerController::class, 'show'])->name('show');
         Route::delete('/{dealer}', [DealerController::class, 'destroy'])->name('destroy');
 
         Route::prefix('api')->name('api.')->group(function () {
