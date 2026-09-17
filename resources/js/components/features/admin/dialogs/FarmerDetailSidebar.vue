@@ -9,11 +9,9 @@ import {
     Trash,
 } from '@lucide/vue'
 import { ref, watch } from 'vue'
-import {
-    destroy,
-    show,
-} from '@/actions/App/Http/Controllers/Admin/FarmerController'
+import { destroy } from '@/actions/App/Http/Controllers/Admin/FarmerController'
 import { resetPin } from '@/actions/App/Http/Controllers/Admin/UserController'
+import { show } from '@/actions/App/Http/Controllers/Shared/UserController'
 import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
 import DetailSheet from '@/components/dialogs/DetailSheet.vue'
 import EmptyState from '@/components/EmptyState.vue'
@@ -194,7 +192,6 @@ function handleDelete() {
                                 <Badge>{{ item.quantity_kg }} kg</Badge>
                             </ItemActions>
                         </Item>
-                        
                     </template>
                 </ItemGroup>
 
@@ -218,7 +215,7 @@ function handleDelete() {
                 <Button
                     variant="outline"
                     size="sm"
-                    @click="router.visit(show(farmer.id).url)"
+                    @click="router.visit(show(farmer.user?.id ?? 0).url)"
                 >
                     <Info class="size-4" />
                     More Details
