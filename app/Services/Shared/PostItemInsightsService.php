@@ -140,22 +140,20 @@ class PostItemInsightsService
             ->whereNull('posts.deleted_at')
             ->whereNull('post_items.deleted_at')
             ->where('posts.created_at', '>=', $start)
-            ->selectRaw("TO_CHAR(posts.created_at, 'YYYY-MM') as period, SUM(post_items.quantity_kg) as total_kg")
-            ->groupByRaw("TO_CHAR(posts.created_at, 'YYYY-MM')")
+            ->select('posts.created_at', 'post_items.quantity_kg')
             ->get()
-            ->keyBy('period');
+            ->groupBy(fn ($row) => \Carbon\Carbon::parse($row->created_at)->format('Y-m'))
+            ->map(fn ($group) => $group->sum('quantity_kg'));
 
         $result = [];
-
         for ($i = $months - 1; $i >= 0; $i--) {
             $date = now()->startOfMonth()->subMonths($i);
             $key = $date->format('Y-m');
-            $row = $rows->get($key);
 
             $result[] = new MonthlyVolumeData(
                 month: $key,
                 label: $date->format('M Y'),
-                value_kg: round((float) ($row->total_kg ?? 0), 2),
+                value_kg: round((float) ($rows->get($key) ?? 0), 2),
             );
         }
 
