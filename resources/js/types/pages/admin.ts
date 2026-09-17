@@ -1,6 +1,3 @@
-// Admin Inertia page props
-// Each interface maps to the props object in Inertia::render('admin/...')
-
 import type { MunicipalityOption, SupplyOption } from '../resources/marketplace'
 import type { CategoryOption, VegetableSummary } from '../resources/product'
 import type {
@@ -67,12 +64,6 @@ export interface AdminFarmersProps {
     summary: AdminFarmerSummary
 }
 
-// ─── admin/farmers/Show ───────────────────────────────────────────────────────
-
-export interface AdminFarmerShowProps {
-    farmer: FarmerResource
-}
-
 // ─── admin/dealers/Index ──────────────────────────────────────────────────────
 
 export interface AdminDealersFilters {
@@ -83,10 +74,4 @@ export interface AdminDealersProps {
     summary: AdminDealerSummary
     dealers: Paginated<DealerResource>
     filters: AdminDealersFilters
-}
-
-// ─── admin/dealers/Show ───────────────────────────────────────────────────────
-
-export interface AdminDealerShowProps {
-    dealer: DealerResource
 }
