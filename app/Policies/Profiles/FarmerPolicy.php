@@ -14,9 +14,7 @@ class FarmerPolicy
 
     public function view(User $user, FarmerProfile $farmerProfile): bool
     {
-        return $user->hasRole('farmer')
-            || $user->hasRole('dealer')
-            || $user->hasRole('admin') === false;
+        return true;
     }
 
     public function update(User $user, FarmerProfile $farmerProfile): bool
