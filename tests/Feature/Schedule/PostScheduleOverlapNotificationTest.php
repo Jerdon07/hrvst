@@ -290,3 +290,78 @@ describe('schedule overlap notification on update', function () {
         Notification::assertSentTo($dealer, PostScheduleOverlapNotification::class);
     });
 });
+
+describe('schedule overlap notification web push delivery', function () {
+ 
+    it('requests both database AND webpush channels — not just database', function () {
+        Notification::fake();
+ 
+        $date = now()->addDays(3)->toDateString();
+        $vegetable = createVegetable();
+ 
+        $dealer = createDealerUser();
+        createDemandPost($dealer, $vegetable, [
+            'scheduled_date' => $date,
+            'time_slot' => PostTimeSlot::Morning,
+        ]);
+ 
+        $farmer = createFarmerUser();
+ 
+        actingAs($farmer)
+            ->post(route('farmer.supplies.store'), supplyPayload($vegetable->id, $date))
+            ->assertRedirect();
+ 
+        Notification::assertSentTo(
+            $dealer,
+            PostScheduleOverlapNotification::class,
+            fn ($notification, $channels) => $channels === ['database', \NotificationChannels\WebPush\WebPushChannel::class]
+        );
+    });
+ 
+    it('builds a webpush payload with a non-empty title, body, and deep link', function () {
+        $date = now()->addDays(3)->toDateString();
+        $vegetable = createVegetable();
+        $dealer = createDealerUser();
+ 
+        $notification = new PostScheduleOverlapNotification(
+            $vegetable,
+            \App\Enums\PostType::Supply,
+            $date,
+            PostTimeSlot::Morning,
+            100.0,
+        );
+ 
+        $message = $notification->toWebPush($dealer, $notification)->toArray();
+ 
+        expect($message['title'])->not->toBeEmpty()
+            ->and($message['body'])->not->toBeEmpty()
+            ->and($message['data']['url'] ?? null)->not->toBeEmpty();
+    });
+ 
+    it('does not send webpush at all when the recipient has no push subscription', function () {
+        Notification::fake();
+ 
+        $date = now()->addDays(3)->toDateString();
+        $vegetable = createVegetable();
+ 
+        $dealer = createDealerUser();
+        expect($dealer->pushSubscriptions()->count())->toBe(0);
+ 
+        createDemandPost($dealer, $vegetable, [
+            'scheduled_date' => $date,
+            'time_slot' => PostTimeSlot::Morning,
+        ]);
+ 
+        $farmer = createFarmerUser();
+ 
+        actingAs($farmer)
+            ->post(route('farmer.supplies.store'), supplyPayload($vegetable->id, $date))
+            ->assertRedirect();
+ 
+        Notification::assertSentTo(
+            $dealer,
+            PostScheduleOverlapNotification::class,
+            fn ($notification, $channels) => in_array(\NotificationChannels\WebPush\WebPushChannel::class, $channels, true)
+        );
+    });
+});
