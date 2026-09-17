@@ -126,7 +126,7 @@ function createDealerUser(array $overrides = []): User
     return $user;
 }
 
-// ─── Products ────────────────────────────────────────────────────────────────
+// ─── Vegetables ────────────────────────────────────────────────────────────────
 
 function createVegetable(): Vegetable
 {
@@ -179,4 +179,27 @@ function createDemandPost(User $dealer, Vegetable $vegetable, array $overrides =
     ]);
 
     return $post;
+}
+
+// ─── Defer ───────────────────────────────────────────────────────────────────
+
+function getDeferredProp(string $url, string $component, string $prop): mixed
+{
+    $page = test()->get($url);
+    $page->assertOk();
+
+    preg_match('/data-page="([^"]+)"/', $page->getContent(), $matches);
+    $pageData = json_decode(htmlspecialchars_decode($matches[1]), true);
+    $version = $pageData['version'] ?? null;
+
+    $response = test()->get($url, [
+        'X-Inertia' => 'true',
+        'X-Inertia-Version' => $version,
+        'X-Inertia-Partial-Data' => $prop,
+        'X-Inertia-Partial-Component' => $component,
+    ]);
+
+    $response->assertOk();
+
+    return $response->json("props.{$prop}");
 }

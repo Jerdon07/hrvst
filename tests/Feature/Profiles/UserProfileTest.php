@@ -33,31 +33,6 @@ function subscribeViewerTo(App\Models\User $user, SubscriptionFeature $feature):
     ]);
 }
 
-/**
- * Inertia::defer() props are withheld from the initial page response and
- * only resolved via a follow-up partial-reload request. Simulating that
- * here requires the correct X-Inertia-Version — guessed/precomputed values
- * caused a spurious 409 previously, so this fetches the real version from a
- * live (non-partial) Inertia response first, then reuses it.
- */
-function getDeferredProp(string $url, string $component, string $prop): mixed
-{
-    $probe = test()->get($url, ['X-Inertia' => 'true']);
-    $probe->assertOk();
-    $version = $probe->json('version');
-
-    $response = test()->get($url, [
-        'X-Inertia' => 'true',
-        'X-Inertia-Version' => $version,
-        'X-Inertia-Partial-Data' => $prop,
-        'X-Inertia-Partial-Component' => $component,
-    ]);
-
-    $response->assertOk();
-
-    return $response->json("props.{$prop}");
-}
-
 // ═══════════════════════════════════════════════════════════════════════════════
 // ACCESS CONTROL — universal: farmer, dealer, and admin all reach this route
 // ═══════════════════════════════════════════════════════════════════════════════
