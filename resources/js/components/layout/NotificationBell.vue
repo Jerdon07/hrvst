@@ -48,12 +48,6 @@ async function markRead(item: NotificationItem): Promise<void> {
     unreadCount.value = Math.max(0, unreadCount.value - 1)
 }
 
-// Schedule-overlap notifications deep-link straight to the vegetable page.
-// Outlook alerts intentionally do NOT navigate on a generic click — their
-// detail is subscription-gated, and only the explicit "See exact timing"
-// link (guarded by @click.stop) is allowed to route to billing/unlock flow.
-// Making the whole item clickable-and-navigating for both kinds would let an
-// unsubscribed user bypass the paywall by clicking anywhere but the lock link.
 function handleItemClick(item: NotificationItem): void {
     markRead(item)
 
