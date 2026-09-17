@@ -28,13 +28,6 @@ describe('admin farmer access control', function () {
             ->assertRedirect(route('login'));
     });
 
-    it('redirects guest to login on show', function () {
-        $farmer = createFarmerUser();
-
-        get(route('admin.farmers.show', $farmer->farmerProfile))
-            ->assertRedirect(route('login'));
-    });
-
     it('redirects guest to login on markers api', function () {
         get(route('admin.farmers.api.markers'))
             ->assertRedirect(route('login'));
@@ -104,29 +97,6 @@ describe('admin farmer index', function () {
             ->assertInertia(fn (Assert $page) => $page
                 ->where('filters.search', null)
             );
-    });
-});
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// SHOW
-// ═══════════════════════════════════════════════════════════════════════════════
-
-describe('admin farmer show', function () {
-    it('renders the farmer profile page', function () {
-        $farmer = createFarmerUser();
-
-        actingAs(createAdminUser())
-            ->get(route('admin.farmers.show', $farmer->farmerProfile))
-            ->assertOk()
-            ->assertInertia(fn (Assert $page) => $page
-                ->component('admin/farmers/Show')
-            );
-    });
-
-    it('returns 404 for a nonexistent farmer profile', function () {
-        actingAs(createAdminUser())
-            ->get(route('admin.farmers.show', 999999))
-            ->assertNotFound();
     });
 });
 

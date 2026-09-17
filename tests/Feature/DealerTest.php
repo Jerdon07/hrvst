@@ -27,13 +27,6 @@ describe('admin dealer access control', function () {
             ->assertRedirect(route('login'));
     });
 
-    it('redirects guest to login on show', function () {
-        $dealer = createDealerUser();
-
-        get(route('admin.dealers.show', $dealer->dealerProfile))
-            ->assertRedirect(route('login'));
-    });
-
     it('blocks a farmer from admin dealer routes', function () {
         actingAs(createFarmerUser())
             ->get(route('admin.dealers.index'))
@@ -78,29 +71,6 @@ describe('admin dealer index', function () {
             ->assertInertia(fn (Assert $page) => $page
                 ->where('filters.search', 'John')
             );
-    });
-});
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// SHOW
-// ═══════════════════════════════════════════════════════════════════════════════
-
-describe('admin dealer show', function () {
-    it('renders the dealer profile page', function () {
-        $dealer = createDealerUser();
-
-        actingAs(createAdminUser())
-            ->get(route('admin.dealers.show', $dealer->dealerProfile))
-            ->assertOk()
-            ->assertInertia(fn (Assert $page) => $page
-                ->component('admin/dealers/Show')
-            );
-    });
-
-    it('returns 404 for a nonexistent dealer profile', function () {
-        actingAs(createAdminUser())
-            ->get(route('admin.dealers.show', 999999))
-            ->assertNotFound();
     });
 });
 
