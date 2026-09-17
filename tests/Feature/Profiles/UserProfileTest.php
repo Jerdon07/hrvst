@@ -40,7 +40,7 @@ function subscribeViewerTo(App\Models\User $user, SubscriptionFeature $feature):
  * caused a spurious 409 previously, so this fetches the real version from a
  * live (non-partial) Inertia response first, then reuses it.
  */
-function getDeferredProps(string $url, string $component, string $prop): mixed
+function getDeferredProp(string $url, string $component, string $prop): mixed
 {
     $probe = test()->get($url, ['X-Inertia' => 'true']);
     $probe->assertOk();
@@ -155,7 +155,7 @@ describe('analytics gating on the unified profile is per-viewer', function () {
         $target = createFarmerUser();
 
         actingAs($viewer);
-        $profile = getDeferredProps(route('users.show', $target), 'shared/users/Show', 'profile');
+        $profile = getDeferredProp(route('users.show', $target), 'shared/users/Show', 'profile');
 
         expect($profile['analytics_locked'])->toBeTrue();
     });
@@ -166,7 +166,7 @@ describe('analytics gating on the unified profile is per-viewer', function () {
         $target = createFarmerUser(); // target has no subscription of their own
 
         actingAs($viewer);
-        $profile = getDeferredProps(route('users.show', $target), 'shared/users/Show', 'profile');
+        $profile = getDeferredProp(route('users.show', $target), 'shared/users/Show', 'profile');
 
         expect($profile['analytics_locked'])->toBeFalse();
     });
@@ -179,7 +179,7 @@ describe('analytics gating on the unified profile is per-viewer', function () {
         subscribeViewerTo($target, SubscriptionFeature::FarmerForecasts); // target IS subscribed
 
         actingAs($viewer);
-        $profile = getDeferredProps(route('users.show', $target), 'shared/users/Show', 'profile');
+        $profile = getDeferredProp(route('users.show', $target), 'shared/users/Show', 'profile');
 
         expect($profile['analytics_locked'])->toBeTrue();
     });
@@ -190,7 +190,7 @@ describe('analytics gating on the unified profile is per-viewer', function () {
         $target = createDealerUser();
 
         actingAs($viewer);
-        $profile = getDeferredProps(route('users.show', $target), 'shared/users/Show', 'profile');
+        $profile = getDeferredProp(route('users.show', $target), 'shared/users/Show', 'profile');
 
         expect($profile['analytics_locked'])->toBeFalse();
     });
@@ -201,7 +201,7 @@ describe('analytics gating on the unified profile is per-viewer', function () {
         $target = createDealerUser();
 
         actingAs($viewer);
-        $profile = getDeferredProps(route('users.show', $target), 'shared/users/Show', 'profile');
+        $profile = getDeferredProp(route('users.show', $target), 'shared/users/Show', 'profile');
 
         expect($profile['analytics_locked'])->toBeTrue();
     });
@@ -219,7 +219,7 @@ describe('profile type resolves from data, not role name alone', function () {
         $admin = createAdminUser();
 
         actingAs(createFarmerUser());
-        $profile = getDeferredProps(route('users.show', $admin), 'shared/users/Show', 'profile');
+        $profile = getDeferredProp(route('users.show', $admin), 'shared/users/Show', 'profile');
 
         expect($profile)->toHaveKey('name')
             ->and($profile)->not->toHaveKey('supply_items');
