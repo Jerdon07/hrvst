@@ -14,7 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { daysOverdue, isDueToday, urgencyClass, urgencyLabel } from '@/composables/usePostItemUrgency'
 import type { ExpiringPostDataFixed } from '@/types'
 
-const props = defineProps<{
+defineProps<{
     items: ExpiringPostDataFixed[]
     deferredKey: string
     viewAllUrl: string

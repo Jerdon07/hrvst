@@ -12,7 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ScrollArea } from '@/components/ui/scroll-area'
 import type { PostDataFixed } from '@/types'
 
-const props = defineProps<{
+defineProps<{
     post: PostDataFixed
     itemNounSingular: string
     itemNounPlural: string
