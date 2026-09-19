@@ -14,8 +14,7 @@ import { formatNetKgDealer, formatNetKgFarmer, netKgClassDealer, netKgClassFarme
 import AppLayout from '@/layouts/AppLayout.vue'
 import { scheduleRegistry, type ScheduleType } from '@/lib/scheduleRegistry'
 import type { BreadcrumbItem, PostDataFixed, VegetableOverlapData } from '@/types'
-import dealers from '@/routes/dealers'
-import farmers from '@/routes/farmers'
+import users from '@/routes/users'
 
 const props = defineProps<{
     type: ScheduleType
@@ -146,7 +145,7 @@ function netKgFor(itemId: number): number | null {
                                     <SchedulePosters
                                         v-for="(poster, i) in overlap[item.id].supply_posters"
                                         :key="`supply-${i}`"
-                                        :link="farmers.show(poster.poster_id).url"
+                                        :link="users.show(poster.poster_id).url"
                                         :poster-name="poster.poster_name"
                                         :poster-phone="poster.poster_phone"
                                         :quantity-kg="poster.quantity_kg"
@@ -167,7 +166,7 @@ function netKgFor(itemId: number): number | null {
                                     <SchedulePosters
                                         v-for="(poster, i) in overlap[item.id].demand_posters"
                                         :key="`demand-${i}`"
-                                        :link="dealers.show(poster.poster_id).url"
+                                        :link="users.show(poster.poster_id).url"
                                         :poster-name="poster.poster_name"
                                         :poster-phone="poster.poster_phone"
                                         :quantity-kg="poster.quantity_kg"
