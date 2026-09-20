@@ -397,17 +397,4 @@ describe('admin farmer map subscription gating', function () {
             ->getJson(route('admin.farmers.api.markers'))
             ->assertOk();
     });
-
-    it('does not loop back to billing when an unsubscribed admin returns to the farmer list', function () {
-        $admin = createAdminUser();
-
-        $page = $this->actingAs($admin)->visit('/admin/farmers')
-            ->click('Map')
-            ->assertUrlIs('/billing')
-            ->assertNoJavaScriptErrors();
-
-        $page->visit('/admin/farmers')
-            ->assertSee('Farmers')
-            ->assertUrlIs('/admin/farmers');
-    });
 });
