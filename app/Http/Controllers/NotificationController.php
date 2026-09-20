@@ -63,7 +63,7 @@ class NotificationController extends Controller
                 'vegetable_name' => $n->data['vegetable_name'],
                 'quantity_kg' => $n->data['quantity_kg'] ?? null,
                 'message' => $n->data['message'],
-                'url' => $n->data['url'] ?? null,
+                'url' => $this->toRelativeUrl($n->data['url'] ?? null),
                 'detail_locked' => false,
                 'read_at' => $n->read_at,
                 'created_at' => $n->created_at->diffForHumans(),
@@ -84,5 +84,16 @@ class NotificationController extends Controller
         $request->user()->notifications()->where('id', $id)->update(['read_at' => now()]);
 
         return response()->json(['status' => 'ok']);
+    }
+
+    private function toRelativeUrl(?string $url): ?string
+    {
+        if ($url === null) {
+            return null;
+        }
+
+        $parts = parse_url($url);
+
+        return ($parts['path'] ?? '/').(isset($parts['query']) ? '?'.$parts['query'] : '');
     }
 }

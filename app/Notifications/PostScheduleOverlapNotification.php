@@ -42,7 +42,7 @@ class PostScheduleOverlapNotification extends Notification implements ShouldQueu
             'time_slot' => $this->timeSlot->value,
             'quantity_kg' => $this->quantityKg,
             'message' => $this->message(),
-            'url' => $this->url(),
+            'url' => route('vegetables.show', $this->vegetable, absolute: false),
         ];
     }
 
