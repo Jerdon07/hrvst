@@ -142,8 +142,8 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
                     class="md:grid grid-cols-12 gap-5"
                 >
                     <!-- Sidebar — identical across all three profile types -->
-                    <div class="md:sticky h-fit top-6 col-span-12 lg:col-span-3">
-                        <Card class="h-fit pt-0 overflow-hidden">
+                    <div class="md:sticky h-fit top-6 col-span-12 lg:col-span-3 pb-3">
+                        <Card class="relative h-fit pt-0 overflow-hidden">
                             <div class="h-15 w-full bg-primary/10 mb-6" />
                             <Avatar class="absolute top-5 right-5 size-20 border-4 border-background">
                                 <AvatarImage
