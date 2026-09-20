@@ -12,7 +12,7 @@ defineProps<{
     featureLabel: string
     wasteTitle: string
     wasteDescription: string
-    wasteUnitLabel: string
+    wasteUnitLabel?: string
     wasteGuideQuestion: string
     volumeTitle: string
 }>()
