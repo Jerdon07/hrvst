@@ -156,7 +156,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
                                 </AvatarFallback>
                             </Avatar>
 
-                            <CardHeader>
+                            <CardHeader class="pr-28">
                                 <CardTitle class="uppercase">{{ displayName }}</CardTitle>
                                 <CardDescription class="space-y-1">
                                     <div
@@ -223,12 +223,12 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
                                 <Card>
                                     <CardContent class="pt-4">
                                         <Tabs default-value="ongoing">
-                                            <TabsList class="mb-4">
+                                            <TabsList class="mb-4 grid w-full grid-cols-3">
                                                 <TabsTrigger
                                                     value="ongoing"
-                                                    class="gap-1.5"
+                                                    class="gap-1.5 px-2"
                                                 >
-                                                    <Package class="size-4" />Ongoing
+                                                    <Package class="hidden size-4 sm:block" />Ongoing
                                                     <Badge
                                                         variant="secondary"
                                                         class="ml-1 px-1.5 py-0 text-xs"
@@ -240,7 +240,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
                                                     value="expired"
                                                     class="gap-1.5"
                                                 >
-                                                    <Archive class="size-4" />Expired
+                                                    <Archive class="hidden size-4 sm:block" />Expired
                                                     <Badge
                                                         variant="secondary"
                                                         class="ml-1 px-1.5 py-0 text-xs"
@@ -252,7 +252,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
                                                     value="fulfilled"
                                                     class="gap-1.5"
                                                 >
-                                                    <PackageCheck class="size-4" />Fulfilled
+                                                    <PackageCheck class="hidden size-4 sm:block" />Fulfilled
                                                     <Badge
                                                         variant="secondary"
                                                         class="ml-1 px-1.5 py-0 text-xs"
