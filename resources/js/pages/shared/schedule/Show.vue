@@ -1,20 +1,18 @@
 <script setup lang="ts">
 import { Deferred, Head, Link } from '@inertiajs/vue3'
-import { Calendar1, ChevronsUpDown, Ghost, SquarePen } from '@lucide/vue'
-import { computed, ref } from 'vue'
-import EmptyState from '@/components/EmptyState.vue'
+import { Calendar1, ChevronsUpDown, SquarePen } from '@lucide/vue'
+import { computed } from 'vue'
 import Heading from '@/components/Heading.vue'
-import SchedulePosters from '@/components/shared/vegetables/SchedulePosters.vue'
+import OverlapPosters from '@/components/shared/vegetables/OverlapPosters.vue'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/components/ui/item'
-import { formatNetKgDealer, formatNetKgFarmer, netKgClassDealer, netKgClassFarmer } from '@/composables/useVegetableAvailability'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useNetKg } from '@/composables/useNetKg'
 import AppLayout from '@/layouts/AppLayout.vue'
 import { scheduleRegistry, type ScheduleType } from '@/lib/scheduleRegistry'
 import type { BreadcrumbItem, PostDataFixed, VegetableOverlapData } from '@/types'
-import users from '@/routes/users'
 
 const props = defineProps<{
     type: ScheduleType
@@ -23,20 +21,13 @@ const props = defineProps<{
 }>()
 
 const config = computed(() => scheduleRegistry[props.type])
-const netKgClass = computed(() => (props.type === 'supply' ? netKgClassFarmer : netKgClassDealer))
-const formatNetKg = computed(() => (props.type === 'supply' ? formatNetKgFarmer : formatNetKgDealer))
+const { netKgClass, formatNetKg } = useNetKg(() => props.type)
 
 const breadcrumbs = computed<BreadcrumbItem[]>(() => [
     { title: config.value.roleLabel, href: config.value.dashboard().url },
     { title: config.value.noun.plural, href: config.value.routes.index().url },
     { title: props.schedule.scheduled_date },
 ])
-
-const expandedItems = ref<Record<number, boolean>>({})
-
-function toggleItemExpanded(itemId: number): void {
-    expandedItems.value[itemId] = !expandedItems.value[itemId]
-}
 
 function netKgFor(itemId: number): number | null {
     const o = props.overlap?.[itemId]
@@ -75,7 +66,6 @@ function netKgFor(itemId: number): number | null {
             <Collapsible
                 v-for="item in schedule.post_items"
                 :key="item.id"
-                v-model:open="expandedItems[item.id]"
             >
                 <Item
                     variant="outline"
@@ -109,7 +99,6 @@ function netKgFor(itemId: number): number | null {
                                 variant="ghost"
                                 size="icon"
                                 class="shrink-0"
-                                @click="toggleItemExpanded(item.id)"
                             >
                                 <ChevronsUpDown class="size-4" />
                             </Button>
@@ -121,59 +110,10 @@ function netKgFor(itemId: number): number | null {
                     <div class="mt-4 rounded-md bg-muted/30 p-3">
                         <Deferred data="overlap">
                             <template #fallback>
-                                <div>Deferring…</div>
+                                <Skeleton class="h-16 w-full rounded" />
                             </template>
 
-                            <EmptyState
-                                v-if="!overlap?.[item.id]?.posters.length"
-                                :icon="Ghost"
-                                title="You're alone..."
-                            />
-
-                            <div
-                                v-else
-                                class="space-y-2"
-                            >
-                                <div
-                                    v-if="overlap[item.id].supply_posters.length"
-                                    class="space-y-2"
-                                >
-                                    <div class="flex items-center justify-between">
-                                        <p class="text-xs font-medium text-muted-foreground">Farmers supplying</p>
-                                        <Badge class="tabular-nums">{{ overlap[item.id].total_supplies_kg.toLocaleString() }} kg total supplies</Badge>
-                                    </div>
-                                    <SchedulePosters
-                                        v-for="(poster, i) in overlap[item.id].supply_posters"
-                                        :key="`supply-${i}`"
-                                        :link="users.show(poster.poster_id).url"
-                                        :poster-name="poster.poster_name"
-                                        :poster-phone="poster.poster_phone"
-                                        :quantity-kg="poster.quantity_kg"
-                                        bg-class="bg-green-500/5"
-                                    />
-                                </div>
-
-                                <div
-                                    v-if="overlap[item.id].demand_posters.length"
-                                    class="space-y-2"
-                                >
-                                    <div class="flex items-center justify-between">
-                                        <p class="text-xs font-medium text-muted-foreground">Dealers demanding</p>
-                                        <Badge class="tabular-nums">
-                                            {{ overlap[item.id].total_demands_kg.toLocaleString() }} kg total demands
-                                        </Badge>
-                                    </div>
-                                    <SchedulePosters
-                                        v-for="(poster, i) in overlap[item.id].demand_posters"
-                                        :key="`demand-${i}`"
-                                        :link="users.show(poster.poster_id).url"
-                                        :poster-name="poster.poster_name"
-                                        :poster-phone="poster.poster_phone"
-                                        :quantity-kg="poster.quantity_kg"
-                                        bg-class="bg-orange-500/5"
-                                    />
-                                </div>
-                            </div>
+                            <OverlapPosters :overlap="overlap?.[item.id]" />
                         </Deferred>
                     </div>
                 </CollapsibleContent>
