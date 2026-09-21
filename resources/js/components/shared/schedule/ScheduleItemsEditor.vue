@@ -1,7 +1,10 @@
 <script setup lang="ts" generic="TItem extends { _key: number; vegetable_id: string; quantity_kg: number | null }">
-import { Check, ChevronsUpDown, Menu, Plus, Search, Trash2 } from '@lucide/vue'
+import { Check, ChevronDown, ChevronsUpDown, Menu, Plus, Search, Trash2, Users } from '@lucide/vue'
 import { computed, ref } from 'vue'
+import OverlapPosters from '@/components/shared/vegetables/OverlapPosters.vue'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
     Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput,
     ComboboxItem, ComboboxItemIndicator, ComboboxList, ComboboxTrigger, ComboboxViewport,
@@ -15,10 +18,12 @@ import {
     NumberField, NumberFieldContent, NumberFieldDecrement, NumberFieldIncrement, NumberFieldInput,
 } from '@/components/ui/number-field'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useVegetableAvailability } from '@/composables/useVegetableAvailability'
+import { useNetKg } from '@/composables/useNetKg'
+import type { ScheduleType } from '@/lib/scheduleRegistry'
 import type { PostTimeSlot, VarietyOptionsByVegetable, VegetableOverlapData } from '@/types'
 
 const props = defineProps<{
+    type: ScheduleType
     items: TItem[]
     varietyOptions?: VarietyOptionsByVegetable
     errors: Record<string, string>
@@ -26,14 +31,14 @@ const props = defineProps<{
     timeSlot: PostTimeSlot | ''
     overlap?: Record<number, VegetableOverlapData>
     overlapLoading: boolean
-    netKgClass: (kg: number) => string
-    formatNetKg: (kg: number) => string
 }>()
 
 const emit = defineEmits<{
     add: []
     remove: [index: number]
 }>()
+
+const { netKgClass, formatNetKg } = useNetKg(() => props.type)
 
 const varietyLabelById = computed(() => {
     const map = new Map<string, string>()
@@ -48,16 +53,27 @@ function varietyFilterFunction<T extends { value: unknown }>(items: T[], term: s
     return items.filter((item) => (varietyLabelById.value.get(String(item.value)) ?? '').toLowerCase().includes(needle))
 }
 
+// ─── Overlap (single source for posters AND net kg) ───────────────────────────
+
 function overlapFor(vegetableId: string): VegetableOverlapData | undefined {
     if (!vegetableId) return undefined
     return props.overlap?.[Number(vegetableId)]
 }
 
-const { getState, getData } = useVegetableAvailability(
-    () => props.scheduledDate,
-    () => props.timeSlot,
-    () => props.items.map((i) => i.vegetable_id),
-)
+function overlapReady(vegetableId: string): boolean {
+    return !!vegetableId && !!props.scheduledDate && !!props.timeSlot
+}
+
+function othersCount(vegetableId: string): number {
+    return overlapFor(vegetableId)?.posters.length ?? 0
+}
+
+function netKgFor(vegetableId: string): number | null {
+    const data = overlapFor(vegetableId)
+    return data ? data.total_supplies_kg - data.total_demands_kg : null
+}
+
+// ─── Item dialog ──────────────────────────────────────────────────────────────
 
 const editingIndex = ref<number | null>(null)
 const editingItem = computed(() => (editingIndex.value !== null ? props.items[editingIndex.value] : null))
@@ -87,65 +103,102 @@ function removeItem(index: number): void {
     <div class="space-y-4">
         <p class="text-sm font-medium">Vegetables ({{ items.length ?? 0 }})</p>
 
-        <Item
+        <Collapsible
             v-for="(item, i) in items"
             :key="item._key"
-            variant="outline"
+            class="space-y-2"
         >
-            <ItemContent>
-                <ItemTitle class="line-clamp-1">
-                    {{ varietyLabelById.get(item.vegetable_id) ?? 'Unselected vegetable' }}
-                </ItemTitle>
+            <Item variant="outline">
+                <ItemContent>
+                    <ItemTitle class="line-clamp-1">
+                        {{ varietyLabelById.get(item.vegetable_id) ?? 'Unselected vegetable' }}
+                    </ItemTitle>
 
-                <ItemDescription v-if="item.vegetable_id && scheduledDate">
-                    <Skeleton
-                        v-if="getState(item.vegetable_id).status === 'loading'"
-                        class="h-3.5 w-20 rounded"
-                    />
-                    <template v-else-if="getData(item.vegetable_id)">
+                    <ItemDescription v-if="overlapReady(item.vegetable_id)">
+                        <Skeleton
+                            v-if="overlapLoading"
+                            class="h-3.5 w-20 rounded"
+                        />
                         <span
-                            :class="netKgClass(getData(item.vegetable_id)!.net_kg)"
+                            v-else-if="netKgFor(item.vegetable_id) !== null"
+                            :class="netKgClass(netKgFor(item.vegetable_id)!)"
                             class="text-xs font-medium tabular-nums"
                         >
-                            {{ formatNetKg(getData(item.vegetable_id)!.net_kg) }}
+                            {{ formatNetKg(netKgFor(item.vegetable_id)!) }}
                         </span>
-                    </template>
-                </ItemDescription>
+                    </ItemDescription>
 
-                <ItemDescription v-if="item.quantity_kg">
-                    {{ item.quantity_kg }} kg
-                </ItemDescription>
+                    <ItemDescription v-if="item.quantity_kg">
+                        {{ item.quantity_kg }} kg
+                    </ItemDescription>
 
-                <p
-                    v-if="errors[`items.${i}.vegetable_id`] || errors[`items.${i}.quantity_kg`]"
-                    class="text-xs text-destructive"
-                >
-                    {{ errors[`items.${i}.vegetable_id`] || errors[`items.${i}.quantity_kg`] }}
-                </p>
-            </ItemContent>
+                    <p
+                        v-if="errors[`items.${i}.vegetable_id`] || errors[`items.${i}.quantity_kg`]"
+                        class="text-xs text-destructive"
+                    >
+                        {{ errors[`items.${i}.vegetable_id`] || errors[`items.${i}.quantity_kg`] }}
+                    </p>
+                </ItemContent>
 
-            <ItemActions>
-                <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    class="shrink-0"
-                    @click="openItemDialog(i)"
-                >
-                    <ChevronsUpDown class="size-4" />
-                </Button>
+                <ItemActions>
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        class="shrink-0"
+                        @click="openItemDialog(i)"
+                    >
+                        <ChevronsUpDown class="size-4" />
+                    </Button>
 
-                <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-lg"
-                    class="text-destructive"
-                    @click="removeItem(i)"
-                >
-                    <Trash2 class="size-4" />
-                </Button>
-            </ItemActions>
-        </Item>
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-lg"
+                        class="text-destructive"
+                        @click="removeItem(i)"
+                    >
+                        <Trash2 class="size-4" />
+                    </Button>
+                </ItemActions>
+            </Item>
+
+            <!-- Loading: skeleton only, collapsible is not rendered -->
+            <Skeleton
+                v-if="overlapReady(item.vegetable_id) && overlapLoading"
+                class="h-8 w-full rounded"
+            />
+
+            <!-- Loaded with at least one other poster -->
+            <template v-else-if="overlapReady(item.vegetable_id) && othersCount(item.vegetable_id) > 0">
+                <CollapsibleTrigger as-child>
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        class="group/trigger w-full justify-between text-xs text-muted-foreground"
+                    >
+                        <span class="flex items-center gap-1.5">
+                            <Users class="size-3.5" />
+                            Others in this slot
+                            <Badge
+                                variant="secondary"
+                                class="tabular-nums"
+                            >
+                                {{ othersCount(item.vegetable_id) }}
+                            </Badge>
+                        </span>
+                        <ChevronDown class="size-4 transition-transform duration-200 group-data-[state=open]/trigger:rotate-180" />
+                    </Button>
+                </CollapsibleTrigger>
+
+                <CollapsibleContent>
+                    <div class="rounded-md bg-muted/30 p-3">
+                        <OverlapPosters :overlap="overlapFor(item.vegetable_id)" />
+                    </div>
+                </CollapsibleContent>
+            </template>
+        </Collapsible>
 
         <div class="flex items-end justify-end lg:justify-end">
             <Button
@@ -262,17 +315,6 @@ function removeItem(index: number): void {
                         >
                             {{ editingItemError('quantity_kg') }}
                         </p>
-                    </div>
-
-                    <Skeleton
-                        v-if="overlapLoading"
-                        class="h-16 w-full rounded"
-                    />
-                    <div
-                        v-else-if="editingItem.vegetable_id && overlapFor(editingItem.vegetable_id)?.posters.length"
-                        class="rounded bg-muted/30 p-3 text-xs text-muted-foreground"
-                    >
-                        Other activity this slot: {{ overlapFor(editingItem.vegetable_id)!.posters.length }} posts
                     </div>
                 </div>
 
