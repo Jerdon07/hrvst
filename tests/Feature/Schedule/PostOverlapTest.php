@@ -3,6 +3,7 @@
 use App\Enums\PostItemStatus;
 use App\Enums\PostTimeSlot;
 use App\Models\User;
+use App\Models\Vegetable\Vegetable;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\getJson;
@@ -33,7 +34,7 @@ function overlapUrl(array $params = []): string
  * Requests the preview as $user and returns the decoded payload, keyed by
  * vegetable id — the exact shape useOverlapPreview / ScheduleItemsEditor read.
  *
- * @param  array<int, \App\Models\Vegetable\Vegetable>  $vegetables
+ * @param  array<int, Vegetable>  $vegetables
  */
 function fetchOverlapPreview(User $user, array $vegetables, array $params = []): array
 {
