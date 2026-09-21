@@ -10,6 +10,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 class OverlapPosterData extends Data
 {
     public function __construct(
+        public int $post_item_id,
         public int $poster_id,
         public string $poster_name,
         public string $poster_phone,
@@ -19,6 +20,7 @@ class OverlapPosterData extends Data
     public static function fromPostItem(PostItem $item): self
     {
         return new self(
+            post_item_id: $item->id,
             poster_id: $item->post->user->id,
             poster_name: $item->post->user->name,
             poster_phone: $item->post->user->phone_number,
