@@ -182,7 +182,7 @@ describe('schedule overlap notification on create', function () {
                 $payload = $notification->toArray($dealer);
 
                 return $payload['vegetable_id'] === $vegetable->id
-                    && str_contains($payload['url'], route('vegetables.show', $vegetable));
+                    && $payload['url'] === route('vegetables.show', $vegetable, absolute: false);
             }
         );
     });
