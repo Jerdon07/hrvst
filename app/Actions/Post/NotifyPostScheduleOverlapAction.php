@@ -28,7 +28,7 @@ final class NotifyPostScheduleOverlapAction
 
         $recipientIds = PostItem::query()
             ->join('posts', 'posts.id', '=', 'post_items.post_id')
-            ->where('posts.scheduled_date', $post->scheduled_date->toDateString())
+            ->whereDate('posts.scheduled_date', $post->scheduled_date->toDateString())
             ->where('posts.time_slot', $post->time_slot->value)
             ->where('post_items.vegetable_id', $item->vegetable_id)
             ->where('post_items.status', PostItemStatus::Ongoing->value)
