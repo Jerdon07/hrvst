@@ -36,26 +36,29 @@ export function useOverlapPreview(options: UseOverlapPreviewOptions) {
             timeSlot: options.timeSlot(),
             // Deduped + sorted: adding a blank row or reordering rows must not
             // change the request, and must not trigger one.
-            vegetableIds: [...new Set(options.vegetableIds().filter(Boolean))].sort(),
+            vegetableIds: [
+                ...new Set(options.vegetableIds().filter(Boolean)),
+            ].sort(),
         }
     }
 
-    async function fetchOverlap(inputs: ReturnType<typeof currentInputs>): Promise<void> {
+    async function fetchOverlap(
+        inputs: ReturnType<typeof currentInputs>,
+    ): Promise<void> {
         const token = ++requestToken
 
         try {
-            const { data } = await axios.get<Record<number, VegetableOverlapData>>(
-                PostOverlapController.url(),
-                {
-                    params: {
-                        type: options.type,
-                        scheduled_date: inputs.scheduledDate,
-                        time_slot: inputs.timeSlot,
-                        vegetable_ids: inputs.vegetableIds,
-                        post_id: options.postId,
-                    },
+            const { data } = await axios.get<
+                Record<number, VegetableOverlapData>
+            >(PostOverlapController.url(), {
+                params: {
+                    type: options.type,
+                    scheduled_date: inputs.scheduledDate,
+                    time_slot: inputs.timeSlot,
+                    vegetable_ids: inputs.vegetableIds,
+                    post_id: options.postId,
                 },
-            )
+            })
 
             if (token === requestToken) overlap.value = data
         } catch {
@@ -75,7 +78,11 @@ export function useOverlapPreview(options: UseOverlapPreviewOptions) {
 
             const inputs = currentInputs()
 
-            if (!inputs.scheduledDate || !inputs.timeSlot || inputs.vegetableIds.length === 0) {
+            if (
+                !inputs.scheduledDate ||
+                !inputs.timeSlot ||
+                inputs.vegetableIds.length === 0
+            ) {
                 overlap.value = {}
                 loading.value = false
                 return
