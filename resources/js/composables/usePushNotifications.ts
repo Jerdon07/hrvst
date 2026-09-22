@@ -57,21 +57,14 @@ export function usePushNotifications() {
         subscribing.value = true
         error.value = null
         try {
-            console.log('[push] step 1: requesting permission')
             const result = await Notification.requestPermission()
-            console.log('[push] step 2: permission result =', result)
             permission.value = result
             if (result !== 'granted') {
                 error.value = `Permission not granted (browser returned "${result}").`
                 return false
             }
 
-            console.log('[push] step 3: waiting for serviceWorker.ready')
             const registration = await navigator.serviceWorker.ready
-            console.log(
-                '[push] step 4: SW ready, state =',
-                registration.active?.state,
-            )
 
             const vapidKey = import.meta.env.VITE_VAPID_PUBLIC_KEY as string
             if (!vapidKey) {
@@ -79,19 +72,13 @@ export function usePushNotifications() {
                     'VITE_VAPID_PUBLIC_KEY is missing — check .env and restart `npm run dev`.'
                 return false
             }
-            console.log('[push] step 5: calling pushManager.subscribe')
 
             const subscription = await registration.pushManager.subscribe({
                 userVisibleOnly: true,
                 applicationServerKey: urlBase64ToUint8Array(vapidKey),
             })
-            console.log(
-                '[push] step 6: subscribed, posting to server',
-                subscription,
-            )
 
             await axios.post('/push-subscriptions', subscription.toJSON())
-            console.log('[push] step 7: server accepted subscription')
             isSubscribed.value = true
             return true
         } catch (e) {
@@ -107,7 +94,6 @@ export function usePushNotifications() {
     }
 
     async function unsubscribe(): Promise<void> {
-        console.log('[push] unsubscribe() called')
         if (!isSupported) return
 
         subscribing.value = true
