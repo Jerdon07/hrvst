@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useMonthlyBarChart } from '@/composables/useMonthlyBarChart'
+import { useMonthlyChartPagination } from '@/composables/useMonthlyChartPagination'
 import { useMonthlyLineChart } from '@/composables/useMonthlyLineChart'
 import { show as billingShow } from '@/routes/billing'
 import type { ForecastPoint, MonthlyActivity } from '@/types/resources/product'
@@ -29,18 +30,6 @@ const emit = defineEmits<{
     navigate: [offset: number]
 }>()
 
-// The default window is 6 months (offset 0). Every historical page after
-// that is 12 months. So the first "previous" click only steps the offset by
-// 6 (landing on month-back index 6, immediately after the default window's
-// last month) — every click after that steps by a full 12, since the
-// window is already 12 months wide and contiguous with the last one. Going
-// "next" mirrors this: stepping back below the first paged offset always
-// lands exactly on 0, never a negative offset.
-//
-// This must match VegetableDetailService::resolveActivityWindowMonths() —
-// the backend derives window size from offset using the same 6/12 split.
-const INITIAL_WINDOW_MONTHS = 6
-const PAGED_STEP_MONTHS = 12
 const MIN_MONTHS_FOR_FORECAST = 12
 
 const chartType = ref<'bar' | 'line'>('bar')
@@ -72,16 +61,14 @@ const confidenceTooltip: Record<string, string> = {
 }
 
 // ─── Pagination ───────────────────────────────────────────────────────────────
-// Window size is always 6 months (server-controlled). Only the step between
-// windows is 12 months. Forecast + history paging are both subscription-gated
-// — see forecastLocked below, which the parent derives from the same
-// Subscription::hasAccess() check that gates the forecast itself.
 
 const offset = computed(() => props.activityOffset ?? 0)
-const maxOffset = computed(() => props.maxActivityOffset ?? 0)
 
-const canGoNext = computed(() => offset.value > 0)
-const canGoPrevious = computed(() => !props.forecastLocked && offset.value < maxOffset.value)
+const { canGoNext, canGoPrevious, previousOffset, nextOffset } = useMonthlyChartPagination({
+    offset: () => props.activityOffset,
+    maxOffset: () => props.maxActivityOffset,
+    forecastLocked: () => props.forecastLocked,
+})
 
 const rangeLabel = computed(() => {
     if (!props.monthlyActivity.length) return ''
@@ -91,20 +78,15 @@ const rangeLabel = computed(() => {
 })
 
 function goPrevious(): void {
-    if (!canGoPrevious.value) return
-
-    const next = offset.value === 0
-        ? INITIAL_WINDOW_MONTHS
-        : Math.min(offset.value + PAGED_STEP_MONTHS, maxOffset.value)
-
+    const next = previousOffset()
+    if (next === null) return
     emit('navigate', next)
 }
 
 function goNext(): void {
-    if (!canGoNext.value) return
-
-    const next = offset.value - PAGED_STEP_MONTHS
-    emit('navigate', next > 0 ? next : 0)
+    const next = nextOffset()
+    if (next === null) return
+    emit('navigate', next)
 }
 </script>
 
