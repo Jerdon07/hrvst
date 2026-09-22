@@ -26,7 +26,9 @@ function failResponse(status = 500) {
 
 describe('fetchQrCode', () => {
     it('sets qrCodeSvg on success', async () => {
-        fetchMock.mockResolvedValueOnce(okResponse({ svg: '<svg></svg>', url: 'otpauth://x' }))
+        fetchMock.mockResolvedValueOnce(
+            okResponse({ svg: '<svg></svg>', url: 'otpauth://x' }),
+        )
 
         const { fetchQrCode, qrCodeSvg } = useTwoFactorAuth()
         await fetchQrCode()
@@ -69,10 +71,13 @@ describe('fetchSetupKey', () => {
 describe('fetchSetupData', () => {
     it('populates both qrCodeSvg and manualSetupKey when both succeed', async () => {
         fetchMock
-            .mockResolvedValueOnce(okResponse({ svg: '<svg></svg>', url: 'otpauth://x' }))
+            .mockResolvedValueOnce(
+                okResponse({ svg: '<svg></svg>', url: 'otpauth://x' }),
+            )
             .mockResolvedValueOnce(okResponse({ secretKey: 'ABC123' }))
 
-        const { fetchSetupData, qrCodeSvg, manualSetupKey, hasSetupData } = useTwoFactorAuth()
+        const { fetchSetupData, qrCodeSvg, manualSetupKey, hasSetupData } =
+            useTwoFactorAuth()
         await fetchSetupData()
 
         expect(qrCodeSvg.value).toBe('<svg></svg>')
@@ -91,7 +96,8 @@ describe('fetchSetupData', () => {
             .mockResolvedValueOnce(failResponse())
             .mockResolvedValueOnce(okResponse({ secretKey: 'ABC123' }))
 
-        const { fetchSetupData, qrCodeSvg, manualSetupKey, hasSetupData } = useTwoFactorAuth()
+        const { fetchSetupData, qrCodeSvg, manualSetupKey, hasSetupData } =
+            useTwoFactorAuth()
         await fetchSetupData()
 
         expect(qrCodeSvg.value).toBeNull()
@@ -129,7 +135,8 @@ describe('fetchRecoveryCodes', () => {
     it('resets recoveryCodesList to empty and records an error on failure', async () => {
         fetchMock.mockResolvedValueOnce(failResponse())
 
-        const { fetchRecoveryCodes, recoveryCodesList, errors } = useTwoFactorAuth()
+        const { fetchRecoveryCodes, recoveryCodesList, errors } =
+            useTwoFactorAuth()
         await fetchRecoveryCodes()
 
         expect(recoveryCodesList.value).toEqual([])
@@ -162,8 +169,11 @@ describe('clearSetupData / clearTwoFactorAuthData', () => {
     it('clearTwoFactorAuthData wipes everything, including recovery codes', async () => {
         fetchMock.mockResolvedValueOnce(okResponse(['code-1']))
 
-        const { fetchRecoveryCodes, clearTwoFactorAuthData, recoveryCodesList } =
-            useTwoFactorAuth()
+        const {
+            fetchRecoveryCodes,
+            clearTwoFactorAuthData,
+            recoveryCodesList,
+        } = useTwoFactorAuth()
 
         await fetchRecoveryCodes()
         clearTwoFactorAuthData()

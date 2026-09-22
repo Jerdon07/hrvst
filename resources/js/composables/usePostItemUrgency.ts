@@ -13,11 +13,7 @@ function toLocalMidnight(dateStr: string): number {
         // Not a plain YYYY-MM-DD string — fall back to native parsing
         // rather than producing NaN.
         const d = new Date(dateStr)
-        return new Date(
-            d.getFullYear(),
-            d.getMonth(),
-            d.getDate(),
-        ).getTime()
+        return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()
     }
 
     return new Date(year, month - 1, day).getTime()

@@ -16,7 +16,10 @@ function baselineTotals(extra: Record<string, DayTotals> = {}) {
     }
 }
 
-function setup(totals: Record<string, DayTotals>, role: CalendarViewerRole = 'farmer') {
+function setup(
+    totals: Record<string, DayTotals>,
+    role: CalendarViewerRole = 'farmer',
+) {
     const dailyTotals = ref(totals)
     const roleRef = ref(role)
     const { balanceFor, legend } = useCalendarBalance(dailyTotals, roleRef)
@@ -32,10 +35,12 @@ describe('balanceFor: missing data', () => {
 })
 
 describe('balanceFor: farmer role', () => {
-
     it('is Balanced at ratio 0 (baseline day itself)', () => {
         const { balanceFor } = setup(baselineTotals())
-        expect(balanceFor('2026-06-01')).toEqual({ color: 'amber', label: 'Balanced' })
+        expect(balanceFor('2026-06-01')).toEqual({
+            color: 'amber',
+            label: 'Balanced',
+        })
     })
 
     it('is Surplus exactly at the ratio 0.2 boundary (diff = 40)', () => {
@@ -43,7 +48,10 @@ describe('balanceFor: farmer role', () => {
             '2026-06-04': { supplyKg: 140, demandKg: 100 },
         })
         const { balanceFor } = setup(totals)
-        expect(balanceFor('2026-06-04')).toEqual({ color: 'orange', label: 'Surplus' })
+        expect(balanceFor('2026-06-04')).toEqual({
+            color: 'orange',
+            label: 'Surplus',
+        })
     })
 
     it('is Very Surplus exactly at the ratio 0.6 boundary (diff = 120)', () => {
@@ -51,7 +59,10 @@ describe('balanceFor: farmer role', () => {
             '2026-06-04': { supplyKg: 220, demandKg: 100 },
         })
         const { balanceFor } = setup(totals)
-        expect(balanceFor('2026-06-04')).toEqual({ color: 'red', label: 'Very Surplus' })
+        expect(balanceFor('2026-06-04')).toEqual({
+            color: 'red',
+            label: 'Very Surplus',
+        })
     })
 
     it('stays Surplus just under the Very Surplus boundary (ratio 0.59)', () => {
@@ -67,7 +78,10 @@ describe('balanceFor: farmer role', () => {
             '2026-06-04': { supplyKg: 60, demandKg: 100 },
         })
         const { balanceFor } = setup(totals)
-        expect(balanceFor('2026-06-04')).toEqual({ color: 'green', label: 'Unmet Demand' })
+        expect(balanceFor('2026-06-04')).toEqual({
+            color: 'green',
+            label: 'Unmet Demand',
+        })
     })
 
     it('stays Balanced just inside the Unmet Demand boundary (ratio -0.19)', () => {
@@ -80,13 +94,15 @@ describe('balanceFor: farmer role', () => {
 })
 
 describe('balanceFor: dealer role — sign convention is inverted from farmer', () => {
-
     it('is Surplus Available exactly at the ratio 0.2 boundary', () => {
         const totals = baselineTotals({
             '2026-06-04': { supplyKg: 140, demandKg: 100 },
         })
         const { balanceFor } = setup(totals, 'dealer')
-        expect(balanceFor('2026-06-04')).toEqual({ color: 'green', label: 'Surplus Available' })
+        expect(balanceFor('2026-06-04')).toEqual({
+            color: 'green',
+            label: 'Surplus Available',
+        })
     })
 
     it('is Unmet exactly at the ratio -0.2 boundary', () => {
@@ -94,7 +110,10 @@ describe('balanceFor: dealer role — sign convention is inverted from farmer', 
             '2026-06-04': { supplyKg: 60, demandKg: 100 },
         })
         const { balanceFor } = setup(totals, 'dealer')
-        expect(balanceFor('2026-06-04')).toEqual({ color: 'orange', label: 'Unmet' })
+        expect(balanceFor('2026-06-04')).toEqual({
+            color: 'orange',
+            label: 'Unmet',
+        })
     })
 
     it('is Very Unmet exactly at the ratio -0.6 boundary (diff = -120)', () => {
@@ -102,24 +121,32 @@ describe('balanceFor: dealer role — sign convention is inverted from farmer', 
             '2026-06-04': { supplyKg: 40, demandKg: 160 },
         })
         const { balanceFor } = setup(totals, 'dealer')
-        expect(balanceFor('2026-06-04')).toEqual({ color: 'red', label: 'Very Unmet' })
+        expect(balanceFor('2026-06-04')).toEqual({
+            color: 'red',
+            label: 'Very Unmet',
+        })
     })
 
     it('is Balanced at ratio 0', () => {
         const { balanceFor } = setup(baselineTotals(), 'dealer')
-        expect(balanceFor('2026-06-01')).toEqual({ color: 'amber', label: 'Balanced' })
+        expect(balanceFor('2026-06-01')).toEqual({
+            color: 'amber',
+            label: 'Balanced',
+        })
     })
 })
 
 describe('balanceFor: admin role', () => {
-
     it('is No Activity when avgTotal is 0 (no day in the set has any volume)', () => {
         const totals = {
             '2026-06-01': { supplyKg: 0, demandKg: 0 },
             '2026-06-02': { supplyKg: 0, demandKg: 0 },
         }
         const { balanceFor } = setup(totals, 'admin')
-        expect(balanceFor('2026-06-01')).toEqual({ color: 'amber', label: 'No Activity' })
+        expect(balanceFor('2026-06-01')).toEqual({
+            color: 'amber',
+            label: 'No Activity',
+        })
     })
 
     it('is Very High Activity exactly at the ratio 1.4 boundary (totalKg = 280)', () => {
@@ -127,7 +154,10 @@ describe('balanceFor: admin role', () => {
             '2026-06-04': { supplyKg: 200, demandKg: 80 },
         })
         const { balanceFor } = setup(totals, 'admin')
-        expect(balanceFor('2026-06-04')).toEqual({ color: 'red', label: 'Very High Activity' })
+        expect(balanceFor('2026-06-04')).toEqual({
+            color: 'red',
+            label: 'Very High Activity',
+        })
     })
 
     it('is Very Low Activity exactly at the ratio 0.6 boundary (totalKg = 120)', () => {
@@ -135,7 +165,10 @@ describe('balanceFor: admin role', () => {
             '2026-06-04': { supplyKg: 60, demandKg: 60 },
         })
         const { balanceFor } = setup(totals, 'admin')
-        expect(balanceFor('2026-06-04')).toEqual({ color: 'amber', label: 'Very Low Activity' })
+        expect(balanceFor('2026-06-04')).toEqual({
+            color: 'amber',
+            label: 'Very Low Activity',
+        })
     })
 
     it('is Average Activity strictly between the two thresholds', () => {
@@ -143,7 +176,10 @@ describe('balanceFor: admin role', () => {
             '2026-06-04': { supplyKg: 100, demandKg: 100 },
         })
         const { balanceFor } = setup(totals, 'admin')
-        expect(balanceFor('2026-06-04')).toEqual({ color: 'green', label: 'Average Activity' })
+        expect(balanceFor('2026-06-04')).toEqual({
+            color: 'green',
+            label: 'Average Activity',
+        })
     })
 })
 
@@ -158,7 +194,10 @@ describe('monthly average excludes zero-volume days from the baseline', () => {
             '2026-06-15': { supplyKg: 140, demandKg: 100 },
         })
         const { balanceFor } = setup(totals)
-        expect(balanceFor('2026-06-15')).toEqual({ color: 'orange', label: 'Surplus' })
+        expect(balanceFor('2026-06-15')).toEqual({
+            color: 'orange',
+            label: 'Surplus',
+        })
     })
 })
 

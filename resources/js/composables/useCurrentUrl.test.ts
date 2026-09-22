@@ -44,7 +44,9 @@ describe('whenCurrentUrl', () => {
 
     it('returns ifFalse when the url does not match', () => {
         const { whenCurrentUrl } = useCurrentUrl()
-        expect(whenCurrentUrl('/farmer/supplies', 'active', 'inactive')).toBe('inactive')
+        expect(whenCurrentUrl('/farmer/supplies', 'active', 'inactive')).toBe(
+            'inactive',
+        )
     })
 
     it('defaults ifFalse to null when omitted', () => {
