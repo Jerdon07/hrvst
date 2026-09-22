@@ -4,7 +4,9 @@ import OverlapPosters from '@/components/shared/vegetables/OverlapPosters.vue'
 import SchedulePosters from '@/components/shared/vegetables/SchedulePosters.vue'
 import type { VegetableOverlapData } from '@/types'
 
-function overlap(overrides: Partial<VegetableOverlapData> = {}): VegetableOverlapData {
+function overlap(
+    overrides: Partial<VegetableOverlapData> = {},
+): VegetableOverlapData {
     return {
         post_item_id: 1,
         vegetable_id: 1,
@@ -89,7 +91,10 @@ describe('OverlapPosters', () => {
         const wrapper = mount(OverlapPosters, {
             props: {
                 overlap: overlap({
-                    supply_posters: [poster(10, 'Farmer A', 40), poster(11, 'Farmer A', 60)],
+                    supply_posters: [
+                        poster(10, 'Farmer A', 40),
+                        poster(11, 'Farmer A', 60),
+                    ],
                     total_supplies_kg: 100,
                 }),
             },

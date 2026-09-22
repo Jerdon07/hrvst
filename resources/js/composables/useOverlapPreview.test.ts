@@ -12,7 +12,9 @@ vi.mock('@/actions/App/Http/Controllers/Api/PostOverlapController', () => ({
 
 const mockedAxios = vi.mocked(axios)
 
-function makeOptions(overrides: Partial<Parameters<typeof useOverlapPreview>[0]> = {}) {
+function makeOptions(
+    overrides: Partial<Parameters<typeof useOverlapPreview>[0]> = {},
+) {
     const scheduledDate = ref('2026-06-01')
     const timeSlot = ref<'morning' | 'afternoon' | 'evening' | ''>('morning')
     const vegetableIds = ref<string[]>(['1'])
@@ -122,7 +124,9 @@ describe('useOverlapPreview', () => {
     })
 
     it('deduplicates and sorts vegetable ids so order/repeats do not change the request', async () => {
-        const { options } = makeOptions({ vegetableIds: () => ['3', '1', '3', '2'] })
+        const { options } = makeOptions({
+            vegetableIds: () => ['3', '1', '3', '2'],
+        })
 
         effectScope().run(() => {
             useOverlapPreview(options)
@@ -156,13 +160,18 @@ describe('useOverlapPreview', () => {
 
         let resolveFirst!: (v: { data: Record<string, unknown> }) => void
         mockedAxios.get.mockImplementationOnce(
-            () => new Promise((resolve) => { resolveFirst = resolve }),
+            () =>
+                new Promise((resolve) => {
+                    resolveFirst = resolve
+                }),
         )
 
         const { overlap } = effectScope().run(() => useOverlapPreview(options))!
         await nextTick()
 
-        mockedAxios.get.mockResolvedValueOnce({ data: { 2: { total_supplies_kg: 999 } } })
+        mockedAxios.get.mockResolvedValueOnce({
+            data: { 2: { total_supplies_kg: 999 } },
+        })
         state.vegetableIds.value = ['1', '2']
         await nextTick()
         vi.advanceTimersByTime(250)
@@ -202,7 +211,9 @@ describe('useOverlapPreview', () => {
         mockedAxios.get.mockRejectedValueOnce(new Error('network error'))
 
         const { options } = makeOptions()
-        const { overlap, loading } = effectScope().run(() => useOverlapPreview(options))!
+        const { overlap, loading } = effectScope().run(() =>
+            useOverlapPreview(options),
+        )!
         await nextTick()
         await flushPromises()
 
