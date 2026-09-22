@@ -32,6 +32,20 @@ function makeOptions(
     }
 }
 
+/**
+ * The composable schedules its FIRST fetch via setTimeout(fn, 0) — see
+ * `previousKey === undefined ? 0 : debounceMs` in useOverlapPreview.ts.
+ * Under vi.useFakeTimers(), a 0ms setTimeout is still a macrotask: it will
+ * NOT run just because microtask promises are flushed via flushPromises().
+ * It only runs once the fake clock is explicitly advanced. This helper
+ * makes that explicit at every call site instead of relying on the
+ * (incorrect) assumption that flushPromises() alone is sufficient.
+ */
+async function settleInitialFetch() {
+    await nextTick()
+    await vi.advanceTimersByTimeAsync(0)
+}
+
 describe('useOverlapPreview', () => {
     beforeEach(() => {
         vi.useFakeTimers()
@@ -49,11 +63,9 @@ describe('useOverlapPreview', () => {
         effectScope().run(() => {
             useOverlapPreview(options)
         })
-        await nextTick()
 
-        // Immediate watcher run: previousKey is undefined, so delay is 0 —
-        // no need to advance fake timers at all for the initial fetch.
-        await flushPromises()
+        await settleInitialFetch()
+
         expect(mockedAxios.get).toHaveBeenCalledTimes(1)
     })
 
@@ -63,8 +75,7 @@ describe('useOverlapPreview', () => {
         effectScope().run(() => {
             useOverlapPreview(options)
         })
-        await nextTick()
-        await flushPromises()
+        await settleInitialFetch()
         mockedAxios.get.mockClear() // drop the immediate first-run call
 
         // Simulate the user changing vegetables three times in quick
@@ -84,7 +95,7 @@ describe('useOverlapPreview', () => {
 
         expect(mockedAxios.get).toHaveBeenCalledTimes(1)
         const params = mockedAxios.get.mock.calls[0][1]?.params
-        expect(params.vegetable_ids).toEqual(['1', '2', '3', '4'])
+        expect(params).toMatchObject({ vegetable_ids: ['1', '2', '3', '4'] })
     })
 
     it('does not request when scheduled_date is missing', async () => {
@@ -93,8 +104,7 @@ describe('useOverlapPreview', () => {
         effectScope().run(() => {
             useOverlapPreview(options)
         })
-        await nextTick()
-        await flushPromises()
+        await settleInitialFetch()
 
         expect(mockedAxios.get).not.toHaveBeenCalled()
     })
@@ -105,8 +115,7 @@ describe('useOverlapPreview', () => {
         effectScope().run(() => {
             useOverlapPreview(options)
         })
-        await nextTick()
-        await flushPromises()
+        await settleInitialFetch()
 
         expect(mockedAxios.get).not.toHaveBeenCalled()
     })
@@ -117,8 +126,7 @@ describe('useOverlapPreview', () => {
         effectScope().run(() => {
             useOverlapPreview(options)
         })
-        await nextTick()
-        await flushPromises()
+        await settleInitialFetch()
 
         expect(mockedAxios.get).not.toHaveBeenCalled()
     })
@@ -131,19 +139,17 @@ describe('useOverlapPreview', () => {
         effectScope().run(() => {
             useOverlapPreview(options)
         })
-        await nextTick()
-        await flushPromises()
+        await settleInitialFetch()
 
         const params = mockedAxios.get.mock.calls[0][1]?.params
-        expect(params.vegetable_ids).toEqual(['1', '2', '3'])
+        expect(params).toMatchObject({ vegetable_ids: ['1', '2', '3'] })
     })
 
     it('sets loading synchronously when inputs change, before the debounced request fires', async () => {
         const { state, options } = makeOptions()
 
         const { loading } = effectScope().run(() => useOverlapPreview(options))!
-        await nextTick()
-        await flushPromises()
+        await settleInitialFetch()
         expect(loading.value).toBe(false)
 
         state.vegetableIds.value = ['1', '2']
@@ -168,6 +174,7 @@ describe('useOverlapPreview', () => {
 
         const { overlap } = effectScope().run(() => useOverlapPreview(options))!
         await nextTick()
+        await vi.advanceTimersByTimeAsync(0) // dispatches the stalled first call
 
         mockedAxios.get.mockResolvedValueOnce({
             data: { 2: { total_supplies_kg: 999 } },
@@ -192,8 +199,7 @@ describe('useOverlapPreview', () => {
         scope.run(() => {
             useOverlapPreview(options)
         })
-        await nextTick()
-        await flushPromises()
+        await settleInitialFetch()
         mockedAxios.get.mockClear()
 
         state.vegetableIds.value = ['1', '2']
@@ -214,8 +220,7 @@ describe('useOverlapPreview', () => {
         const { overlap, loading } = effectScope().run(() =>
             useOverlapPreview(options),
         )!
-        await nextTick()
-        await flushPromises()
+        await settleInitialFetch()
 
         expect(overlap.value).toEqual({})
         expect(loading.value).toBe(false)
