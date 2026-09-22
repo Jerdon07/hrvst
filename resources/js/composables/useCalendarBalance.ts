@@ -61,15 +61,16 @@ export function useCalendarBalance(
     dailyTotals: MaybeRefOrGetter<Record<string, DayTotals>>,
     role: MaybeRefOrGetter<CalendarViewerRole>,
 ) {
-    const monthlyStats = computed(() =>
-        monthlyAverages(Object.values(toValue(dailyTotals))),
-    )
-
     function balanceFor(dateStr: string): DayBalance | null {
-        const totals = toValue(dailyTotals)[dateStr]
+        const allTotals = toValue(dailyTotals)
+        const totals = allTotals[dateStr]
         if (!totals) return null
 
-        const { avgTotal } = monthlyStats.value
+        const otherDays = Object.entries(allTotals)
+            .filter(([key]) => key !== dateStr)
+            .map(([, value]) => value)
+        const { avgTotal } = monthlyAverages(otherDays)
+
         const currentRole = toValue(role)
 
         if (currentRole === 'admin') {
@@ -83,7 +84,7 @@ export function useCalendarBalance(
             : dealerBalance(ratio)
     }
 
-    const legend = computed<DayBalance[]>(() => {
+    function legend(): DayBalance[] {
         const currentRole = toValue(role)
 
         if (currentRole === 'farmer') {
@@ -109,9 +110,16 @@ export function useCalendarBalance(
             { color: 'green', label: 'Average Activity' },
             { color: 'amber', label: 'Very Low Activity' },
         ]
-    })
+    }
 
-    return { balanceFor, legend }
+    return {
+        balanceFor,
+        legend: computedLegend(legend),
+    }
+}
+
+function computedLegend(fn: () => DayBalance[]) {
+    return computed(fn)
 }
 
 export const BALANCE_DOT_CLASS: Record<BalanceColor, string> = {
