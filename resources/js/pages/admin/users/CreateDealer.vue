@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { Head, useForm, usePage } from '@inertiajs/vue3'
-import { ref, watch } from 'vue'
+import { Head, useForm } from '@inertiajs/vue3'
 import { storeDealer } from '@/actions/App/Http/Controllers/Admin/UserController'
 import Heading from '@/components/Heading.vue'
 import InputError from '@/components/InputError.vue'
@@ -16,9 +15,10 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Spinner } from '@/components/ui/spinner'
+import { usePinRevealFlash } from '@/composables/usePinRevealFlash'
 import AppLayout from '@/layouts/AppLayout.vue'
 import admin from '@/routes/admin'
-import type { BreadcrumbItem, FlashMessage } from '@/types'
+import type { BreadcrumbItem } from '@/types'
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: 'Admin', href: admin.dashboard().url },
@@ -35,27 +35,13 @@ const form = useForm({
 })
 
 // ─── PIN modal ────────────────────────────────────────────────────────────────
+// immediate: true — same reasoning as CreateFarmer: the redirect-back lands
+// with the pin flash already in props on first render.
 
-const page = usePage()
-const pinModalOpen = ref(false)
-const revealedPin = ref('')
-
-watch(
-  () => page.props.flash as FlashMessage | null,
-  (flash) => {
-    if (flash?.type === 'pin' && flash.pin) {
-      revealedPin.value = flash.pin
-      pinModalOpen.value = true
-    }
-  },
-  { immediate: true },
-)
-
-function onPinModalClose() {
-  pinModalOpen.value = false
-  revealedPin.value = ''
-  form.reset()
-}
+const { pinModalOpen, revealedPin, closePinModal } = usePinRevealFlash({
+  immediate: true,
+  onClose: () => form.reset(),
+})
 
 // ─── Submit ───────────────────────────────────────────────────────────────────
 
@@ -142,7 +128,7 @@ function submit() {
     <!-- PIN reveal modal -->
     <Dialog
         :open="pinModalOpen"
-        @update:open="!$event && onPinModalClose()"
+        @update:open="!$event && closePinModal()"
     >
         <DialogContent
             class="sm:max-w-fit"
@@ -169,7 +155,7 @@ function submit() {
 
             <Button
                 class="w-full"
-                @click="onPinModalClose"
+                @click="closePinModal"
             >Done</Button>
         </DialogContent>
     </Dialog>
