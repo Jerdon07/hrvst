@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Concerns;
 
-use App\Actions\PostItem\FulfillPostItemAction;
 use App\Enums\PostType;
 use App\Models\Schedule\PostItem;
 use Illuminate\Http\RedirectResponse;
@@ -15,13 +14,13 @@ trait HandlesPostItemLifecycle
 
     abstract protected function indexRouteName(): string;
 
-    public function fulfill(Request $request, PostItem $postItem, FulfillPostItemAction $action): RedirectResponse
+    public function fulfill(Request $request, PostItem $postItem): RedirectResponse
     {
         $postItem->load('post');
         Gate::authorize('fulfill', $postItem);
         abort_if($postItem->post->type !== $this->postType(), 403);
 
-        $action->handle($postItem);
+        $postItem->markAsFulfilled();
 
         return back(fallback: route($this->indexRouteName()))
             ->with('flash', ['type' => 'success', 'message' => 'Item marked as fulfilled.']);

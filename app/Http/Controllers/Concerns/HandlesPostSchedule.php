@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Concerns;
 
-use App\Actions\Post\DeletePostAction;
 use App\Enums\PostItemStatus;
 use App\Enums\PostType;
 use App\Models\Schedule\Post;
@@ -118,10 +117,10 @@ trait HandlesPostSchedule
         ]);
     }
 
-    public function destroy(Post $post, DeletePostAction $action): RedirectResponse
+    public function destroy(Post $post): RedirectResponse
     {
         Gate::authorize('delete', $post);
-        $action->handle($post);
+        $post->delete();
 
         return back(fallback: route($this->indexRouteName()))
             ->with('flash', ['type' => 'success', 'message' => $this->deletedMessage()]);
