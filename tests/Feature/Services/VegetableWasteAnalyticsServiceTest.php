@@ -109,7 +109,7 @@ describe('stability (mostStableWastedDemand / mostStableWastedSupply)', function
         expect($this->service->mostStableWastedDemand())->toBeEmpty();
     });
 
-    it('ranks a perfectly flat vegetable above a volatile one once both pass the mean floor', function () {
+    it('ranks a perfectly flat vegetable above a volatile one when both share the same mean', function () {
         $flat = createVegetable();
         $volatile = createVegetable();
 
@@ -117,22 +117,21 @@ describe('stability (mostStableWastedDemand / mostStableWastedSupply)', function
 
         for ($i = 24; $i >= 1; $i--) {
             insertMonthlyStat($volatile, now()->startOfMonth()->subMonths($i)->toDateString(), [
-                'demand_expired_kg' => $i % 2 === 0 ? 200.0 : 10.0,
+                'demand_expired_kg' => $i % 2 === 0 ? 150.0 : 50.0,
             ]);
         }
 
-        // Pad the candidate pool so the top-quartile mean filter doesn't exclude either.
+        seedFlatWasteHistory(createVegetable(), 'demand_expired_kg', 100.0);
+        seedFlatWasteHistory(createVegetable(), 'demand_expired_kg', 100.0);
         seedFlatWasteHistory(createVegetable(), 'demand_expired_kg', 100.0);
         seedFlatWasteHistory(createVegetable(), 'demand_expired_kg', 100.0);
 
         $ids = collect($this->service->mostStableWastedDemand())->pluck('id')->all();
 
-        if (in_array($flat->id, $ids, true) && in_array($volatile->id, $ids, true)) {
-            expect(array_search($flat->id, $ids, true))->toBeLessThan(array_search($volatile->id, $ids, true));
-        } else {
-            // At minimum the zero-variance vegetable must clear the floor.
-            expect($ids)->toContain($flat->id);
-        }
+        expect($ids)->toContain($flat->id)
+            ->and($ids)->toContain($volatile->id)
+            ->and(array_search($flat->id, $ids, true))
+            ->toBeLessThan(array_search($volatile->id, $ids, true));
     });
 
     it('excludes the current, partial month from the stability calculation', function () {
