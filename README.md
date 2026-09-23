@@ -104,6 +104,7 @@ Hrvst aims to transform the Trading Post from a chaotic marketplace into a **Jus
     - Type errors require manual correction
 7. Tests
     - `vendor/bin/pest --compact`
+    - `npm run test:unit`
 8. Wayfinder Routes
     - Run `php artisan wayfinder:generate --no-interaction` if you touched routes/controllers
 
