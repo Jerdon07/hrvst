@@ -4,11 +4,13 @@ namespace App\Services\Admin;
 
 use App\Models\Address\Municipality;
 use App\Models\Profiles\FarmerProfile;
-use App\Models\Vegetable\Vegetable;
+use App\Services\Vegetable\VegetableOptionsBuilder;
 use Illuminate\Database\Eloquent\Builder;
 
 class FarmerMapService
 {
+    public function __construct(private VegetableOptionsBuilder $optionsBuilder) {}
+
     public function getMunicipalityOptions(): array
     {
         return Municipality::query()
@@ -26,21 +28,10 @@ class FarmerMapService
 
     public function getSupplyOptions(): array
     {
-        return Vegetable::query()
-            ->whereHas('postItems', fn (Builder $q) => $q
-                ->ongoing()
-                ->whereHas('post', fn (Builder $q) => $q->supply())
-            )
-            ->with('category')
-            ->orderBy('vegetable_name')
-            ->get()
-            ->groupBy('category.name')
-            ->map(fn ($rows) => $rows->map(fn ($v) => [
-                'id' => $v->id,
-                'name' => $v->variety_name ? "{$v->vegetable_name} {$v->variety_name}" : $v->vegetable_name,
-                'category' => $v->category->name,
-            ])->values()->toArray())
-            ->toArray();
+        return $this->optionsBuilder->build(fn (Builder $q) => $q->whereHas(
+            'postItems',
+            fn (Builder $q) => $q->ongoing()->whereHas('post', fn (Builder $p) => $p->supply())
+        ));
     }
 
     public function getFarmersForMap(

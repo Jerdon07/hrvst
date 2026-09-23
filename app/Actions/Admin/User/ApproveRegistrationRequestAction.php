@@ -50,7 +50,7 @@ final class ApproveRegistrationRequestAction
 
         return $user;
     }
-    
+
     private function createFarmerProfile(User $user, RegistrationRequest $registrationRequest): void
     {
         $municipality = Municipality::findOrFail($registrationRequest->municipality_id);

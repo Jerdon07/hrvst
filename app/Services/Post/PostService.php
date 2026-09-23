@@ -5,12 +5,14 @@ namespace App\Services\Post;
 use App\Enums\Post\PostType;
 use App\Enums\PostItemStatus;
 use App\Models\Schedule\Post;
-use App\Models\Vegetable\Vegetable;
+use App\Services\Vegetable\VegetableOptionsBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
 class PostService
 {
+    public function __construct(private VegetableOptionsBuilder $optionsBuilder) {}
+
     public function needsAction(PostType $type, int $userId): Collection
     {
         return Post::query()
@@ -51,16 +53,7 @@ class PostService
         return cache()->remember(
             "post_variety_options:{$type->value}",
             3600,
-            fn () => Vegetable::query()
-                ->with('category')
-                ->orderByRaw('variety_name IS NULL, variety_name')
-                ->get()
-                ->groupBy(fn (Vegetable $v) => $v->category->name)
-                ->map(fn ($rows) => $rows->map(fn ($v) => [
-                    'id' => $v->id,
-                    'name' => $v->display_name,
-                ])->values()->toArray())
-                ->toArray(),
+            fn () => $this->optionsBuilder->build(),
         );
     }
 }

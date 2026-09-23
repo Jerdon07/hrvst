@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Cache;
 
 class VegetableService
 {
+    public function __construct(private VegetableOptionsBuilder $optionsBuilder) {}
+
     public function paginated(
         ?string $categoryId = null,
         ?string $search = null,
@@ -36,16 +38,10 @@ class VegetableService
      */
     public function options(): array
     {
-        return Cache::remember('vegetable_options', 3600, fn () => Vegetable::query()
-            ->with('category')
-            ->orderByRaw('variety_name IS NULL, variety_name')
-            ->orderBy('vegetable_name')
-            ->get()
-            ->groupBy(fn (Vegetable $v) => $v->category->name)
-            ->map(fn ($rows) => $rows->map(fn (Vegetable $v) => [
-                'id' => $v->id,
-                'name' => $v->display_name,
-            ])->values()->toArray())
-            ->toArray());
+        return Cache::remember(
+            'vegetable_options',
+            3600,
+            fn () => $this->optionsBuilder->build(),
+        );
     }
 }
