@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\ExportVegetableActivityAction;
+use App\Actions\Vegetable\ExportVegetableActivityAction;
 use App\Enums\Billing\SubscriptionFeature;
 use App\Models\Billing\Subscription;
 use App\Models\Vegetable\Vegetable;
