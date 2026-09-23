@@ -1,13 +1,13 @@
-
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3'
 import { ArrowRight, ChevronDown, ChevronUp, Vegan } from '@lucide/vue'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import AppTooltip from '@/components/templates/AppTooltip.vue'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useExpandableList } from '@/composables/useExpandableList'
 import { show as adminShow } from '@/routes/admin/vegetables'
 import { show as sharedShow } from '@/routes/vegetables'
 import type { TopVegetableData, VegetableStabilityData, VegetableWasteData } from '@/types/resources/product'
@@ -29,18 +29,11 @@ function showRoute(id: number) {
     return isAdmin.value ? adminShow({ vegetable: id }) : sharedShow({ vegetable: id })
 }
 
-const expanded = ref(false)
-
-const visible = computed(() => {
-    if (!props.items?.length) return []
-    if (!props.initialVisible || expanded.value) return props.items
-    return props.items.slice(0, props.initialVisible)
-})
-
-const hasMore = computed(
-    () => !!props.initialVisible && (props.items?.length ?? 0) > props.initialVisible,
+const { expanded, visible, hasMore, hiddenCount, toggle } = useExpandableList(
+    () => props.items,
+    () => props.initialVisible,
 )
-const hiddenCount = computed(() => (props.items?.length ?? 0) - (props.initialVisible ?? 0))
+
 const maxKg = computed(() => Math.max(...(props.items ?? []).map((i) => i.value_kg), 1))
 
 function barPct(kg: number): string {
@@ -147,7 +140,7 @@ const badgeHoverClass = computed(() =>
                     variant="ghost"
                     size="sm"
                     class="mt-2 w-fit gap-1.5 px-2 text-xs text-muted-foreground"
-                    @click="expanded = !expanded"
+                    @click="toggle"
                 >
                     <component
                         :is="expanded ? ChevronUp : ChevronDown"
