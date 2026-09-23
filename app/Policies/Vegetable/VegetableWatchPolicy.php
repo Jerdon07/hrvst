@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Policies;
+namespace App\Policies\Vegetable;
 
 use App\Models\User;
 use App\Models\Vegetable\VegetableWatch;
