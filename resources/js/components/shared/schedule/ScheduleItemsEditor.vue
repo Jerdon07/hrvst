@@ -19,6 +19,14 @@ import {
 } from '@/components/ui/number-field'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useNetKg } from '@/composables/useNetKg'
+import {
+    buildVarietyLabelMap,
+    filterByLabel,
+    isOverlapReady,
+    netKgFor,
+    othersCount,
+    overlapFor,
+} from '@/lib/scheduleItemsEditorHelpers'
 import type { ScheduleType } from '@/lib/scheduleRegistry'
 import type { PostTimeSlot, VarietyOptionsByVegetable, VegetableOverlapData } from '@/types'
 
@@ -40,37 +48,22 @@ const emit = defineEmits<{
 
 const { netKgClass, formatNetKg } = useNetKg(() => props.type)
 
-const varietyLabelById = computed(() => {
-    const map = new Map<string, string>()
-    for (const varieties of Object.values(props.varietyOptions ?? {})) {
-        for (const variety of varieties) map.set(String(variety.id), variety.name)
-    }
-    return map
-})
+const varietyLabelById = computed(() => buildVarietyLabelMap(props.varietyOptions))
 
 function varietyFilterFunction<T extends { value: unknown }>(items: T[], term: string): T[] {
-    const needle = term.toLowerCase()
-    return items.filter((item) => (varietyLabelById.value.get(String(item.value)) ?? '').toLowerCase().includes(needle))
+    return filterByLabel(items, term, varietyLabelById.value)
 }
 
 // ─── Overlap (single source for posters AND net kg) ───────────────────────────
+// Math lives in scheduleItemsEditorHelpers.ts — kept there so it's testable
+// without mounting the Combobox/NumberField stack this component pulls in.
 
-function overlapFor(vegetableId: string): VegetableOverlapData | undefined {
-    if (!vegetableId) return undefined
-    return props.overlap?.[Number(vegetableId)]
+function overlapForItem(vegetableId: string): VegetableOverlapData | undefined {
+    return overlapFor(props.overlap, vegetableId)
 }
 
 function overlapReady(vegetableId: string): boolean {
-    return !!vegetableId && !!props.scheduledDate && !!props.timeSlot
-}
-
-function othersCount(vegetableId: string): number {
-    return overlapFor(vegetableId)?.posters.length ?? 0
-}
-
-function netKgFor(vegetableId: string): number | null {
-    const data = overlapFor(vegetableId)
-    return data ? data.total_supplies_kg - data.total_demands_kg : null
+    return isOverlapReady(vegetableId, props.scheduledDate, props.timeSlot)
 }
 
 // ─── Item dialog ──────────────────────────────────────────────────────────────
@@ -120,11 +113,11 @@ function removeItem(index: number): void {
                             class="h-3.5 w-20 rounded"
                         />
                         <span
-                            v-else-if="netKgFor(item.vegetable_id) !== null"
-                            :class="netKgClass(netKgFor(item.vegetable_id)!)"
+                            v-else-if="netKgFor(overlap, item.vegetable_id) !== null"
+                            :class="netKgClass(netKgFor(overlap, item.vegetable_id)!)"
                             class="text-xs font-medium tabular-nums"
                         >
-                            {{ formatNetKg(netKgFor(item.vegetable_id)!) }}
+                            {{ formatNetKg(netKgFor(overlap, item.vegetable_id)!) }}
                         </span>
                     </ItemDescription>
 
@@ -170,7 +163,7 @@ function removeItem(index: number): void {
             />
 
             <!-- Loaded with at least one other poster -->
-            <template v-else-if="overlapReady(item.vegetable_id) && othersCount(item.vegetable_id) > 0">
+            <template v-else-if="overlapReady(item.vegetable_id) && othersCount(overlap, item.vegetable_id) > 0">
                 <CollapsibleTrigger as-child>
                     <Button
                         type="button"
@@ -185,7 +178,7 @@ function removeItem(index: number): void {
                                 variant="secondary"
                                 class="tabular-nums"
                             >
-                                {{ othersCount(item.vegetable_id) }}
+                                {{ othersCount(overlap, item.vegetable_id) }}
                             </Badge>
                         </span>
                         <ChevronDown class="size-4 transition-transform duration-200 group-data-[state=open]/trigger:rotate-180" />
@@ -194,7 +187,7 @@ function removeItem(index: number): void {
 
                 <CollapsibleContent>
                     <div class="rounded-md bg-muted/30 p-3">
-                        <OverlapPosters :overlap="overlapFor(item.vegetable_id)" />
+                        <OverlapPosters :overlap="overlapForItem(item.vegetable_id)" />
                     </div>
                 </CollapsibleContent>
             </template>
