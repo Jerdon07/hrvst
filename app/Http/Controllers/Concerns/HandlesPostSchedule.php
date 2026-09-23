@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Concerns;
 
+use App\Enums\Post\PostType;
 use App\Enums\PostItemStatus;
-use App\Enums\PostType;
 use App\Models\Schedule\Post;
 use App\Services\Post\PostScheduleOverlapService;
 use App\Services\Post\PostService;

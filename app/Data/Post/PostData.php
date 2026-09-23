@@ -3,7 +3,7 @@
 namespace App\Data\Post;
 
 use App\Data\PostItem\PostItemData;
-use App\Enums\PostType;
+use App\Enums\Post\PostType;
 use App\Models\Schedule\Post;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Lazy;

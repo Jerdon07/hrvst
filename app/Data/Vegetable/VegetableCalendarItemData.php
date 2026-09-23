@@ -2,8 +2,8 @@
 
 namespace App\Data\Vegetable;
 
+use App\Enums\Post\PostType;
 use App\Enums\PostItemStatus;
-use App\Enums\PostType;
 use Spatie\LaravelData\Data;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 

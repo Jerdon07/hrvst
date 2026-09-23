@@ -2,7 +2,7 @@
 
 namespace App\Services\Admin;
 
-use App\Enums\PostType;
+use App\Enums\Post\PostType;
 use App\Models\Profiles\DealerProfile;
 use App\Models\Schedule\Post;
 use App\Services\Admin\Concerns\ManagesProfileDirectory;

@@ -3,8 +3,8 @@
 namespace App\Data\Post;
 
 use App\Data\PostItem\PostItemLightData;
-use App\Enums\PostTimeSlot;
-use App\Enums\PostType;
+use App\Enums\Post\PostTimeSlot;
+use App\Enums\Post\PostType;
 use Carbon\Carbon;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Attributes\WithCast;

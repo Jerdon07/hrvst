@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Enums\PostType;
+use App\Enums\Post\PostType;
 use App\Models\Vegetable\Vegetable;
 use Illuminate\Support\Facades\Cache;
 

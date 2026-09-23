@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Post;
 
-use App\Enums\PostTimeSlot;
+use App\Enums\Post\PostTimeSlot;
 use App\Models\Schedule\Post;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;

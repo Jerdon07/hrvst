@@ -2,7 +2,7 @@
 
 namespace App\Notifications;
 
-use App\Enums\PostType;
+use App\Enums\Post\PostType;
 use App\Models\Schedule\Post;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;

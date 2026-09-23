@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\PostTimeSlot;
-use App\Enums\PostType;
+use App\Enums\Post\PostTimeSlot;
+use App\Enums\Post\PostType;
 use App\Http\Controllers\Controller;
 use App\Models\Schedule\Post;
 use App\Services\Post\PostScheduleOverlapService;

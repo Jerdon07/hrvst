@@ -5,7 +5,7 @@ namespace App\Services\Shared;
 use App\Data\Profile\MonthlyVolumeData;
 use App\Data\Profile\TopVegetableData;
 use App\Data\Profile\UserInsightsData;
-use App\Enums\PostType;
+use App\Enums\Post\PostType;
 use App\Models\Schedule\Post;
 use App\Models\Schedule\PostItem;
 use App\Models\Vegetable\Vegetable;

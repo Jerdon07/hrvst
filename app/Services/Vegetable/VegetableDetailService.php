@@ -3,8 +3,8 @@
 namespace App\Services\Vegetable;
 
 use App\Enums\Analytics\VegetableViewerRole;
+use App\Enums\Post\PostType;
 use App\Enums\PostItemStatus;
-use App\Enums\PostType;
 use App\Models\Vegetable\Vegetable;
 use Illuminate\Support\Facades\DB;
 

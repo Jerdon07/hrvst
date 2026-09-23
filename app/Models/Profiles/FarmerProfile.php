@@ -2,7 +2,7 @@
 
 namespace App\Models\Profiles;
 
-use App\Enums\PostType;
+use App\Enums\Post\PostType;
 use App\Models\Address\Barangay;
 use App\Models\Address\Municipality;
 use App\Models\Address\Province;

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Concerns;
 
-use App\Enums\PostType;
+use App\Enums\Post\PostType;
 use App\Models\Schedule\PostItem;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

@@ -2,8 +2,8 @@
 
 namespace App\Notifications;
 
-use App\Enums\PostTimeSlot;
-use App\Enums\PostType;
+use App\Enums\Post\PostTimeSlot;
+use App\Enums\Post\PostType;
 use App\Models\Vegetable\Vegetable;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;

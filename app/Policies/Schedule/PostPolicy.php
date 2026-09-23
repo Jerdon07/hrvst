@@ -2,7 +2,7 @@
 
 namespace App\Policies\Schedule;
 
-use App\Enums\PostType;
+use App\Enums\Post\PostType;
 use App\Models\Schedule\Post;
 use App\Models\User;
 

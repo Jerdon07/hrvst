@@ -2,8 +2,8 @@
 
 namespace App\Actions\Post;
 
+use App\Enums\Post\PostType;
 use App\Enums\PostItemStatus;
-use App\Enums\PostType;
 use App\Models\Schedule\Post;
 use Illuminate\Support\Facades\DB;
 

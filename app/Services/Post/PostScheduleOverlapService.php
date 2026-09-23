@@ -4,9 +4,9 @@ namespace App\Services\Post;
 
 use App\Data\Post\OverlapPosterData;
 use App\Data\Post\VegetableOverlapData;
+use App\Enums\Post\PostTimeSlot;
+use App\Enums\Post\PostType;
 use App\Enums\PostItemStatus;
-use App\Enums\PostTimeSlot;
-use App\Enums\PostType;
 use App\Models\Schedule\Post;
 use App\Models\Schedule\PostItem;
 use Carbon\CarbonInterface;

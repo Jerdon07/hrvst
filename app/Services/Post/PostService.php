@@ -2,8 +2,8 @@
 
 namespace App\Services\Post;
 
+use App\Enums\Post\PostType;
 use App\Enums\PostItemStatus;
-use App\Enums\PostType;
 use App\Models\Schedule\Post;
 use App\Models\Vegetable\Vegetable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;

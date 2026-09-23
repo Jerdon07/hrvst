@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Post;
 
-use App\Enums\PostTimeSlot;
-use App\Enums\PostType;
+use App\Enums\Post\PostTimeSlot;
+use App\Enums\Post\PostType;
 use App\Models\Schedule\Post;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Farmer;
 
-use App\Enums\PostType;
+use App\Enums\Post\PostType;
 use App\Http\Requests\Post\StorePostRequest;
 
 class StoreSupplyRequest extends StorePostRequest

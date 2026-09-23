@@ -1,8 +1,8 @@
 <?php
 
+use App\Enums\Post\PostTimeSlot;
+use App\Enums\Post\PostType;
 use App\Enums\PostItemStatus;
-use App\Enums\PostTimeSlot;
-use App\Enums\PostType;
 use App\Models\Address\Barangay;
 use App\Models\Address\Municipality;
 use App\Models\Address\Province;

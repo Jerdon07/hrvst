@@ -2,7 +2,7 @@
 
 namespace App\Services\Admin\Concerns;
 
-use App\Enums\PostType;
+use App\Enums\Post\PostType;
 use App\Services\Shared\PostItemInsightsService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;

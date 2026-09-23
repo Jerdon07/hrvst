@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Dealer\Schedule;
 use App\Actions\Post\CreatePostAction;
 use App\Actions\Post\UpdatePostAction;
 use App\Data\Post\PostScheduleData;
-use App\Enums\PostType;
+use App\Enums\Post\PostType;
 use App\Http\Controllers\Concerns\HandlesPostSchedule;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dealer\StoreDemandRequest;

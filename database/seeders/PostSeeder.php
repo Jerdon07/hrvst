@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Post\PostTimeSlot;
+use App\Enums\Post\PostType;
 use App\Enums\PostItemStatus;
-use App\Enums\PostTimeSlot;
-use App\Enums\PostType;
 use App\Models\Profiles\DealerProfile;
 use App\Models\Profiles\FarmerProfile;
 use App\Models\Schedule\Post;

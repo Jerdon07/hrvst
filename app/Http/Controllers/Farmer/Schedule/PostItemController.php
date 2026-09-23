@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Farmer\Schedule;
 
-use App\Enums\PostType;
+use App\Enums\Post\PostType;
 use App\Http\Controllers\Concerns\HandlesPostItemLifecycle;
 use App\Http\Controllers\Controller;
 

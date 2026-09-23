@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Dealer;
 
-use App\Enums\PostType;
+use App\Enums\Post\PostType;
 use App\Http\Requests\Post\StorePostRequest;
 
 class StoreDemandRequest extends StorePostRequest
