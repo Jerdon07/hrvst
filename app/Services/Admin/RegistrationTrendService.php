@@ -4,6 +4,7 @@ namespace App\Services\Admin;
 
 use App\Models\Profiles\DealerProfile;
 use App\Models\Profiles\FarmerProfile;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class RegistrationTrendService
@@ -45,9 +46,9 @@ class RegistrationTrendService
     {
         return $modelClass::query()
             ->where('created_at', '>=', $start)
-            ->selectRaw("TO_CHAR(created_at, 'YYYY-MM') as period, COUNT(*) as cnt")
-            ->groupByRaw("TO_CHAR(created_at, 'YYYY-MM')")
-            ->pluck('cnt', 'period')
+            ->pluck('created_at')
+            ->groupBy(fn ($createdAt) => Carbon::parse($createdAt)->format('Y-m'))
+            ->map(fn ($rows) => $rows->count())
             ->toArray();
     }
 }
