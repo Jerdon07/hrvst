@@ -21,6 +21,7 @@ import {
 	useCalendarBalance,
 	type CalendarViewerRole,
 } from '@/composables/useCalendarBalance'
+import { stepMonth } from '@/lib/calendarMonth'
 import adminRoutes from '@/routes/admin'
 import vegetables from '@/routes/vegetables'
 import type { CalendarSlotData, VegetableCalendarFilters, VegetableDaySchedule } from '@/types'
@@ -65,17 +66,7 @@ const monthLabel = computed(() =>
 )
 
 function navigateMonth(direction: 1 | -1): void {
-	let month = calendarMonth.value + direction
-	let year = calendarYear.value
-
-	if (month > 12) {
-		month = 1
-		year++
-	}
-	if (month < 1) {
-		month = 12
-		year--
-	}
+	const { year, month } = stepMonth(calendarYear.value, calendarMonth.value, direction)
 
 	router.visit(showRoute().url, {
 		data: { year, month },
@@ -225,7 +216,7 @@ function handleDayClick(date: DateValue): void {
                                 <CalendarCellTrigger
                                     :day="weekDate"
                                     :month="month.value"
-                                    class="flex h-full w-full flex-col items-center justify-center gap-1 rounded-md border border-border/40 bg-muted/20 text-xs font-semibold transition-colors hover:bg-muted/50 data-[outside-view]:opacity-30"
+                                    class="flex h-full w-full flex-col items-center justify-center gap-1 rounded-md border border-border/40 bg-muted/20 text-xs font-semibold transition-colors hover:bg-muted/50 data-outside-view:opacity-30"
                                     @click="handleDayClick(weekDate)"
                                 />
                                 <span
