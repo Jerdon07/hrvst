@@ -28,13 +28,13 @@ trait HandlesPostItemLifecycle
             ->with('flash', ['type' => 'success', 'message' => 'Item marked as fulfilled.']);
     }
 
-    public function expire(Request $request, PostItem $postItem, ExpirePostItemAction $action): RedirectResponse
+    public function expire(Request $request, PostItem $postItem): RedirectResponse
     {
         $postItem->load('post');
         Gate::authorize('expire', $postItem);
         abort_if($postItem->post->type !== $this->postType(), 403);
 
-        $action->handle($postItem);
+        $postItem->markAsExpired();
 
         return back(fallback: route($this->indexRouteName()))
             ->with('flash', ['type' => 'success', 'message' => 'Item marked as expired.']);
