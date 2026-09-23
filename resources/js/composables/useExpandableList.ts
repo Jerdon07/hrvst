@@ -15,7 +15,9 @@ export function useExpandableList<T>(
         return all.value.slice(0, limit.value)
     })
 
-    const hasMore = computed(() => !!limit.value && all.value.length > limit.value)
+    const hasMore = computed(
+        () => !!limit.value && all.value.length > limit.value,
+    )
     const hiddenCount = computed(() => all.value.length - (limit.value ?? 0))
 
     function toggle(): void {

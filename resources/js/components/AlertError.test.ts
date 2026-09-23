@@ -16,7 +16,9 @@ describe('AlertError', () => {
 
     it('dedupes exact-duplicate error strings — this is the whole reason the component exists', () => {
         const wrapper = mount(AlertError, {
-            props: { errors: ['Failed to fetch QR code', 'Failed to fetch QR code'] },
+            props: {
+                errors: ['Failed to fetch QR code', 'Failed to fetch QR code'],
+            },
         })
 
         expect(wrapper.findAll('li')).toHaveLength(1)
@@ -24,7 +26,9 @@ describe('AlertError', () => {
 
     it('does NOT dedupe messages that merely look similar (no fuzzy matching)', () => {
         const wrapper = mount(AlertError, {
-            props: { errors: ['Failed to fetch QR code', 'Failed to fetch QR code.'] },
+            props: {
+                errors: ['Failed to fetch QR code', 'Failed to fetch QR code.'],
+            },
         })
 
         expect(wrapper.findAll('li')).toHaveLength(2)

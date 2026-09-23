@@ -21,7 +21,10 @@ describe('FileUpload', () => {
         })
 
         const file = new File(['x'], 'photo.jpg', { type: 'image/jpeg' })
-        selectFile(wrapper.find('input[type="file"]').element as HTMLInputElement, file)
+        selectFile(
+            wrapper.find('input[type="file"]').element as HTMLInputElement,
+            file,
+        )
         await wrapper.vm.$nextTick()
 
         expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([file])
@@ -37,7 +40,10 @@ describe('FileUpload', () => {
         })
 
         const file = new File(['x'], 'doc.pdf', { type: 'application/pdf' })
-        selectFile(wrapper.find('input[type="file"]').element as HTMLInputElement, file)
+        selectFile(
+            wrapper.find('input[type="file"]').element as HTMLInputElement,
+            file,
+        )
         await wrapper.vm.$nextTick()
 
         expect(wrapper.emitted('update:modelValue')).toBeUndefined()
@@ -53,10 +59,17 @@ describe('FileUpload', () => {
             },
         })
 
-        const oversized = new File([new Uint8Array(2 * 1024 * 1024)], 'big.jpg', {
-            type: 'image/jpeg',
-        })
-        selectFile(wrapper.find('input[type="file"]').element as HTMLInputElement, oversized)
+        const oversized = new File(
+            [new Uint8Array(2 * 1024 * 1024)],
+            'big.jpg',
+            {
+                type: 'image/jpeg',
+            },
+        )
+        selectFile(
+            wrapper.find('input[type="file"]').element as HTMLInputElement,
+            oversized,
+        )
         await wrapper.vm.$nextTick()
 
         expect(wrapper.emitted('update:modelValue')).toBeUndefined()
@@ -67,9 +80,13 @@ describe('FileUpload', () => {
         const wrapper = mount(FileUpload, {
             props: { modelValue: null, accept: 'image/jpeg', maxSizeMb: 5 },
         })
-        const input = wrapper.find('input[type="file"]').element as HTMLInputElement
+        const input = wrapper.find('input[type="file"]')
+            .element as HTMLInputElement
 
-        selectFile(input, new File(['x'], 'doc.pdf', { type: 'application/pdf' }))
+        selectFile(
+            input,
+            new File(['x'], 'doc.pdf', { type: 'application/pdf' }),
+        )
         await wrapper.vm.$nextTick()
         expect(wrapper.text()).toContain('File must be one of')
 

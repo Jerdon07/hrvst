@@ -40,7 +40,8 @@ export function buildVarietyLabelMap(
 ): Map<string, string> {
     const map = new Map<string, string>()
     for (const varieties of Object.values(varietyOptions ?? {})) {
-        for (const variety of varieties) map.set(String(variety.id), variety.name)
+        for (const variety of varieties)
+            map.set(String(variety.id), variety.name)
     }
     return map
 }
@@ -52,6 +53,8 @@ export function filterByLabel<T extends { value: unknown }>(
 ): T[] {
     const needle = term.toLowerCase()
     return items.filter((item) =>
-        (labelById.get(String(item.value)) ?? '').toLowerCase().includes(needle),
+        (labelById.get(String(item.value)) ?? '')
+            .toLowerCase()
+            .includes(needle),
     )
 }

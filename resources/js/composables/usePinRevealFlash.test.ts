@@ -62,7 +62,9 @@ describe('usePinRevealFlash', () => {
         it('catches a pin flash that is already present at setup time', () => {
             pageMock.props.flash = { type: 'pin', pin: '111111' }
 
-            const { pinModalOpen, revealedPin } = usePinRevealFlash({ immediate: true })
+            const { pinModalOpen, revealedPin } = usePinRevealFlash({
+                immediate: true,
+            })
 
             expect(pinModalOpen.value).toBe(true)
             expect(revealedPin.value).toBe('111111')
@@ -80,7 +82,8 @@ describe('usePinRevealFlash', () => {
     describe('closePinModal', () => {
         it('resets both pinModalOpen and revealedPin', async () => {
             pageMock.props.flash = null
-            const { pinModalOpen, revealedPin, closePinModal } = usePinRevealFlash()
+            const { pinModalOpen, revealedPin, closePinModal } =
+                usePinRevealFlash()
 
             pageMock.props.flash = { type: 'pin', pin: '222222' }
             await nextTick()

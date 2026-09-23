@@ -9,13 +9,16 @@ export interface UseMonthlyChartPaginationOptions {
     forecastLocked: MaybeRefOrGetter<boolean | undefined>
 }
 
-export function useMonthlyChartPagination(options: UseMonthlyChartPaginationOptions) {
+export function useMonthlyChartPagination(
+    options: UseMonthlyChartPaginationOptions,
+) {
     const offset = computed(() => toValue(options.offset) ?? 0)
     const maxOffset = computed(() => toValue(options.maxOffset) ?? 0)
 
     const canGoNext = computed(() => offset.value > 0)
     const canGoPrevious = computed(
-        () => !toValue(options.forecastLocked) && offset.value < maxOffset.value,
+        () =>
+            !toValue(options.forecastLocked) && offset.value < maxOffset.value,
     )
 
     function previousOffset(): number | null {

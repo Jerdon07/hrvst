@@ -45,8 +45,10 @@ describe('getLevel', () => {
 })
 
 describe('centroid', () => {
-    it('returns the single farmer\'s own coordinates for a group of one', () => {
-        const [lat, lng] = centroid([marker({ coordinates: { lat: 10, lng: 20 } })])
+    it("returns the single farmer's own coordinates for a group of one", () => {
+        const [lat, lng] = centroid([
+            marker({ coordinates: { lat: 10, lng: 20 } }),
+        ])
         expect(lat).toBe(10)
         expect(lng).toBe(20)
     })
@@ -106,7 +108,7 @@ describe('buildGroups', () => {
         expect(groups[0].totalSupplies).toBe(8)
     })
 
-    it('names the group after the first farmer\'s label for that level', () => {
+    it("names the group after the first farmer's label for that level", () => {
         const markers = [marker({ province_id: 1, province: 'Benguet' })]
         const groups = buildGroups(markers, 'province')
         expect(groups[0].name).toBe('Benguet')
@@ -116,8 +118,12 @@ describe('buildGroups', () => {
         const provinceMarkers = [marker({ province_id: 7, province: null })]
         const barangayMarkers = [marker({ barangay_id: 9, barangay: null })]
 
-        expect(buildGroups(provinceMarkers, 'province')[0].name).toBe('Province 7')
-        expect(buildGroups(barangayMarkers, 'barangay')[0].name).toBe('Barangay 9')
+        expect(buildGroups(provinceMarkers, 'province')[0].name).toBe(
+            'Province 7',
+        )
+        expect(buildGroups(barangayMarkers, 'barangay')[0].name).toBe(
+            'Barangay 9',
+        )
     })
 
     it('does not apply the null-fallback to municipality — that field is never null on the type', () => {
@@ -131,8 +137,16 @@ describe('buildGroups', () => {
 
     it('centroid of a group matches the averaged coordinates of its members', () => {
         const markers = [
-            marker({ id: 1, province_id: 1, coordinates: { lat: 10, lng: 100 } }),
-            marker({ id: 2, province_id: 1, coordinates: { lat: 20, lng: 120 } }),
+            marker({
+                id: 1,
+                province_id: 1,
+                coordinates: { lat: 10, lng: 100 },
+            }),
+            marker({
+                id: 2,
+                province_id: 1,
+                coordinates: { lat: 20, lng: 120 },
+            }),
         ]
         const [group] = buildGroups(markers, 'province')
 

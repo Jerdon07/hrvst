@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { groupPostersByType, mostRelevantStatus } from '@/lib/scheduleGrouping'
 import type { CalendarScheduleItem } from '@/types'
 
-function item(overrides: Partial<CalendarScheduleItem> = {}): CalendarScheduleItem {
+function item(
+    overrides: Partial<CalendarScheduleItem> = {},
+): CalendarScheduleItem {
     return {
         post_id: 1,
         type: 'supply',
@@ -106,8 +108,18 @@ describe('groupPostersByType', () => {
 
     it('takes the first-seen poster_name/poster_phone rather than overwriting on merge', () => {
         const items = [
-            item({ post_id: 1, poster_name: 'Farmer A', poster_phone: '0917', quantity_kg: 10 }),
-            item({ post_id: 1, poster_name: 'Farmer A (typo)', poster_phone: '0918', quantity_kg: 10 }),
+            item({
+                post_id: 1,
+                poster_name: 'Farmer A',
+                poster_phone: '0917',
+                quantity_kg: 10,
+            }),
+            item({
+                post_id: 1,
+                poster_name: 'Farmer A (typo)',
+                poster_phone: '0918',
+                quantity_kg: 10,
+            }),
         ]
         const groups = groupPostersByType(items, 'supply')
 

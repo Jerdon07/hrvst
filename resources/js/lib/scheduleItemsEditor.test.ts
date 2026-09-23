@@ -9,7 +9,9 @@ import {
 } from '@/lib/scheduleItemsEditorHelpers'
 import type { VegetableOverlapData } from '@/types'
 
-function overlapEntry(overrides: Partial<VegetableOverlapData> = {}): VegetableOverlapData {
+function overlapEntry(
+    overrides: Partial<VegetableOverlapData> = {},
+): VegetableOverlapData {
     return {
         post_item_id: 1,
         vegetable_id: 42,
@@ -66,7 +68,9 @@ describe('othersCount', () => {
 
 describe('netKgFor', () => {
     it('computes supplies minus demands', () => {
-        const overlap = { 42: overlapEntry({ total_supplies_kg: 100, total_demands_kg: 40 }) }
+        const overlap = {
+            42: overlapEntry({ total_supplies_kg: 100, total_demands_kg: 40 }),
+        }
         expect(netKgFor(overlap, '42')).toBe(60)
     })
 
@@ -75,7 +79,9 @@ describe('netKgFor', () => {
     })
 
     it('returns 0 (not null) for a genuinely balanced entry', () => {
-        const overlap = { 42: overlapEntry({ total_supplies_kg: 50, total_demands_kg: 50 }) }
+        const overlap = {
+            42: overlapEntry({ total_supplies_kg: 50, total_demands_kg: 50 }),
+        }
         expect(netKgFor(overlap, '42')).toBe(0)
     })
 })
@@ -83,7 +89,10 @@ describe('netKgFor', () => {
 describe('buildVarietyLabelMap', () => {
     it('flattens a category-grouped options object into a single id → name map', () => {
         const options = {
-            'Leafy Greens': [{ id: 1, name: 'Pechay' }, { id: 2, name: 'Kangkong' }],
+            'Leafy Greens': [
+                { id: 1, name: 'Pechay' },
+                { id: 2, name: 'Kangkong' },
+            ],
             Root: [{ id: 3, name: 'Carrot' }],
         }
         const map = buildVarietyLabelMap(options)
@@ -118,7 +127,9 @@ describe('filterByLabel', () => {
     })
 
     it('is case-insensitive', () => {
-        expect(filterByLabel(items, 'CARROT', labelMap)).toEqual([{ value: '3' }])
+        expect(filterByLabel(items, 'CARROT', labelMap)).toEqual([
+            { value: '3' },
+        ])
     })
 
     it('matches a substring anywhere in the label, not only a prefix', () => {
@@ -131,7 +142,9 @@ describe('filterByLabel', () => {
 
     it('excludes an item whose value has no entry in the label map when the term is non-empty', () => {
         const withUnknown = [...items, { value: '999' }]
-        expect(filterByLabel(withUnknown, 'pech', labelMap)).not.toContainEqual({ value: '999' })
+        expect(filterByLabel(withUnknown, 'pech', labelMap)).not.toContainEqual(
+            { value: '999' },
+        )
     })
 
     it('returns an empty array when nothing matches', () => {

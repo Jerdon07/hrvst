@@ -22,12 +22,17 @@ export function getLevel(zoom: number): FarmerGroupLevel {
 }
 
 export function centroid(farmers: FarmerMarker[]): [number, number] {
-    const lat = farmers.reduce((s, f) => s + f.coordinates.lat, 0) / farmers.length
-    const lng = farmers.reduce((s, f) => s + f.coordinates.lng, 0) / farmers.length
+    const lat =
+        farmers.reduce((s, f) => s + f.coordinates.lat, 0) / farmers.length
+    const lng =
+        farmers.reduce((s, f) => s + f.coordinates.lng, 0) / farmers.length
     return [lat, lng]
 }
 
-export function buildGroups(markers: FarmerMarker[], level: FarmerGroupLevel): FarmerGroup[] {
+export function buildGroups(
+    markers: FarmerMarker[],
+    level: FarmerGroupLevel,
+): FarmerGroup[] {
     const buckets = new Map<number, FarmerMarker[]>()
 
     for (const f of markers) {
@@ -57,7 +62,10 @@ export function buildGroups(markers: FarmerMarker[], level: FarmerGroupLevel): F
             lat,
             lng,
             farmers,
-            totalSupplies: farmers.reduce((s, f) => s + f.ongoing_supplies_count, 0),
+            totalSupplies: farmers.reduce(
+                (s, f) => s + f.ongoing_supplies_count,
+                0,
+            ),
             level,
         }
     })

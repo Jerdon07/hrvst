@@ -3,7 +3,9 @@ import { describe, expect, it } from 'vitest'
 import VegetableRecommendations from '@/components/shared/charts/VegetableRecommendations.vue'
 import type { VarietyRecommendation } from '@/types/resources/product'
 
-function rec(overrides: Partial<VarietyRecommendation> = {}): VarietyRecommendation {
+function rec(
+    overrides: Partial<VarietyRecommendation> = {},
+): VarietyRecommendation {
     return {
         severity: 'info',
         type: 'supply_opportunity',
@@ -16,14 +18,18 @@ function rec(overrides: Partial<VarietyRecommendation> = {}): VarietyRecommendat
 describe('VegetableRecommendations', () => {
     it('colors a "critical" recommendation red', () => {
         const wrapper = mount(VegetableRecommendations, {
-            props: { recommendations: [rec({ severity: 'critical', type: 'a' })] },
+            props: {
+                recommendations: [rec({ severity: 'critical', type: 'a' })],
+            },
         })
         expect(wrapper.html()).toContain('border-red-200')
     })
 
     it('colors a "warning" recommendation amber', () => {
         const wrapper = mount(VegetableRecommendations, {
-            props: { recommendations: [rec({ severity: 'warning', type: 'a' })] },
+            props: {
+                recommendations: [rec({ severity: 'warning', type: 'a' })],
+            },
         })
         expect(wrapper.html()).toContain('border-amber-200')
     })
@@ -36,12 +42,16 @@ describe('VegetableRecommendations', () => {
     })
 
     it('pluralizes the signal count correctly at 0, 1, and N', () => {
-        const zero = mount(VegetableRecommendations, { props: { recommendations: [] } })
+        const zero = mount(VegetableRecommendations, {
+            props: { recommendations: [] },
+        })
         const one = mount(VegetableRecommendations, {
             props: { recommendations: [rec({ type: 'a' })] },
         })
         const many = mount(VegetableRecommendations, {
-            props: { recommendations: [rec({ type: 'a' }), rec({ type: 'b' })] },
+            props: {
+                recommendations: [rec({ type: 'a' }), rec({ type: 'b' })],
+            },
         })
 
         expect(zero.text()).toContain('0 signals')
@@ -54,7 +64,9 @@ describe('VegetableRecommendations', () => {
         const recommendations = Array.from({ length: 5 }, (_, i) =>
             rec({ type: `t${i}`, title: `Rec ${i}` }),
         )
-        const wrapper = mount(VegetableRecommendations, { props: { recommendations } })
+        const wrapper = mount(VegetableRecommendations, {
+            props: { recommendations },
+        })
 
         expect(wrapper.text()).toContain('Rec 0')
         expect(wrapper.text()).toContain('Rec 2')
