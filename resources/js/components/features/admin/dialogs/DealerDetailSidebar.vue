@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { router, useForm, usePage } from '@inertiajs/vue3'
+import { router, useForm } from '@inertiajs/vue3'
 import {
     Calendar1,
     CalendarSync,
@@ -8,7 +8,7 @@ import {
     Mail,
     Trash,
 } from '@lucide/vue'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { destroy } from '@/actions/App/Http/Controllers/Admin/DealerController'
 import { resetPin } from '@/actions/App/Http/Controllers/Admin/UserController'
 import { show } from '@/actions/App/Http/Controllers/Shared/UserController'
@@ -38,7 +38,8 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useInitials } from '@/composables/useInitials'
-import type { DealerResource, FlashMessage } from '@/types'
+import { usePinRevealFlash } from '@/composables/usePinRevealFlash'
+import type { DealerResource } from '@/types'
 import PhoneNumberField from '../PhoneNumberField.vue'
 
 const props = defineProps<{
@@ -54,22 +55,10 @@ defineEmits<{
 const { getInitials } = useInitials()
 
 const isDeleteDialogOpen = ref(false)
-const pinModalOpen = ref(false)
-const revealedPin = ref('')
+const { pinModalOpen, revealedPin, closePinModal } = usePinRevealFlash()
 
 const resetPinForm = useForm({})
 const deleteForm = useForm({})
-
-const page = usePage()
-watch(
-    () => page.props.flash as FlashMessage | null,
-    (flash) => {
-        if (flash?.type === 'pin' && flash.pin) {
-            revealedPin.value = flash.pin
-            pinModalOpen.value = true
-        }
-    },
-)
 
 function handleResetPin() {
     if (!props.dealer) return
@@ -215,11 +204,6 @@ const handleDelete = () => {
                 v-else-if="dealer"
                 class="flex justify-end gap-3"
             >
-                <!--
-                    Points at the unified profile route (Shared\UserController)
-                    keyed by USER id, not the DealerProfile id — the old
-                    admin.dealers.show route this used to hit no longer exists.
-                -->
                 <Button
                     variant="outline"
                     size="sm"
@@ -278,7 +262,7 @@ const handleDelete = () => {
     <!-- PIN reveal after reset -->
     <Dialog
         :open="pinModalOpen"
-        @update:open="!$event && (pinModalOpen = false)"
+        @update:open="!$event && closePinModal()"
     >
         <DialogContent
             class="sm:max-w-fit"
@@ -306,7 +290,7 @@ const handleDelete = () => {
 
             <Button
                 class="w-full"
-                @click="pinModalOpen = false"
+                @click="closePinModal"
             >Done</Button>
         </DialogContent>
     </Dialog>
