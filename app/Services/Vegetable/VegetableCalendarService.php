@@ -26,7 +26,7 @@ class VegetableCalendarService
         return PostItem::query()
             ->join('posts', 'posts.id', '=', 'post_items.post_id')
             ->selectRaw('DATE(posts.scheduled_date) as date')
-            ->selectRaw('COALESCE(posts.time_slot) as slot')
+            ->selectRaw("COALESCE(posts.time_slot, 'morning') as slot")
             ->selectRaw('posts.type')
             ->selectRaw('SUM(post_items.quantity_kg) as total_kg')
             ->selectRaw('COUNT(DISTINCT posts.id) as posts_count')
@@ -38,7 +38,7 @@ class VegetableCalendarService
                 PostItemStatus::Fulfilled->value,
                 PostItemStatus::Expired->value,
             ])
-            ->groupByRaw('DATE(posts.scheduled_date), COALESCE(posts.time_slot), posts.type')
+            ->groupByRaw("DATE(posts.scheduled_date), COALESCE(posts.time_slot, 'morning'), posts.type")
             ->orderByRaw('date, slot, posts.type')
             ->get();
     }
@@ -57,7 +57,7 @@ class VegetableCalendarService
                 'post_items.status',
                 'posts.type',
             ])
-            ->selectRaw('COALESCE(posts.time_slot) as slot')
+            ->selectRaw("COALESCE(posts.time_slot, 'morning') as slot")
             ->selectRaw('DATE(posts.scheduled_date) as date')
             ->selectRaw('vegetables.variety_name as variety_name')
             ->selectRaw('users.name as poster_name')
