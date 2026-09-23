@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils'
 import type { ColumnDef } from '@tanstack/vue-table'
+import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import DataTable from '@/components/shared/tables/DataTable.vue'
 
