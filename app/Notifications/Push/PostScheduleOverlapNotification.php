@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Notifications\Push;
 
 use App\Enums\Post\PostTimeSlot;
 use App\Enums\Post\PostType;

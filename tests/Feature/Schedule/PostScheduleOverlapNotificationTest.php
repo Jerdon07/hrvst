@@ -4,7 +4,7 @@ use App\Enums\Post\PostTimeSlot;
 use App\Enums\Post\PostType;
 use App\Enums\PostItemStatus;
 use App\Models\Schedule\PostItem;
-use App\Notifications\PostScheduleOverlapNotification;
+use App\Notifications\Push\PostScheduleOverlapNotification;
 use Illuminate\Support\Facades\Notification;
 use NotificationChannels\WebPush\WebPushChannel;
 

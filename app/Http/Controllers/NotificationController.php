@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\Billing\SubscriptionFeature;
 use App\Models\Billing\Subscription;
-use App\Notifications\PostScheduleOverlapNotification;
+use App\Notifications\Push\PostScheduleOverlapNotification;
 use App\Notifications\VegetableOutlookAlert;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

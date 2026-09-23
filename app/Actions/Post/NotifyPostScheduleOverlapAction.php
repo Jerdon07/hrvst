@@ -6,7 +6,7 @@ use App\Enums\PostItemStatus;
 use App\Models\Schedule\Post;
 use App\Models\Schedule\PostItem;
 use App\Models\User;
-use App\Notifications\PostScheduleOverlapNotification;
+use App\Notifications\Push\PostScheduleOverlapNotification;
 use Illuminate\Support\Facades\Notification;
 
 final class NotifyPostScheduleOverlapAction
