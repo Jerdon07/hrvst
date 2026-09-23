@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Shared;
 use App\Enums\Analytics\VegetableViewerRole;
 use App\Http\Controllers\Controller;
 use App\Models\Vegetable\Vegetable;
-use App\Models\VegetableWatch;
+use App\Models\Vegetable\VegetableWatch;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;

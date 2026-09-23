@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Profiles\DealerProfile;
 use App\Models\Profiles\FarmerProfile;
 use App\Models\Profiles\Role;
+use App\Models\Vegetable\VegetableWatch;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

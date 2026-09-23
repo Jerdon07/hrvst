@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Enums\Analytics\ImbalanceBand;
-use App\Models\VegetableWatch;
+use App\Models\Vegetable\VegetableWatch;
 use App\Notifications\VegetableOutlookAlert;
 use App\Services\Vegetable\VegetableActivityService;
 use App\Services\Vegetable\VegetableAnalyticsService;

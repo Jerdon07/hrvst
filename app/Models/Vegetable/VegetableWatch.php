@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Vegetable;
 
-use App\Models\Vegetable\Vegetable;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

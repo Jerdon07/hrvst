@@ -9,7 +9,7 @@ use App\Models\Schedule\Post;
 use App\Models\Schedule\PostItem;
 use App\Models\User;
 use App\Models\Vegetable\Vegetable;
-use App\Models\VegetableWatch;
+use App\Models\Vegetable\VegetableWatch;
 use App\Observers\PostItemObserver;
 use App\Observers\VegetableObserver;
 use App\Policies\Profiles\DealerPolicy;

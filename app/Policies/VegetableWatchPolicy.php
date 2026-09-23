@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\VegetableWatch;
+use App\Models\Vegetable\VegetableWatch;
 
 class VegetableWatchPolicy
 {
