@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Schedule\Post;
-use App\Notifications\PostReminderNotification;
+use App\Notifications\Push\PostReminderNotification;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;

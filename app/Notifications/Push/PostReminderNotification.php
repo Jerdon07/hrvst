@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Notifications\Push;
 
 use App\Enums\Post\PostType;
 use App\Models\Schedule\Post;
@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notification;
 use NotificationChannels\WebPush\WebPushChannel;
 use NotificationChannels\WebPush\WebPushMessage;
 
-class PostDueTodayNotification extends Notification
+class PostReminderNotification extends Notification
 {
     use Queueable;
 
@@ -32,10 +32,10 @@ class PostDueTodayNotification extends Notification
             : 'dealer.demands.index';
 
         return (new WebPushMessage)
-            ->title('Schedule due today')
+            ->title('Schedule due tomorrow')
             ->icon('/icons/pwa-192x192.png')
             ->body(sprintf(
-                'Your %s for %s is due today.',
+                'Your %s for %s is due tomorrow.',
                 $this->post->type->value,
                 $this->post->scheduled_date->format('M j'),
             ))

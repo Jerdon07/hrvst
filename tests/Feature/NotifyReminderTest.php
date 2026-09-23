@@ -1,8 +1,8 @@
 <?php
 
 use App\Enums\PostItemStatus;
-use App\Notifications\PostDueTodayNotification;
-use App\Notifications\PostReminderNotification;
+use App\Notifications\Push\PostDueTodayNotification;
+use App\Notifications\Push\PostReminderNotification;
 use Illuminate\Support\Facades\Notification;
 
 it('notifies a farmer whose supply is due today', function () {

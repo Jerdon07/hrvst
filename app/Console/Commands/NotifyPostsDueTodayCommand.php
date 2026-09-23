@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Schedule\Post;
-use App\Notifications\PostDueTodayNotification;
+use App\Notifications\Push\PostDueTodayNotification;
 use Illuminate\Console\Command;
 
 class NotifyPostsDueTodayCommand extends Command
