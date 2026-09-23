@@ -19,8 +19,8 @@ use Inertia\Response;
 class FarmerController extends Controller
 {
     public function __construct(
-        private FarmerService $farmerService,
-        private FarmerMapService $farmerMapService,
+        private readonly FarmerService $farmerService,
+        private readonly FarmerMapService $farmerMapService,
     ) {}
 
     public function index(Request $request): Response|RedirectResponse

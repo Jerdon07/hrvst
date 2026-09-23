@@ -20,6 +20,12 @@ use Inertia\Response;
 
 class UserController extends Controller
 {
+    public function __construct(
+        private readonly CreateFarmerAction $createFarmer,
+        private readonly CreateDealerAction $createDealer,
+        private readonly ResetUserPinAction $resetPin,
+    ) {}
+
     public function createFarmerForm(): Response
     {
         Gate::authorize('viewAny', FarmerProfile::class);
@@ -31,13 +37,11 @@ class UserController extends Controller
         ]);
     }
 
-    public function storeFarmer(
-        CreateFarmerRequest $request,
-        CreateFarmerAction $createFarmer,
-    ): RedirectResponse {
+    public function storeFarmer(CreateFarmerRequest $request): RedirectResponse
+    {
         Gate::authorize('viewAny', FarmerProfile::class);
 
-        ['plain_pin' => $pin] = $createFarmer->handle(
+        ['plain_pin' => $pin] = $this->createFarmer->handle(
             validated: $request->safe()->all(),
         );
 
@@ -56,13 +60,11 @@ class UserController extends Controller
         return Inertia::render('admin/users/CreateDealer');
     }
 
-    public function storeDealer(
-        CreateDealerRequest $request,
-        CreateDealerAction $createDealer,
-    ): RedirectResponse {
+    public function storeDealer(CreateDealerRequest $request): RedirectResponse
+    {
         Gate::authorize('viewAny', DealerProfile::class);
 
-        ['plain_pin' => $pin] = $createDealer->handle(
+        ['plain_pin' => $pin] = $this->createDealer->handle(
             validated: $request->safe()->all(),
         );
 
@@ -86,11 +88,11 @@ class UserController extends Controller
         ]);
     }
 
-    public function resetPin(User $user, ResetUserPinAction $resetPin): RedirectResponse
+    public function resetPin(User $user): RedirectResponse
     {
         Gate::authorize('viewAny', FarmerProfile::class);
 
-        $pin = $resetPin->handle($user);
+        $pin = $this->resetPin->handle($user);
 
         return back()->with('flash', [
             'type' => 'pin',

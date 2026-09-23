@@ -19,8 +19,8 @@ class VegetableController extends Controller
     use RendersVegetableShow;
 
     public function __construct(
-        private VegetableService $vegetableService,
-        private VegetableDetailService $vegetableDetailService,
+        private readonly VegetableService $vegetableService,
+        private readonly VegetableDetailService $vegetableDetailService,
     ) {}
 
     public function index(Request $request): Response

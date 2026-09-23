@@ -15,6 +15,11 @@ use Inertia\Response;
 
 class RegistrationRequestController extends Controller
 {
+    public function __construct(
+        private readonly ApproveRegistrationRequestAction $approveRequest,
+        private readonly RejectRegistrationRequestAction $rejectRequest,
+    ) {}
+
     public function index(): Response
     {
         return Inertia::render('admin/registration-requests/Index', [
@@ -28,18 +33,18 @@ class RegistrationRequestController extends Controller
         ]);
     }
 
-    public function approve(RegistrationRequest $registrationRequest, ApproveRegistrationRequestAction $action, Request $request): RedirectResponse
+    public function approve(RegistrationRequest $registrationRequest, Request $request): RedirectResponse
     {
-        $action->handle($registrationRequest, $request->user());
+        $this->approveRequest->handle($registrationRequest, $request->user());
 
         return back()->with('flash', ['type' => 'success', 'message' => 'Applicant approved and account created.']);
     }
 
-    public function reject(RegistrationRequest $registrationRequest, RejectRegistrationRequestAction $action, Request $request): RedirectResponse
+    public function reject(RegistrationRequest $registrationRequest, Request $request): RedirectResponse
     {
         $reason = $request->validate(['reason' => ['nullable', 'string', 'max:500']])['reason'] ?? null;
 
-        $action->handle($registrationRequest, $request->user(), $reason);
+        $this->rejectRequest->handle($registrationRequest, $request->user(), $reason);
 
         return back()->with('flash', ['type' => 'success', 'message' => 'Request rejected.']);
     }

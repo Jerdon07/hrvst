@@ -17,6 +17,11 @@ use Inertia\Response;
 
 class BillingController extends Controller
 {
+    public function __construct(
+        private readonly SubscribeToPlanAction $subscribeToPlan,
+        private readonly CancelSubscriptionAction $cancelSubscription,
+    ) {}
+
     public function show(Request $request): Response
     {
         $feature = $this->resolveFeatureFor($request->user());
@@ -31,10 +36,10 @@ class BillingController extends Controller
         ]);
     }
 
-    public function subscribe(SubscribeRequest $request, SubscribeToPlanAction $action): RedirectResponse
+    public function subscribe(SubscribeRequest $request): RedirectResponse
     {
         try {
-            $action->handle(
+            $this->subscribeToPlan->handle(
                 user: $request->user(),
                 feature: SubscriptionFeature::from($request->validated('feature')),
                 plan: SubscriptionPlan::from($request->validated('plan')),
@@ -47,9 +52,9 @@ class BillingController extends Controller
             ->with('flash', ['type' => 'success', 'message' => 'Subscription activated.']);
     }
 
-    public function cancel(Request $request, CancelSubscriptionAction $action): RedirectResponse
+    public function cancel(Request $request): RedirectResponse
     {
-        $action->handle($request->user(), $this->resolveFeatureFor($request->user()));
+        $this->cancelSubscription->handle($request->user(), $this->resolveFeatureFor($request->user()));
 
         return back()->with('flash', [
             'type' => 'success',

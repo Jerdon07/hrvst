@@ -16,7 +16,7 @@ use Inertia\Response;
 class DealerController extends Controller
 {
     public function __construct(
-        private DealerService $dealerService,
+        private readonly DealerService $dealerService,
     ) {}
 
     public function index(Request $request): Response

@@ -24,8 +24,10 @@ class VegetableController extends Controller
     use RendersVegetableShow;
 
     public function __construct(
-        private VegetableService $vegetableService,
-        private VegetableDetailService $vegetableDetailService,
+        private readonly VegetableService $vegetableService,
+        private readonly VegetableDetailService $vegetableDetailService,
+        private readonly CreateVegetableAction $createVegetable,
+        private readonly UpdateVegetableAction $updateVegetable,
     ) {}
 
     public function index(Request $request): Response
@@ -52,11 +54,11 @@ class VegetableController extends Controller
         return $this->renderVegetableShow($request, $vegetable, $this->vegetableDetailService);
     }
 
-    public function store(StoreVegetableRequest $request, CreateVegetableAction $createVegetable): RedirectResponse
+    public function store(StoreVegetableRequest $request): RedirectResponse
     {
         Gate::authorize('create', Vegetable::class);
 
-        $createVegetable->handle(
+        $this->createVegetable->handle(
             validated: $request->safe()->except('image'),
             image: $request->file('image'),
         );
@@ -64,11 +66,11 @@ class VegetableController extends Controller
         return redirect()->back()->with('flash', ['type' => 'success', 'message' => 'Vegetable created successfully.']);
     }
 
-    public function update(UpdateVegetableRequest $request, Vegetable $vegetable, UpdateVegetableAction $updateVegetable): RedirectResponse
+    public function update(UpdateVegetableRequest $request, Vegetable $vegetable): RedirectResponse
     {
         Gate::authorize('update', $vegetable);
 
-        $updateVegetable->handle(
+        $this->updateVegetable->handle(
             vegetable: $vegetable,
             validated: $request->safe()->except('image'),
             image: $request->file('image'),

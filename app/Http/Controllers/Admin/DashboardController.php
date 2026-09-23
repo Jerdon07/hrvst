@@ -13,21 +13,22 @@ use Inertia\Response;
 
 class DashboardController extends Controller
 {
-    public function __invoke(
-        Request $request,
-        DashboardService $dashboardService,
-        RegistrationTrendService $registrationTrendService,
-    ): Response {
+    public function __construct(
+        private readonly DashboardService $dashboardService,
+        private readonly RegistrationTrendService $registrationTrendService,
+    ) {}
+
+    public function __invoke(Request $request): Response
+    {
         $hasAnalyticsAccess = Subscription::hasAccess($request->user(), SubscriptionFeature::AdminAnalytics);
 
         return Inertia::render('admin/Dashboard', [
-            'kpis' => Inertia::defer(fn () => $dashboardService->getKPIs()),
+            'kpis' => Inertia::defer(fn () => $this->dashboardService->getKPIs()),
             'registrationTrends' => $hasAnalyticsAccess
-                ? Inertia::defer(fn () => $registrationTrendService->monthly())
+                ? Inertia::defer(fn () => $this->registrationTrendService->monthly())
                 : null,
             'analyticsLocked' => ! $hasAnalyticsAccess,
             'upgradeFeatureLabel' => SubscriptionFeature::AdminAnalytics->label(),
-
         ]);
     }
 }
