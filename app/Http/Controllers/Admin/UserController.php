@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Actions\Admin\User\CreateDealerAction;
 use App\Actions\Admin\User\CreateFarmerAction;
 use App\Actions\Admin\User\ResetUserPinAction;
-use App\Actions\Admin\User\UpdateUserPhoneAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CreateDealerRequest;
 use App\Http\Requests\Admin\CreateFarmerRequest;
@@ -75,9 +74,11 @@ class UserController extends Controller
             ]);
     }
 
-    public function updatePhone(UpdateUserPhoneRequest $request, User $user, UpdateUserPhoneAction $action): RedirectResponse
+    public function updatePhone(UpdateUserPhoneRequest $request, User $user): RedirectResponse
     {
-        $action->handle($user, $request->validated('phone_number'));
+        $user->update([
+            'phone_number' => $request->validated('phone_number'),
+        ]);
 
         return back()->with('flash', [
             'type' => 'success',
