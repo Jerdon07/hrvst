@@ -3,21 +3,12 @@ import L from 'leaflet'
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import 'leaflet/dist/leaflet.css'
 import { useMapResizeSync } from '@/composables/useMapResizeSync'
+import { buildGroups, getLevel, type FarmerGroup, ZOOM_BARANGAY, ZOOM_MUNICIPALITY } from '@/lib/farmerMapGrouping'
 import type { FarmerMarker } from '@/types/resources/marketplace'
 
 interface MapCenter {
     lat: number
     lng: number
-}
-
-interface FarmerGroup {
-    key: number
-    name: string
-    lat: number
-    lng: number
-    farmers: FarmerMarker[]
-    totalSupplies: number
-    level: 'province' | 'municipality' | 'barangay'
 }
 
 const props = defineProps<{
@@ -37,67 +28,11 @@ const mapContainer = ref<HTMLDivElement | null>(null)
 let map: L.Map | null = null
 let clusterLayers: L.Marker[] = []
 
-const ZOOM_MUNICIPALITY = 10
-const ZOOM_BARANGAY = 13
-
 const COLORS = {
     province: '#8b5cf6',
     municipality: '#3b82f6',
     barangay: '#10b981',
 } as const
-
-function getLevel(zoom: number): FarmerGroup['level'] {
-    if (zoom < ZOOM_MUNICIPALITY) return 'province'
-    if (zoom < ZOOM_BARANGAY) return 'municipality'
-    return 'barangay'
-}
-
-function centroid(farmers: FarmerMarker[]): [number, number] {
-    const lat =
-        farmers.reduce((s, f) => s + f.coordinates.lat, 0) / farmers.length
-    const lng =
-        farmers.reduce((s, f) => s + f.coordinates.lng, 0) / farmers.length
-    return [lat, lng]
-}
-
-function buildGroups(level: FarmerGroup['level']): FarmerGroup[] {
-    const buckets = new Map<number, FarmerMarker[]>()
-
-    for (const f of props.markers) {
-        const key =
-            level === 'province'
-                ? f.province_id
-                : level === 'municipality'
-                  ? f.municipality_id
-                  : f.barangay_id
-
-        if (!buckets.has(key)) buckets.set(key, [])
-        buckets.get(key)!.push(f)
-    }
-
-    return Array.from(buckets.entries()).map(([key, farmers]) => {
-        const [lat, lng] = centroid(farmers)
-        const name =
-            level === 'province'
-                ? (farmers[0].province ?? `Province ${key}`)
-                : level === 'municipality'
-                  ? farmers[0].municipality
-                  : (farmers[0].barangay ?? `Barangay ${key}`)
-
-        return {
-            key,
-            name,
-            lat,
-            lng,
-            farmers,
-            totalSupplies: farmers.reduce(
-                (s, f) => s + f.ongoing_supplies_count,
-                0,
-            ),
-            level,
-        }
-    })
-}
 
 function makeIcon(group: FarmerGroup): L.DivIcon {
     const color = COLORS[group.level]
@@ -142,7 +77,7 @@ function refresh(): void {
     if (props.markers.length === 0) return
 
     const level = getLevel(map.getZoom())
-    const groups = buildGroups(level)
+    const groups = buildGroups(props.markers, level)
 
     for (const group of groups) {
         const marker = L.marker([group.lat, group.lng], {
