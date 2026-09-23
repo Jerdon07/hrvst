@@ -3,6 +3,7 @@ import { CalendarClock, ChevronDown, Package, ShoppingBag } from '@lucide/vue'
 import DetailSheet from '@/components/dialogs/DetailSheet.vue'
 import PosterRow from '@/components/shared/PosterRow.vue'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { groupPostersByType } from '@/lib/scheduleGrouping'
 import type { CalendarScheduleItem, CalendarTimeSlot, VegetableDaySchedule } from '@/types'
 
 const props = defineProps<{
@@ -21,24 +22,6 @@ const SLOT_LABELS: Record<CalendarTimeSlot, string> = {
 
 const SLOT_ORDER: CalendarTimeSlot[] = ['morning', 'afternoon', 'evening']
 
-interface PosterGroup {
-    post_id: number
-    poster_name: string
-    poster_phone: string
-    total_kg: number
-    status: string
-}
-
-const STATUS_PRIORITY: Record<string, number> = {
-    ongoing: 0,
-    expired: 1,
-    fulfilled: 2,
-}
-
-function mostRelevantStatus(a: string, b: string): string {
-    return (STATUS_PRIORITY[a] ?? 99) <= (STATUS_PRIORITY[b] ?? 99) ? a : b
-}
-
 function itemsFor(slot: CalendarTimeSlot): CalendarScheduleItem[] {
     return props.schedule?.[slot]?.items ?? []
 }
@@ -47,29 +30,8 @@ function hasSchedule(slot: CalendarTimeSlot): boolean {
     return itemsFor(slot).length > 0
 }
 
-function groupByPoster(slot: CalendarTimeSlot, type: 'supply' | 'demand'): PosterGroup[] {
-    const groups = new Map<number, PosterGroup>()
-
-    for (const item of itemsFor(slot)) {
-        if (item.type !== type) continue
-
-        const existing = groups.get(item.post_id)
-        if (existing) {
-            existing.total_kg += item.quantity_kg
-            existing.status = mostRelevantStatus(existing.status, item.status)
-            continue
-        }
-
-        groups.set(item.post_id, {
-            post_id: item.post_id,
-            poster_name: item.poster_name,
-            poster_phone: item.poster_phone,
-            total_kg: item.quantity_kg,
-            status: item.status,
-        })
-    }
-
-    return Array.from(groups.values()).sort((a, b) => b.total_kg - a.total_kg)
+function groupByPoster(slot: CalendarTimeSlot, type: 'supply' | 'demand') {
+    return groupPostersByType(itemsFor(slot), type)
 }
 
 function netClass(netKg: number): string {
