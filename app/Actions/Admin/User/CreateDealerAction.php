@@ -2,40 +2,20 @@
 
 namespace App\Actions\Admin\User;
 
-use App\Concerns\GeneratesPin;
 use App\Models\Profiles\DealerProfile;
-use App\Models\Profiles\Role;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 
 final class CreateDealerAction
 {
-    use GeneratesPin;
+    public function __construct(private ProvisionUserAction $provision) {}
 
     /**
      * @return array{user: User, plain_pin: string}
      */
     public function handle(array $validated): array
     {
-        $plainPin = $this->generatePin();
-
-        $user = DB::transaction(function () use ($validated, $plainPin): User {
-            $user = User::create([
-                'name' => $validated['name'],
-                'phone_number' => $validated['phone_number'],
-                'email' => $validated['email'] ?? null,
-                'password' => $plainPin,
-                'must_change_pin' => true,
-            ]);
-
-            $role = Role::where('name', 'dealer')->firstOrFail();
-            $user->roles()->attach($role);
-
+        return $this->provision->handle($validated, 'dealer', function (User $user): void {
             DealerProfile::create(['user_id' => $user->id]);
-
-            return $user;
         });
-
-        return ['user' => $user, 'plain_pin' => $plainPin];
     }
 }

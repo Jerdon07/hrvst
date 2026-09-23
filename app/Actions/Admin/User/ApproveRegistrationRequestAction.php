@@ -34,16 +34,7 @@ final class ApproveRegistrationRequestAction
             $user->roles()->attach($role);
 
             if ($registrationRequest->role === 'farmer') {
-                $municipality = Municipality::findOrFail($registrationRequest->municipality_id);
-
-                FarmerProfile::create([
-                    'user_id' => $user->id,
-                    'province_id' => $municipality->province_id,
-                    'municipality_id' => $registrationRequest->municipality_id,
-                    'barangay_id' => $registrationRequest->barangay_id,
-                    'latitude' => $registrationRequest->latitude,
-                    'longitude' => $registrationRequest->longitude,
-                ]);
+                $this->createFarmerProfile($user, $registrationRequest);
             } else {
                 DealerProfile::create(['user_id' => $user->id]);
             }
@@ -58,5 +49,19 @@ final class ApproveRegistrationRequestAction
         });
 
         return $user;
+    }
+    
+    private function createFarmerProfile(User $user, RegistrationRequest $registrationRequest): void
+    {
+        $municipality = Municipality::findOrFail($registrationRequest->municipality_id);
+
+        FarmerProfile::create([
+            'user_id' => $user->id,
+            'province_id' => $municipality->province_id,
+            'municipality_id' => $registrationRequest->municipality_id,
+            'barangay_id' => $registrationRequest->barangay_id,
+            'latitude' => $registrationRequest->latitude,
+            'longitude' => $registrationRequest->longitude,
+        ]);
     }
 }
