@@ -1,10 +1,11 @@
 <?php
 
+use App\Models\Profiles\Role;
 use App\Models\RegistrationRequest;
-use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 
 beforeEach(function () {
-    $this->withoutMiddleware(ValidateCsrfToken::class);
+    Role::firstOrCreate(['name' => 'dealer']);
+    $this->withoutMiddleware();
 });
 
 function autoApproveRegistrationPayload(): array
