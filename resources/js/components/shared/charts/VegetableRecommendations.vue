@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ChevronDown, ChevronUp, Info, OctagonX, TriangleAlert } from '@lucide/vue'
-import { computed, ref } from 'vue'
 import { Button } from '@/components/ui/button'
 import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from '@/components/ui/item';
+import { useExpandableList } from '@/composables/useExpandableList'
 import type { RecommendationSeverity, VarietyRecommendation } from '@/types/resources/product'
 
 const props = defineProps<{
@@ -10,16 +10,11 @@ const props = defineProps<{
 }>()
 
 const INITIAL_VISIBLE = 3
-const expanded = ref(false)
 
-const visible = computed(() =>
-  expanded.value
-    ? props.recommendations
-    : props.recommendations.slice(0, INITIAL_VISIBLE),
+const { expanded, visible, hasMore, hiddenCount, toggle } = useExpandableList(
+  () => props.recommendations,
+  () => INITIAL_VISIBLE,
 )
-
-const hasMore = computed(() => props.recommendations.length > INITIAL_VISIBLE)
-const hiddenCount = computed(() => props.recommendations.length - INITIAL_VISIBLE)
 
 interface SeverityConfig {
   icon: typeof OctagonX
@@ -91,7 +86,7 @@ function severityConfig(severity: RecommendationSeverity): SeverityConfig {
             variant="ghost"
             size="sm"
             class="w-fit gap-1.5 text-xs text-muted-foreground px-2"
-            @click="expanded = !expanded"
+            @click="toggle"
         >
             <component
                 :is="expanded ? ChevronUp : ChevronDown"
