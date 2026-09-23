@@ -28,9 +28,7 @@ class RegistrationRequestController extends Controller
             $request->file('supporting_document'),
         );
 
-        // TEMPORARY — testing bypass. See AUTO_APPROVE_REGISTRATIONS in .env.
-        // Remove this branch (and the flag) before relying on real admin review.
-        if (config('app.auto_approve_registrations')) {
+        if ($this->autoApproveEnabled()) {
             $user = $approveRequest->handle($registrationRequest, reviewer: null);
 
             Auth::login($user);
@@ -42,5 +40,11 @@ class RegistrationRequestController extends Controller
             'type' => 'success',
             'message' => 'Request submitted.',
         ]);
+    }
+
+    private function autoApproveEnabled(): bool
+    {
+        return config('app.auto_approve_registrations')
+            && app()->environment('local', 'development', 'staging', 'testing');
     }
 }
