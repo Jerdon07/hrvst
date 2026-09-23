@@ -2,6 +2,7 @@
 
 namespace App\Services\Vegetable;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -36,11 +37,14 @@ class PlatformActivityService
         return DB::table('posts')
             ->where('created_at', '>=', $start)
             ->whereNull('deleted_at')
-            ->selectRaw("TO_CHAR(created_at, 'YYYY-MM') as period")
-            ->selectRaw("COUNT(DISTINCT CASE WHEN type = 'supply' THEN user_id END) as active_farmers")
-            ->selectRaw("COUNT(DISTINCT CASE WHEN type = 'demand' THEN user_id END) as active_dealers")
-            ->groupByRaw("TO_CHAR(created_at, 'YYYY-MM')")
+            ->select(['created_at', 'type', 'user_id'])
             ->get()
+            ->groupBy(fn ($row) => Carbon::parse($row->created_at)->format('Y-m'))
+            ->map(fn (Collection $rows, string $period) => (object) [
+                'period' => $period,
+                'active_farmers' => $rows->where('type', 'supply')->pluck('user_id')->unique()->count(),
+                'active_dealers' => $rows->where('type', 'demand')->pluck('user_id')->unique()->count(),
+            ])
             ->keyBy('period');
     }
 }
