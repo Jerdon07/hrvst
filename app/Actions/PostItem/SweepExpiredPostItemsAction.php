@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Actions\Post;
+namespace App\Actions\PostItem;
 
 use App\Models\Schedule\Post;
 use App\Models\Schedule\PostItem;
 
-class ExpirePostItemsAction
+class SweepExpiredPostItemsAction
 {
     public function __invoke(): int
     {

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Concerns;
 
-use App\Actions\PostItem\ExpirePostItemAction;
 use App\Actions\PostItem\FulfillPostItemAction;
 use App\Enums\PostType;
 use App\Models\Schedule\PostItem;
