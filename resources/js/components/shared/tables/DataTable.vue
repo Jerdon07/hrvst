@@ -202,6 +202,7 @@ function handleSearchInput() {
                 <Button
                     variant="outline"
                     size="icon-sm"
+                    aria-label="Previous page"
                     :disabled="!hasPrevPage"
                     @click="$emit('page-change', data.current_page - 1)"
                 >
@@ -215,6 +216,7 @@ function handleSearchInput() {
                 <Button
                     variant="outline"
                     size="icon-sm"
+                    aria-label="Next page"
                     :disabled="!hasNextPage"
                     @click="$emit('page-change', data.current_page + 1)"
                 >

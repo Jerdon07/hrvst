@@ -61,49 +61,49 @@ describe('DataTable', () => {
     })
 
     describe('prev/next button disabling', () => {
+        const prevButton = (wrapper: ReturnType<typeof mount>) =>
+            wrapper.find('[aria-label="Previous page"]')
+        const nextButton = (wrapper: ReturnType<typeof mount>) =>
+            wrapper.find('[aria-label="Next page"]')
+
         it('disables "previous" on the first page', () => {
             const wrapper = mount(DataTable, {
                 props: { data: paginated({ current_page: 1, last_page: 3 }), columns },
             })
-            const buttons = wrapper.findAll('button')
-            expect(buttons[0].attributes('disabled')).toBeDefined()
+            expect(prevButton(wrapper).attributes('disabled')).toBeDefined()
         })
 
         it('enables "previous" once past the first page', () => {
             const wrapper = mount(DataTable, {
                 props: { data: paginated({ current_page: 2, last_page: 3 }), columns },
             })
-            const buttons = wrapper.findAll('button')
-            expect(buttons[0].attributes('disabled')).toBeUndefined()
+            expect(prevButton(wrapper).attributes('disabled')).toBeUndefined()
         })
 
         it('disables "next" on the last page', () => {
             const wrapper = mount(DataTable, {
                 props: { data: paginated({ current_page: 3, last_page: 3 }), columns },
             })
-            const buttons = wrapper.findAll('button')
-            expect(buttons.at(-1)?.attributes('disabled')).toBeDefined()
+            expect(nextButton(wrapper).attributes('disabled')).toBeDefined()
         })
 
         it('disables both prev and next for a single-page result', () => {
             const wrapper = mount(DataTable, {
                 props: { data: paginated({ current_page: 1, last_page: 1 }), columns },
             })
-            const buttons = wrapper.findAll('button')
-            expect(buttons[0].attributes('disabled')).toBeDefined()
-            expect(buttons.at(-1)?.attributes('disabled')).toBeDefined()
+            expect(prevButton(wrapper).attributes('disabled')).toBeDefined()
+            expect(nextButton(wrapper).attributes('disabled')).toBeDefined()
         })
 
         it('emits page-change with current_page - 1 / + 1 respectively', async () => {
             const wrapper = mount(DataTable, {
                 props: { data: paginated({ current_page: 2, last_page: 3 }), columns },
             })
-            const buttons = wrapper.findAll('button')
 
-            await buttons[0].trigger('click')
+            await prevButton(wrapper).trigger('click')
             expect(wrapper.emitted('page-change')?.[0]).toEqual([1])
 
-            await buttons.at(-1)?.trigger('click')
+            await nextButton(wrapper).trigger('click')
             expect(wrapper.emitted('page-change')?.[1]).toEqual([3])
         })
     })
