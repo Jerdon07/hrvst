@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'system_admin' => [
+        'phone' => env('SYS_ADMIN_PHONE'),
+    ],
+
 ];
