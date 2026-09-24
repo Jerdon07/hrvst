@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Inertia\Testing\AssertableInertia as Assert;
 use Laravel\Fortify\Features;
 
 test('login screen can be rendered', function () {
@@ -85,4 +86,15 @@ test('users are rate limited', function () {
     ]);
 
     $response->assertTooManyRequests();
+});
+
+test('login page exposes the system admin phone to guests', function () {
+    config(['services.system_admin.phone' => '09171234567']);
+
+    $this->get(route('login'))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('auth/Login')
+            ->where('systemAdminPhone', '09171234567')
+        );
 });

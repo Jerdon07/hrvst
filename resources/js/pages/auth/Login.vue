@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Form, Head } from '@inertiajs/vue3'
 import { Phone } from '@lucide/vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import InputError from '@/components/InputError.vue'
 import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
@@ -10,10 +10,17 @@ import { Label } from '@/components/ui/label'
 import { Spinner } from '@/components/ui/spinner'
 import AuthBase from '@/layouts/AuthLayout.vue'
 import { store } from '@/routes/login'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 
-defineProps<{
+const props = defineProps<{
   status?: string
+  systemAdminPhone?: string|null
 }>()
+
+const telHref = computed(() =>
+  props.systemAdminPhone ? `tel:${props.systemAdminPhone.replace(/[^\d+]/g, '')}` : null,
+)
 
 const pin = ref('')
 </script>
@@ -65,8 +72,21 @@ const pin = ref('')
                     <InputError :message="errors.phone_number" />
                 </div>
 
-                <div class="grid gap-2">
-                    <Label for="pin">PIN</Label>
+                <Collapsible class="grid gap-2">
+                    <div class="flex items-center justify-between">
+                        <Label for="pin">PIN</Label>
+
+                        <CollapsibleTrigger as-child>
+                            <Button
+                                type="button"
+                                variant="link"
+                                class="underline"
+                            >
+                                Forgot PIN?
+                            </Button>
+                        </CollapsibleTrigger>
+                    </div>
+
                     <div class="flex justify-center">
                         <InputOTP
                             id="pin"
@@ -85,7 +105,17 @@ const pin = ref('')
                         </InputOTP>
                     </div>
                     <InputError :message="errors.password" />
-                </div>
+
+                    <CollapsibleContent>
+                        <p class="text-sm text-muted-foreground">
+                            Contact System Admin to have it reset<template v-if="telHref"> at
+                                <a
+                                    :href="telHref"
+                                    class="font-medium text-foreground underline decoration-neutral-300 underline-offset-4 hover:decoration-current"
+                                >{{ systemAdminPhone }}</a></template>.
+                        </p>
+                    </CollapsibleContent>
+                </Collapsible>
 
                 <Button
                     type="submit"
