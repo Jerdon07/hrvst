@@ -70,7 +70,6 @@ const form = useForm({
 const isFarmer = computed(() => form.role === 'farmer')
 
 // ─── Steps ────────────────────────────────────────────────────────────────────
-// The farm step only exists for farmers, so the list is derived from the role.
 
 const steps = computed(() => {
     const list: { key: StepKey; label: string; heading: string; icon: Component }[] = [
@@ -90,7 +89,6 @@ const currentStep = ref(1)
 const current = computed(() => steps.value[currentStep.value - 1])
 const isLastStep = computed(() => currentStep.value === steps.value.length)
 
-// Light gate on required fields only. The server stays the source of truth.
 const canContinue = computed(() => {
     switch (current.value?.key) {
         case 'account':
@@ -177,7 +175,6 @@ function goToFirstErrorStep(errors: Record<string, string>): void {
     if (target) currentStep.value = target.step
 }
 
-// Enter inside an input fires submit on every step, so advance instead of posting.
 function submit(): void {
     if (!isLastStep.value) {
         if (canContinue.value) currentStep.value++
@@ -211,7 +208,7 @@ function submit(): void {
         </div>
 
         <form
-            class="flex flex-col gap-6"
+            class="flex flex-col gap-4"
             @submit.prevent="submit"
         >
             <!-- Progress -->
@@ -242,10 +239,6 @@ function submit(): void {
                         <StepperTitle class="mt-1 text-xs">{{ s.label }}</StepperTitle>
                     </StepperItem>
                 </Stepper>
-
-                <p class="text-center text-sm text-muted-foreground">
-                    Step {{ currentStep }} of {{ steps.length }} · {{ current.heading }}
-                </p>
             </div>
 
             <!-- Step: Account -->
@@ -256,20 +249,18 @@ function submit(): void {
                 <div class="grid gap-2">
                     <Label>
                         I am a
-                        <Badge
-                            variant="destructive"
-                            class="text-xs font-normal"
-                        >Required</Badge>
+                        <span class="inline-block size-1.5 rounded-full bg-destructive" aria-hidden="true" />
                     </Label>
                     <ToggleGroup
                         :model-value="form.role"
                         type="single"
+                        size="sm"
                         variant="outline"
-                        class="grid w-full grid-cols-2"
+                        class="grid w-full grid-cols-2 border"
                     >
                         <ToggleGroupItem
                             value="farmer"
-                            class="gap-2 py-5"
+                            class="gap-2 py-2"
                             @click="selectRole('farmer')"
                         >
                             <Sprout class="size-4" />
@@ -277,7 +268,7 @@ function submit(): void {
                         </ToggleGroupItem>
                         <ToggleGroupItem
                             value="dealer"
-                            class="gap-2 py-5"
+                            class="gap-2 py-2"
                             @click="selectRole('dealer')"
                         >
                             <ShoppingBag class="size-4" />
@@ -290,10 +281,7 @@ function submit(): void {
                 <div class="grid gap-2">
                     <Label for="name">
                         Full Name
-                        <Badge
-                            variant="destructive"
-                            class="text-xs font-normal"
-                        >Required</Badge>
+                        <span class="inline-block size-1.5 rounded-full bg-destructive" aria-hidden="true" />
                     </Label>
                     <Input
                         id="name"
@@ -305,40 +293,35 @@ function submit(): void {
                     <InputError :message="form.errors.name" />
                 </div>
 
-                <div class="grid gap-2">
-                    <Label for="phone_number">
-                        Phone Number
-                        <Badge
-                            variant="destructive"
-                            class="text-xs font-normal"
-                        >Required</Badge>
-                    </Label>
-                    <Input
-                        id="phone_number"
-                        v-model="form.phone_number"
-                        type="tel"
-                        placeholder="09*********"
-                        autocomplete="tel"
-                    />
-                    <InputError :message="form.errors.phone_number" />
-                </div>
+                <div class="space-y-6 sm:grid grid-cols-2 gap-2 items-baseline">
+                    <div class="grid gap-2">
+                        <Label for="phone_number">
+                            Phone Number
+                            <span class="inline-block size-1.5 rounded-full bg-destructive" aria-hidden="true" />
+                        </Label>
+                        <Input
+                            id="phone_number"
+                            v-model="form.phone_number"
+                            type="tel"
+                            placeholder="09*********"
+                            autocomplete="tel"
+                        />
+                        <InputError :message="form.errors.phone_number" />
+                    </div>
 
-                <div class="grid gap-2">
-                    <Label for="email">
-                        Email
-                        <Badge
-                            variant="outline"
-                            class="text-xs font-normal"
-                        >Optional</Badge>
-                    </Label>
-                    <Input
-                        id="email"
-                        v-model="form.email"
-                        type="email"
-                        placeholder="you@example.com"
-                        autocomplete="email"
-                    />
-                    <InputError :message="form.errors.email" />
+                    <div class="grid gap-2">
+                        <Label for="email">
+                            Email
+                        </Label>
+                        <Input
+                            id="email"
+                            v-model="form.email"
+                            type="email"
+                            placeholder="you@example.com"
+                            autocomplete="email"
+                        />
+                        <InputError :message="form.errors.email" />
+                    </div>
                 </div>
             </div>
 
@@ -347,76 +330,70 @@ function submit(): void {
                 v-else-if="current.key === 'farm'"
                 class="grid gap-6"
             >
-                <div class="grid gap-2">
-                    <Label for="municipality_id">
-                        Municipality
-                        <Badge
-                            variant="destructive"
-                            class="text-xs font-normal"
-                        >Required</Badge>
-                    </Label>
-                    <Select
-                        :model-value="String(form.municipality_id)"
-                        @update:model-value="(v) => onMunicipalityChange(String(v ?? ''))"
-                    >
-                        <SelectTrigger
-                            id="municipality_id"
-                            class="w-full"
+                <div class="sm:grid grid-cols-2 gap-2">
+                    <div class="grid gap-2">
+                        <Label for="municipality_id">
+                            Municipality
+                            <span class="inline-block size-1.5 rounded-full bg-destructive" aria-hidden="true" />
+                        </Label>
+                        <Select
+                            :model-value="String(form.municipality_id)"
+                            @update:model-value="(v) => onMunicipalityChange(String(v ?? ''))"
                         >
-                            <SelectValue placeholder="Select municipality" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem
-                                v-for="m in municipalities"
-                                :key="m.id"
-                                :value="String(m.id)"
+                            <SelectTrigger
+                                id="municipality_id"
+                                class="w-full"
                             >
-                                {{ m.name }}
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
-                    <InputError :message="form.errors.municipality_id" />
-                </div>
+                                <SelectValue placeholder="Select municipality" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem
+                                    v-for="m in municipalities"
+                                    :key="m.id"
+                                    :value="String(m.id)"
+                                >
+                                    {{ m.name }}
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <InputError :message="form.errors.municipality_id" />
+                    </div>
 
-                <div class="grid gap-2">
-                    <Label for="barangay_id">
-                        Barangay
-                        <Badge
-                            variant="destructive"
-                            class="text-xs font-normal"
-                        >Required</Badge>
-                    </Label>
-                    <Select
-                        :model-value="String(form.barangay_id)"
-                        :disabled="!form.municipality_id || loadingBarangays"
-                        @update:model-value="(v) => (form.barangay_id = String(v ?? ''))"
-                    >
-                        <SelectTrigger
-                            id="barangay_id"
+                    <div class="grid gap-2">
+                        <Label for="barangay_id">
+                            Barangay
+                            <span class="inline-block size-1.5 rounded-full bg-destructive" aria-hidden="true" />
+                        </Label>
+                        <Select
+                            :model-value="String(form.barangay_id)"
+                            :disabled="!form.municipality_id || loadingBarangays"
+                            @update:model-value="(v) => (form.barangay_id = String(v ?? ''))"
                             class="w-full"
                         >
-                            <SelectValue :placeholder="loadingBarangays ? 'Loading…' : 'Select barangay'" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem
-                                v-for="b in barangays"
-                                :key="b.id"
-                                :value="String(b.id)"
+                            <SelectTrigger
+                                id="barangay_id"
+                                class="w-full"
                             >
-                                {{ b.name }}
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
-                    <InputError :message="form.errors.barangay_id" />
+                                <SelectValue :placeholder="loadingBarangays ? 'Loading…' : 'Select barangay'" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem
+                                    v-for="b in barangays"
+                                    :key="b.id"
+                                    :value="String(b.id)"
+                                >
+                                    {{ b.name }}
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <InputError :message="form.errors.barangay_id" />
+                    </div>
                 </div>
 
                 <div class="grid gap-2">
                     <Label>
                         Pin Your Farm
-                        <Badge
-                            variant="destructive"
-                            class="text-xs font-normal"
-                        >Required</Badge>
+                        <span class="inline-block size-1.5 rounded-full bg-destructive" aria-hidden="true" />
                     </Label>
                     <FarmLocationPicker
                         :municipality-coords="mapCenter"
@@ -424,6 +401,7 @@ function submit(): void {
                         :lat-error="form.errors.latitude"
                         :lng-error="form.errors.longitude"
                         @update:model-value="({ lat, lng }) => { form.latitude = lat; form.longitude = lng }"
+                        size="sm"
                     />
                 </div>
             </div>
@@ -437,38 +415,40 @@ function submit(): void {
                     Speeds up admin review, but isn't required to submit a request.
                 </p>
 
-                <div class="grid gap-2">
-                    <Label for="id_type">ID Type</Label>
-                    <Select
-                        :model-value="form.id_type"
-                        @update:model-value="(v) => { form.id_type = (v as typeof form.id_type) ?? ''; form.id_number = '' }"
-                    >
-                        <SelectTrigger
-                            id="id_type"
-                            class="w-full"
+                <div class="grid grid-cols-2 space-x-2">
+                    <div class="grid gap-2">
+                        <Label for="id_type">ID Type</Label>
+                        <Select
+                            :model-value="form.id_type"
+                            @update:model-value="(v) => { form.id_type = (v as typeof form.id_type) ?? ''; form.id_number = '' }"
                         >
-                            <SelectValue placeholder="Select ID type (optional)" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="drivers_license">Driver's License</SelectItem>
-                            <SelectItem value="philippine_national_id">Philippine National ID (PhilSys)</SelectItem>
-                            <SelectItem value="philippine_passport">Philippine Passport</SelectItem>
-                            <SelectItem value="voters_id">Voter's ID</SelectItem>
-                        </SelectContent>
-                    </Select>
-                    <InputError :message="form.errors.id_type" />
-                </div>
+                            <SelectTrigger
+                                id="id_type"
+                                class="w-full line-clamp-1 truncate"
+                            >
+                                <SelectValue placeholder="Select ID type (optional)" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="drivers_license">Driver's License</SelectItem>
+                                <SelectItem value="philippine_national_id">Philippine National ID (PhilSys)</SelectItem>
+                                <SelectItem value="philippine_passport">Philippine Passport</SelectItem>
+                                <SelectItem value="voters_id">Voter's ID</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <InputError :message="form.errors.id_type" />
+                    </div>
 
-                <div class="grid gap-2">
-                    <Label for="id_number">ID Number</Label>
-                    <Input
-                        id="id_number"
-                        v-model="form.id_number"
-                        type="text"
-                        :disabled="!form.id_type"
-                        placeholder="Select an ID type first"
-                    />
-                    <InputError :message="form.errors.id_number" />
+                    <div class="grid gap-2">
+                        <Label for="id_number">ID Number</Label>
+                        <Input
+                            id="id_number"
+                            v-model="form.id_number"
+                            type="text"
+                            :disabled="!form.id_type"
+                            placeholder="Select an ID type first"
+                        />
+                        <InputError :message="form.errors.id_number" />
+                    </div>
                 </div>
 
                 <FileUpload
