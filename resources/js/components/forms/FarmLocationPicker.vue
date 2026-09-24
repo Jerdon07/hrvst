@@ -31,6 +31,7 @@ const props = defineProps<{
 	municipalityCoords: MunicipalityCoords | null
 	latError?: string
 	lngError?: string
+	size?: 'sm'
 }>()
 
 const emit = defineEmits<{
@@ -122,8 +123,10 @@ onUnmounted(() => {
     <div class="grid gap-2">
         <div style="isolation: isolate;">
             <div
-                class="h-64 w-full overflow-hidden rounded-md border transition-colors"
-                :class="{ 'border-destructive': latError || lngError }"
+                class="h-40 w-full overflow-hidden rounded-md border transition-colors"
+                :class="[
+					{ 'border-destructive': latError || lngError },
+					size === 'sm' ? 'h-40' : (size || 'h-64')]"
             >
                 <div
                     ref="mapContainer"
@@ -131,9 +134,6 @@ onUnmounted(() => {
                 />
             </div>
         </div>
-        <p class="text-xs text-muted-foreground">
-            Click on the map to pin your farm's location. Drag the marker to adjust.
-        </p>
         <InputError
             v-if="latError"
             :message="latError"
@@ -142,11 +142,5 @@ onUnmounted(() => {
             v-if="lngError"
             :message="lngError"
         />
-        <p
-            v-if="modelValue.lat !== null && modelValue.lng !== null"
-            class="text-xs text-muted-foreground"
-        >
-            Pinned at: {{ modelValue.lat.toFixed(6) }}, {{ modelValue.lng.toFixed(6) }}
-        </p>
     </div>
 </template>
