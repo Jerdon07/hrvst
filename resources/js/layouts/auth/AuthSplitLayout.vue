@@ -1,47 +1,65 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3'
 import AppLogoIcon from '@/components/layout/AppLogoIcon.vue'
+import { Card, CardContent } from '@/components/ui/card'
 import { home } from '@/routes'
 
-const page = usePage()
-const name = page.props.name
+withDefaults(
+    defineProps<{
+        title?: string
+        description?: string
+        /** Cover image shown beside the form on md+ screens */
+        image?: string
+    }>(),
+    {
+        image: '/images/auth-cover.jpg',
+    },
+)
 
-defineProps<{
-    title?: string
-    description?: string
-}>()
+const name = usePage().props.name as string
 </script>
 
 <template>
-    <div class="relative grid h-dvh flex-col items-center justify-center px-8 sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0">
-        <div class="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
-            <div class="absolute inset-0 bg-zinc-900" />
-            <Link
-                :href="home()"
-                class="relative z-20 flex items-center text-lg font-medium"
-            >
-                <AppLogoIcon class="mr-2 size-8 fill-current text-white" />
-                {{ name }}
-            </Link>
-        </div>
-        <div class="lg:p-8">
-            <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-                <div class="flex flex-col space-y-2 text-center">
-                    <h1
-                        v-if="title"
-                        class="text-xl font-medium tracking-tight"
-                    >
-                        {{ title }}
-                    </h1>
-                    <p
-                        v-if="description"
-                        class="text-sm text-muted-foreground"
-                    >
-                        {{ description }}
-                    </p>
-                </div>
-                <slot />
-            </div>
+    <div class="flex min-h-svh flex-col items-center justify-center bg-muted p-4 md:p-10">
+        <div class="w-full max-w-sm md:max-w-4xl">
+            <Card class="overflow-hidden gap-0 p-0">
+                <CardContent class="grid p-0 md:grid-cols-2">
+                    <div class="flex flex-col gap-6 p-6 md:p-8">
+                        <div class="flex flex-col items-center gap-2 text-center">
+                            <Link
+                                :href="home()"
+                                class="mb-1 flex items-center justify-center"
+                            >
+                                <AppLogoIcon class="size-9 fill-current text-black dark:text-white" />
+                                <span class="sr-only">{{ name }}</span>
+                            </Link>
+                            <h1
+                                v-if="title"
+                                class="text-xl font-medium tracking-tight"
+                            >
+                                {{ title }}
+                            </h1>
+                            <p
+                                v-if="description"
+                                class="text-sm text-balance text-muted-foreground"
+                            >
+                                {{ description }}
+                            </p>
+                        </div>
+
+                        <slot />
+                    </div>
+
+                    <div class="relative hidden bg-muted md:block">
+                        <img
+                            :src="image"
+                            alt=""
+                            aria-hidden="true"
+                            class="absolute inset-0 size-full object-cover dark:brightness-[0.2] dark:grayscale"
+                        />
+                    </div>
+                </CardContent>
+            </Card>
         </div>
     </div>
 </template>
