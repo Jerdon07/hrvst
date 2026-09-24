@@ -8,11 +8,10 @@ withDefaults(
     defineProps<{
         title?: string
         description?: string
-        /** Cover image shown beside the form on md+ screens */
         image?: string
     }>(),
     {
-        image: '/images/auth-cover.jpg',
+        image: '/images/welcome/background.webp',
     },
 )
 
@@ -28,20 +27,20 @@ const name = usePage().props.name as string
                         <div class="flex flex-col items-center gap-2 text-center">
                             <Link
                                 :href="home()"
-                                class="mb-1 flex items-center justify-center"
+                                class="sm:hidden mb-1 flex items-center justify-center"
                             >
                                 <AppLogoIcon class="size-9 fill-current text-black dark:text-white" />
                                 <span class="sr-only">{{ name }}</span>
                             </Link>
                             <h1
                                 v-if="title"
-                                class="text-xl font-medium tracking-tight"
+                                class="sm:hidden text-xl font-medium tracking-tight"
                             >
                                 {{ title }}
                             </h1>
                             <p
                                 v-if="description"
-                                class="text-sm text-balance text-muted-foreground"
+                                class="sm:hidden text-sm text-balance text-muted-foreground"
                             >
                                 {{ description }}
                             </p>
@@ -57,6 +56,40 @@ const name = usePage().props.name as string
                             aria-hidden="true"
                             class="absolute inset-0 size-full object-cover dark:brightness-[0.2] dark:grayscale"
                         />
+
+                        <div class="hidden sm:absolute sm:flex flex-col items-center gap-2 text-center">
+                            <Link
+                                :href="home()" 
+                                class="flex gap-4 w-fit pt-10 z-10">
+                                <img 
+                                    src="favicon.svg" 
+                                    alt="Hrvst Logo"
+                                    class="hidden sm:block w-20"
+                                >
+
+                                <img 
+                                    src="/images/trading-post-logo.svg" 
+                                    alt="Hrvst Logo"
+                                    class="hidden sm:block rounded-full w-20"
+                                >
+                            </Link>
+
+                            <h1
+                                v-if="title"
+                                class="text-xl font-medium tracking-tight z-10"
+                            >
+                                {{ title }}
+                            </h1>
+                            <p
+                                v-if="description"
+                                class="text-sm text-balance text-muted-foreground z-10"
+                            >
+                                {{ description }}
+                            </p>
+                        </div>
+
+                        <div class="absolute inset-0 bg-background/40"></div>
+                        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-teal-500/20 to-transparent"></div>
                     </div>
                 </CardContent>
             </Card>
