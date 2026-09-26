@@ -77,12 +77,7 @@ export function createForecastDividerPlugin(
         afterDraw(chart: ChartJS) {
             const fc = forecast ? (toValue(forecast) ?? []) : []
             if (!fc.length) return
-
-            const months = toValue(activity)
-            // Draw the divider right after the last historical month. This
-            // is derived from the real array length rather than assumed to
-            // be 6, even though forecast is only ever non-empty when the
-            // window is the default 6 months (see RendersVegetableShow).
+            
             const histLen = toValue(activity)?.length ?? 0
             if (histLen <= 0) return
 

@@ -125,8 +125,8 @@ onUnmounted(() => {
             <div
                 class="h-40 w-full overflow-hidden rounded-md border transition-colors"
                 :class="[
-					{ 'border-destructive': latError || lngError },
-					size === 'sm' ? 'h-40' : (size || 'h-64')]"
+                    { 'border-destructive': latError || lngError },
+                    size === 'sm' ? 'h-40' : (size || 'h-64')]"
             >
                 <div
                     ref="mapContainer"
