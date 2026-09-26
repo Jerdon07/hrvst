@@ -77,7 +77,7 @@ export function createForecastDividerPlugin(
         afterDraw(chart: ChartJS) {
             const fc = forecast ? (toValue(forecast) ?? []) : []
             if (!fc.length) return
-            
+
             const histLen = toValue(activity)?.length ?? 0
             if (histLen <= 0) return
 

@@ -13,13 +13,15 @@ const columns: ColumnDef<Row>[] = [
     { accessorKey: 'name', header: 'Name' },
 ]
 
-function paginated(overrides: Partial<{
-    data: Row[]
-    current_page: number
-    last_page: number
-    per_page: number
-    total: number
-}> = {}) {
+function paginated(
+    overrides: Partial<{
+        data: Row[]
+        current_page: number
+        last_page: number
+        per_page: number
+        total: number
+    }> = {},
+) {
     return {
         data: [{ id: 1, name: 'A' }],
         current_page: 1,
@@ -46,7 +48,14 @@ describe('DataTable', () => {
     describe('paginationRange — the "Showing X–Y of Z" math', () => {
         it('computes the first page range correctly', () => {
             const wrapper = mount(Table, {
-                props: { data: paginated({ current_page: 1, per_page: 10, total: 25 }), columns },
+                props: {
+                    data: paginated({
+                        current_page: 1,
+                        per_page: 10,
+                        total: 25,
+                    }),
+                    columns,
+                },
             })
             expect(wrapper.text()).toContain('Showing')
             expect(wrapper.text()).toContain('1')
@@ -56,7 +65,14 @@ describe('DataTable', () => {
 
         it('clamps the end of the range to `total` on the final, partial page', () => {
             const wrapper = mount(Table, {
-                props: { data: paginated({ current_page: 3, per_page: 10, total: 25 }), columns },
+                props: {
+                    data: paginated({
+                        current_page: 3,
+                        per_page: 10,
+                        total: 25,
+                    }),
+                    columns,
+                },
             })
             expect(wrapper.text()).toContain('21')
             expect(wrapper.text()).toContain('25')
@@ -65,7 +81,14 @@ describe('DataTable', () => {
 
         it('shows a 1–1 range for a single-item, single-page result', () => {
             const wrapper = mount(Table, {
-                props: { data: paginated({ current_page: 1, per_page: 10, total: 1 }), columns },
+                props: {
+                    data: paginated({
+                        current_page: 1,
+                        per_page: 10,
+                        total: 1,
+                    }),
+                    columns,
+                },
             })
             const text = wrapper.text()
             expect(text).toMatch(/1.*1.*1/s)
@@ -80,28 +103,40 @@ describe('DataTable', () => {
 
         it('disables "previous" on the first page', () => {
             const wrapper = mount(Table, {
-                props: { data: paginated({ current_page: 1, last_page: 3 }), columns },
+                props: {
+                    data: paginated({ current_page: 1, last_page: 3 }),
+                    columns,
+                },
             })
             expect(prevButton(wrapper).attributes('disabled')).toBeDefined()
         })
 
         it('enables "previous" once past the first page', () => {
             const wrapper = mount(Table, {
-                props: { data: paginated({ current_page: 2, last_page: 3 }), columns },
+                props: {
+                    data: paginated({ current_page: 2, last_page: 3 }),
+                    columns,
+                },
             })
             expect(prevButton(wrapper).attributes('disabled')).toBeUndefined()
         })
 
         it('disables "next" on the last page', () => {
             const wrapper = mount(Table, {
-                props: { data: paginated({ current_page: 3, last_page: 3 }), columns },
+                props: {
+                    data: paginated({ current_page: 3, last_page: 3 }),
+                    columns,
+                },
             })
             expect(nextButton(wrapper).attributes('disabled')).toBeDefined()
         })
 
         it('disables both prev and next for a single-page result', () => {
             const wrapper = mount(Table, {
-                props: { data: paginated({ current_page: 1, last_page: 1 }), columns },
+                props: {
+                    data: paginated({ current_page: 1, last_page: 1 }),
+                    columns,
+                },
             })
             expect(prevButton(wrapper).attributes('disabled')).toBeDefined()
             expect(nextButton(wrapper).attributes('disabled')).toBeDefined()
@@ -109,7 +144,10 @@ describe('DataTable', () => {
 
         it('emits page-change with current_page - 1 / + 1 respectively', async () => {
             const wrapper = mount(Table, {
-                props: { data: paginated({ current_page: 2, last_page: 3 }), columns },
+                props: {
+                    data: paginated({ current_page: 2, last_page: 3 }),
+                    columns,
+                },
             })
 
             await prevButton(wrapper).trigger('click')
