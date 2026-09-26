@@ -55,14 +55,13 @@ function varietyFilterFunction<T extends { value: unknown }>(items: T[], term: s
 }
 
 // ─── Overlap (single source for posters AND net kg) ───────────────────────────
-// Math lives in scheduleItemsEditorHelpers.ts — kept there so it's testable
-// without mounting the Combobox/NumberField stack this component pulls in.
+// Math lives in scheduleItemsEditorHelpers.ts
 
-function overlapForItem(vegetableId: string): VegetableOverlapData | undefined {
+function overlapDataForVegetable(vegetableId: string): VegetableOverlapData | undefined {
     return overlapFor(props.overlap, vegetableId)
 }
 
-function overlapReady(vegetableId: string): boolean {
+function isOverlapReadyForVegetable(vegetableId: string): boolean {
     return isOverlapReady(vegetableId, props.scheduledDate, props.timeSlot)
 }
 
@@ -107,7 +106,7 @@ function removeItem(index: number): void {
                         {{ varietyLabelById.get(item.vegetable_id) ?? 'Unselected vegetable' }}
                     </ItemTitle>
 
-                    <ItemDescription v-if="overlapReady(item.vegetable_id)">
+                    <ItemDescription v-if="isOverlapReadyForVegetable(item.vegetable_id)">
                         <Skeleton
                             v-if="overlapLoading"
                             class="h-3.5 w-20 rounded"
@@ -158,12 +157,12 @@ function removeItem(index: number): void {
 
             <!-- Loading: skeleton only, collapsible is not rendered -->
             <Skeleton
-                v-if="overlapReady(item.vegetable_id) && overlapLoading"
+                v-if="isOverlapReadyForVegetable(item.vegetable_id) && overlapLoading"
                 class="h-8 w-full rounded"
             />
 
             <!-- Loaded with at least one other poster -->
-            <template v-else-if="overlapReady(item.vegetable_id) && othersCount(overlap, item.vegetable_id) > 0">
+            <template v-else-if="isOverlapReadyForVegetable(item.vegetable_id) && othersCount(overlap, item.vegetable_id) > 0">
                 <CollapsibleTrigger as-child>
                     <Button
                         type="button"
@@ -187,7 +186,7 @@ function removeItem(index: number): void {
 
                 <CollapsibleContent>
                     <div class="rounded-md bg-muted/30 p-3">
-                        <OverlapPosters :overlap="overlapForItem(item.vegetable_id)" />
+                        <OverlapPosters :overlap="overlapDataForVegetable(item.vegetable_id)" />
                     </div>
                 </CollapsibleContent>
             </template>

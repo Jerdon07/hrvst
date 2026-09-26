@@ -20,10 +20,10 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 
 interface Paginated<T> {
 	data: T[]
-		current_page: number
-		last_page: number
-		per_page: number
-		total: number
+    current_page: number
+    last_page: number
+    per_page: number
+    total: number
 }
 
 interface Props<TData> {

@@ -43,9 +43,8 @@ export function useMonthlyLineChart(
         const fc = forecast ? (toValue(forecast) ?? []) : []
         if (!allMonths?.length) return null
 
-        // See useMonthlyBarChart.ts — the backend already sends exactly the
-        // window it wants displayed. Re-cropping to the last 6 here was the
-        // bug that made paged 12-month history look like it was still 6.
+        // Do not slice this — the backend already sends exactly the window
+        // it wants displayed (6 months by default, 12 when paged).
         const historical = allMonths
         const histLen = historical.length
         const allLabels = [

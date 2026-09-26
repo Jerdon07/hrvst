@@ -36,6 +36,8 @@ const expectedBalanceTooltip = computed(() => {
     return `From ${c.source_label}: supply (${supply} kg) is ${magnitude}% ${direction} than demand (${demand} kg).`
 })
 
+// Three-tier coloring: green ≥0.7, amber [0.5, 0.7), red <0.5.
+// See VegetableAnalyticsSummary.test.ts for the exact boundary cases.
 function fulfillmentConfig(rate: number | null) {
     if (rate === null) return { valueClass: 'text-muted-foreground' }
     if (rate >= 0.7) return { valueClass: 'text-green-600 dark:text-green-400' }

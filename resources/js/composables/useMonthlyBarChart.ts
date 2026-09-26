@@ -39,13 +39,8 @@ export function useMonthlyBarChart(
         const fc = forecast ? (toValue(forecast) ?? []) : []
         if (!allMonths?.length) return null
 
-        // The backend already sends exactly the window it wants displayed
-        // (6 months at the default offset, 12 for paged history) — do not
-        // re-crop it here. This used to be `allMonths.slice(-6)` back when
-        // the API always returned 12 months and the frontend picked the
-        // trailing 6 for display; that contract no longer holds, and
-        // re-cropping silently discards the paged window regardless of
-        // what the API actually returned.
+        // Do not slice this — the backend already sends exactly the window
+        // it wants displayed (6 months by default, 12 when paged).
         const historical = allMonths
         const histLen = historical.length
         const allLabels = [

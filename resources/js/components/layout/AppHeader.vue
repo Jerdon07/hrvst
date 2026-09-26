@@ -81,9 +81,6 @@ function openOnboardingFromMobile(): void {
     openOnboarding()
 }
 
-const activeItemStyles =
-    'text-foreground'
-
 function isNavItemActive(item: AppNavItem): boolean {
     if (
         item.activeComponentMatch &&
@@ -96,7 +93,7 @@ function isNavItemActive(item: AppNavItem): boolean {
 }
 
 function navItemClass(item: AppNavItem): string {
-    return isNavItemActive(item) ? activeItemStyles : ''
+    return isNavItemActive(item) ? 'text-foreground' : ''
 }
 
 const mainNavItems = computed<AppNavItem[]>(() => {

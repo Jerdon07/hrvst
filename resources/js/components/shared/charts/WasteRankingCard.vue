@@ -40,6 +40,9 @@ function barPct(kg: number): string {
     return `${Math.round((kg / maxKg.value) * 100)}%`
 }
 
+// RankedItem is a union of three item shapes; only VegetableStabilityData
+// carries confidence/months_observed, so these need a runtime `in` check
+// rather than plain property access.
 function maturityLabel(item: RankedItem): string | null {
     if (!('confidence' in item)) return null
     if (item.confidence === 'early') return 'Early data'
