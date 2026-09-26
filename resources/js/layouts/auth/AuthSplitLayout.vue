@@ -11,6 +11,8 @@ withDefaults(
         image?: string
     }>(),
     {
+        title: undefined,
+        description: undefined,
         image: '/images/welcome/background.webp',
     },
 )
@@ -30,7 +32,10 @@ const name = usePage().props.name as string
                                 class="sm:hidden mb-1 flex items-center justify-center"
                             >
                                 <AppLogoIcon class="size-9 fill-current text-black dark:text-white" />
-                                <span class="sr-only">{{ name }}</span>
+                                <span
+                                    v-if="title"
+                                    class="sr-only"
+                                >{{ name }}</span>
                             </Link>
                             <h1
                                 v-if="title"
@@ -60,7 +65,8 @@ const name = usePage().props.name as string
                         <div class="hidden sm:absolute sm:flex flex-col items-center gap-2 text-center">
                             <Link
                                 :href="home()" 
-                                class="flex gap-4 w-fit pt-10 z-10">
+                                class="flex gap-4 w-fit pt-10 z-10"
+                            >
                                 <img 
                                     src="favicon.svg" 
                                     alt="Hrvst Logo"

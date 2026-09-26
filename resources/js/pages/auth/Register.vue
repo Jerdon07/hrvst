@@ -6,7 +6,6 @@ import type { Component } from 'vue'
 import FarmLocationPicker from '@/components/forms/FarmLocationPicker.vue'
 import FileUpload from '@/components/forms/FileUpload.vue'
 import InputError from '@/components/InputError.vue'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
@@ -249,7 +248,10 @@ function submit(): void {
                 <div class="grid gap-2">
                     <Label>
                         I am a
-                        <span class="inline-block size-1.5 rounded-full bg-destructive" aria-hidden="true" />
+                        <span
+                            class="inline-block size-1.5 rounded-full bg-destructive"
+                            aria-hidden="true"
+                        />
                     </Label>
                     <ToggleGroup
                         :model-value="form.role"
@@ -281,7 +283,10 @@ function submit(): void {
                 <div class="grid gap-2">
                     <Label for="name">
                         Full Name
-                        <span class="inline-block size-1.5 rounded-full bg-destructive" aria-hidden="true" />
+                        <span
+                            class="inline-block size-1.5 rounded-full bg-destructive"
+                            aria-hidden="true"
+                        />
                     </Label>
                     <Input
                         id="name"
@@ -297,7 +302,10 @@ function submit(): void {
                     <div class="grid gap-2">
                         <Label for="phone_number">
                             Phone Number
-                            <span class="inline-block size-1.5 rounded-full bg-destructive" aria-hidden="true" />
+                            <span
+                                class="inline-block size-1.5 rounded-full bg-destructive"
+                                aria-hidden="true"
+                            />
                         </Label>
                         <Input
                             id="phone_number"
@@ -334,7 +342,10 @@ function submit(): void {
                     <div class="grid gap-2">
                         <Label for="municipality_id">
                             Municipality
-                            <span class="inline-block size-1.5 rounded-full bg-destructive" aria-hidden="true" />
+                            <span
+                                class="inline-block size-1.5 rounded-full bg-destructive"
+                                aria-hidden="true"
+                            />
                         </Label>
                         <Select
                             :model-value="String(form.municipality_id)"
@@ -362,13 +373,16 @@ function submit(): void {
                     <div class="grid gap-2">
                         <Label for="barangay_id">
                             Barangay
-                            <span class="inline-block size-1.5 rounded-full bg-destructive" aria-hidden="true" />
+                            <span
+                                class="inline-block size-1.5 rounded-full bg-destructive"
+                                aria-hidden="true"
+                            />
                         </Label>
                         <Select
                             :model-value="String(form.barangay_id)"
                             :disabled="!form.municipality_id || loadingBarangays"
-                            @update:model-value="(v) => (form.barangay_id = String(v ?? ''))"
                             class="w-full"
+                            @update:model-value="(v) => (form.barangay_id = String(v ?? ''))"
                         >
                             <SelectTrigger
                                 id="barangay_id"
@@ -393,15 +407,18 @@ function submit(): void {
                 <div class="grid gap-2">
                     <Label>
                         Pin Your Farm
-                        <span class="inline-block size-1.5 rounded-full bg-destructive" aria-hidden="true" />
+                        <span
+                            class="inline-block size-1.5 rounded-full bg-destructive"
+                            aria-hidden="true"
+                        />
                     </Label>
                     <FarmLocationPicker
                         :municipality-coords="mapCenter"
                         :model-value="{ lat: form.latitude, lng: form.longitude }"
                         :lat-error="form.errors.latitude"
                         :lng-error="form.errors.longitude"
-                        @update:model-value="({ lat, lng }) => { form.latitude = lat; form.longitude = lng }"
                         size="sm"
+                        @update:model-value="({ lat, lng }) => { form.latitude = lat; form.longitude = lng }"
                     />
                 </div>
             </div>
