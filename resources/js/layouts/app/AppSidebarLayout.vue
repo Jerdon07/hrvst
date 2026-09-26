@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AppSidebarHeader from '@/components/AppSidebarHeader.vue'
+import AppSidebarHeader from '@/components/layout/AppSidebarHeader.vue'
 import AppContent from '@/components/layout/AppContent.vue'
 import AppShell from '@/components/layout/AppShell.vue'
 import AppSidebar from '@/components/layout/AppSidebar.vue'
