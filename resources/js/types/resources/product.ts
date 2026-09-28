@@ -1,5 +1,7 @@
 // ─── Analytics ───────────────────────────────────────────────────────────────
 
+import { PostTimeSlot } from "../enums"
+
 export type ImbalanceBand = App.Enums.Analytics.ImbalanceBand
 export type RecommendationSeverity = App.Enums.Analytics.RecommendationSeverity
 export type VarietyRecommendation =
@@ -8,7 +10,7 @@ export type VarietyAnalytics = App.DTOs.Vegetable.VegetableAnalyticsDTO
 
 // ─── Market calendar — mirrors VegetableCalendarService::mergeIntoSchedule() ──
 
-export type CalendarTimeSlot = 'morning' | 'afternoon' | 'evening'
+export type CalendarTimeSlot = PostTimeSlot
 
 export type CalendarScheduleItem = App.Data.Vegetable.VegetableCalendarItemData
 

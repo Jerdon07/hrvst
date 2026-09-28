@@ -5,6 +5,7 @@ import PosterRow from '@/components/shared/PosterRow.vue'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { groupPostersByType } from '@/lib/scheduleGrouping'
 import type { CalendarScheduleItem, CalendarTimeSlot, VegetableDaySchedule } from '@/types'
+import { TIME_SLOT_CONFIG, TIME_SLOT_ORDER } from '@/lib/timeSlots'
 
 const props = defineProps<{
     open: boolean
@@ -13,14 +14,6 @@ const props = defineProps<{
 }>()
 
 defineEmits<{ 'update:open': [value: boolean] }>()
-
-const SLOT_LABELS: Record<CalendarTimeSlot, string> = {
-    morning: 'Morning',
-    afternoon: 'Afternoon',
-    evening: 'Evening',
-}
-
-const SLOT_ORDER: CalendarTimeSlot[] = ['morning', 'afternoon', 'evening']
 
 function itemsFor(slot: CalendarTimeSlot): CalendarScheduleItem[] {
     return props.schedule?.[slot]?.items ?? []
@@ -49,7 +42,7 @@ function netClass(netKg: number): string {
     >
         <div class="flex flex-col gap-3">
             <Collapsible
-                v-for="slot in SLOT_ORDER"
+                v-for="slot in TIME_SLOT_ORDER"
                 :key="slot"
                 :default-open="hasSchedule(slot)"
                 class="rounded border"
@@ -57,7 +50,7 @@ function netClass(netKg: number): string {
                 <CollapsibleTrigger class="group/trigger flex w-full items-center justify-between gap-3 bg-muted/30 p-3 text-left transition-colors hover:bg-muted/50">
                     <div class="flex items-center gap-2">
                         <CalendarClock class="size-4 text-muted-foreground" />
-                        <span class="text-sm font-semibold">{{ SLOT_LABELS[slot] }}</span>
+                        <span class="text-sm font-semibold">{{ TIME_SLOT_CONFIG[slot].label }}</span>
                     </div>
 
                     <div class="flex items-center gap-2">

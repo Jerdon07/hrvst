@@ -1,3 +1,5 @@
+export type AppRole = 'admin' | 'farmer' | 'dealer'
+
 export type User = {
     id: number
     name: string

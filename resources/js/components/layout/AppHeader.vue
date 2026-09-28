@@ -49,6 +49,7 @@ import farmer from '@/routes/farmer'
 import { archived as farmerSuppliesArchived } from '@/routes/farmer/supplies'
 import vegetables from '@/routes/vegetables'
 import type { BreadcrumbItem, NavItem } from '@/types'
+import { useAuthRoles } from '@/composables/useAuthRoles'
 
 type Props = {
     breadcrumbs?: BreadcrumbItem[]
@@ -65,14 +66,11 @@ const props = withDefaults(defineProps<Props>(), {
 const page = usePage()
 const auth = computed(() => page.props.auth)
 const { isCurrentUrl } = useCurrentUrl()
+const { isAdmin, isFarmer, isDealer } = useAuthRoles()
 const mobileMenuOpen = ref(false)
 const { open: openOnboarding } = useOnboardingGuide()
 
-const showOnboardingTrigger = computed(
-    () =>
-        page.props.auth.user.roles.includes('farmer') ||
-        page.props.auth.user.roles.includes('dealer'),
-)
+const showOnboardingTrigger = computed(() => isFarmer.value || isDealer.value)
 
 const showWatchAlerts = showOnboardingTrigger
 
@@ -99,7 +97,7 @@ function navItemClass(item: AppNavItem): string {
 const mainNavItems = computed<AppNavItem[]>(() => {
     const items: AppNavItem[] = []
 
-    if (page.props.auth.user.roles.includes('admin')) {
+    if (isAdmin.value) {
         items.push(
             {
                 title: 'Vegetables',
@@ -122,7 +120,7 @@ const mainNavItems = computed<AppNavItem[]>(() => {
         )
     }
 
-    if (page.props.auth.user.roles.includes('dealer')) {
+    if (isDealer.value) {
         items.push(
             {
                 title: 'Vegetables',
@@ -138,7 +136,7 @@ const mainNavItems = computed<AppNavItem[]>(() => {
         )
     }
 
-    if (page.props.auth.user.roles.includes('farmer')) {
+    if (isFarmer.value) {
         items.push(
             {
                 title: 'Vegetables',

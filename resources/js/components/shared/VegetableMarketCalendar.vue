@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { router, usePage } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
 import type { DateValue} from '@internationalized/date'
 import { CalendarDate, toCalendarDate } from '@internationalized/date'
 import { ChevronLeft, ChevronRight } from '@lucide/vue'
@@ -24,6 +24,7 @@ import {
 import { useVegetableShowRoute } from '@/composables/useVegetableShowRoute'
 import { stepMonth } from '@/lib/calendarMonth'
 import type { CalendarSlotData, VegetableCalendarFilters, VegetableDaySchedule } from '@/types'
+import { useAuthRoles } from '@/composables/useAuthRoles'
 
 interface Props {
 	calendar?: Record<string, VegetableDaySchedule>
@@ -40,6 +41,7 @@ const emit = defineEmits<{
 // ─── Role + routing ───────────────────────────────────────────────────────────
 
 const { vegetableShowRoute } = useVegetableShowRoute()
+const { isAdmin, isDealer } = useAuthRoles()
 
 // ─── Month navigation (server-driven — reka-ui is display-only here) ─────────
 
@@ -88,9 +90,8 @@ const dailyTotals = computed(() => {
 })
 
 const viewerRole = computed<CalendarViewerRole>(() => {
-	const roles = usePage().props.auth.user.roles
-	if (roles.includes('admin')) return 'admin'
-	if (roles.includes('dealer')) return 'dealer'
+	if (isAdmin.value) return 'admin'
+	if (isDealer.value) return 'dealer'
 	return 'farmer'
 })
 

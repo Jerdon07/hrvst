@@ -18,6 +18,7 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import { blankScheduleItem, nextItemKey, type ScheduleFormItem } from '@/lib/scheduleForm'
 import { scheduleRegistry, type ScheduleType } from '@/lib/scheduleRegistry'
 import type { BreadcrumbItem, PostDataFixed, PostTimeSlot, VarietyOptionsByVegetable } from '@/types'
+import { TIME_SLOT_CONFIG, TIME_SLOT_ORDER } from '@/lib/timeSlots'
 
 const props = defineProps<{
     type: ScheduleType
@@ -182,9 +183,13 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => {
                                     <SelectValue placeholder="Select time..." />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="morning">Morning (6 AM – 12 PM)</SelectItem>
-                                    <SelectItem value="afternoon">Afternoon (12 PM – 6 PM)</SelectItem>
-                                    <SelectItem value="evening">Evening (6 PM – 10 PM)</SelectItem>
+                                    <SelectItem
+                                        v-for="slot in TIME_SLOT_ORDER"
+                                        :key="slot"
+                                        :value="slot"
+                                    >
+                                        {{ TIME_SLOT_CONFIG[slot].label }} ({{ TIME_SLOT_CONFIG[slot].hours }})
+                                    </SelectItem>
                                 </SelectContent>
                             </Select>
                             <p

@@ -1,12 +1,12 @@
 import axios from 'axios'
 import { onScopeDispose, ref, watch } from 'vue'
 import PostOverlapController from '@/actions/App/Http/Controllers/Api/PostOverlapController'
-import type { PostTimeSlot, VegetableOverlapData } from '@/types'
+import type { PostTimeSlot, PostType, VegetableOverlapData } from '@/types'
 
 const DEFAULT_DEBOUNCE_MS = 250
 
 interface UseOverlapPreviewOptions {
-    type: 'supply' | 'demand'
+    type: PostType
     postId?: number
     scheduledDate: () => string
     timeSlot: () => PostTimeSlot | ''
