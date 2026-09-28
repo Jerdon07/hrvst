@@ -17,17 +17,15 @@ import {
 import { computed, ref } from 'vue'
 import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
+import type { Paginated } from '@/types'
 
-interface Paginated<T> {
-	data: T[]
-    current_page: number
-    last_page: number
-    per_page: number
-    total: number
-}
+type PaginationMeta<T> = Pick<
+	Paginated<T>,
+	'data' | 'current_page' | 'last_page' | 'per_page' | 'total'
+>
 
 interface Props<TData> {
-	data: Paginated<TData>
+	data: PaginationMeta<TData>
 	columns: ColumnDef<TData>[]
 	searchPlaceholder?: string
 	emptyMessage?: string

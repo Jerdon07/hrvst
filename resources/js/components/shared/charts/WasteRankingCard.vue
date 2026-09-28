@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Link, usePage } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3'
 import { ArrowRight, ChevronDown, ChevronUp, Vegan } from '@lucide/vue'
 import { computed } from 'vue'
 import AppTooltip from '@/components/templates/AppTooltip.vue'
@@ -8,9 +8,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useExpandableList } from '@/composables/useExpandableList'
-import { show as adminShow } from '@/routes/admin/vegetables'
-import { show as sharedShow } from '@/routes/vegetables'
 import type { TopVegetableData, VegetableStabilityData, VegetableWasteData } from '@/types/resources/product'
+import { useVegetableShowRoute } from '@/composables/useVegetableShowRoute'
 
 type RankedItem = VegetableWasteData | VegetableStabilityData | TopVegetableData
 
@@ -24,10 +23,7 @@ const props = defineProps<{
     variant?: 'default' | 'destructive'
 }>()
 
-const isAdmin = computed(() => usePage().props.auth.user.roles.includes('admin'))
-function showRoute(id: number) {
-    return isAdmin.value ? adminShow({ vegetable: id }) : sharedShow({ vegetable: id })
-}
+const { vegetableShowRoute } = useVegetableShowRoute()
 
 const { expanded, visible, hasMore, hiddenCount, toggle } = useExpandableList(
     () => props.items,
@@ -88,7 +84,7 @@ const badgeHoverClass = computed(() =>
                         class="group"
                     >
                         <Link
-                            :href="showRoute(item.id).url"
+                            :href="vegetableShowRoute(item.id).url"
                             class="group -mx-2 flex items-center gap-3 rounded-lg px-2 py-1.5 transition-colors hover:bg-muted"
                         >
                             <span

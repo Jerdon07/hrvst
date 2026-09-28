@@ -11,6 +11,7 @@ import {
 } from 'chart.js'
 import { computed, type MaybeRefOrGetter, toValue } from 'vue'
 import type { RegistrationTrendPoint } from '@/types'
+import { BOTTOM_LEGEND } from './chartSeries'
 
 ChartJS.register(
     LineController,
@@ -59,15 +60,7 @@ export function useRegistrationTrendChart(
         maintainAspectRatio: false,
         interaction: { mode: 'index', intersect: false },
         plugins: {
-            legend: {
-                position: 'bottom',
-                labels: {
-                    boxWidth: 8,
-                    boxHeight: 8,
-                    padding: 8,
-                    font: { size: 10 },
-                },
-            },
+            legend: BOTTOM_LEGEND,
             tooltip: {
                 callbacks: {
                     label: (ctx) => ` ${ctx.dataset.label}: ${ctx.raw}`,

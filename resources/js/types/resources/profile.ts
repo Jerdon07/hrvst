@@ -20,17 +20,14 @@ export type DealerResource = Omit<
 
 // ─── Summary shapes ───────────────────────────────────────────────────────────
 
-export interface FarmerSupplySummary {
+export interface ScheduleStatusSummary {
     total_ongoing: number
     total_fulfilled: number
     total_expired: number
 }
 
-export interface DealerDemandSummary {
-    total_ongoing: number
-    total_fulfilled: number
-    total_expired: number
-}
+export type FarmerSupplySummary = ScheduleStatusSummary
+export type DealerDemandSummary = ScheduleStatusSummary
 
 export interface AdminFarmerSummary {
     total_farmers: number

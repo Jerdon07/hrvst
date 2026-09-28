@@ -12,27 +12,11 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
-
-interface Municipality {
-	id: number
-	name: string
-	province: string
-	label: string
-}
-
-interface PlantingOption {
-	id: number
-	name: string
-	category: string
-}
-
-interface PlantingsByCategory {
-	[category: string]: PlantingOption[]
-}
+import type { MunicipalityOption, SupplyOption } from '@/types'
 
 const props = defineProps<{
-	municipalities: Municipality[]
-	plantings: PlantingsByCategory
+	municipalities: MunicipalityOption[]
+	plantings: Record<string, SupplyOption[]>
 	selectedMunicipality: string | null
 	selectedVariety: string | null
 }>()

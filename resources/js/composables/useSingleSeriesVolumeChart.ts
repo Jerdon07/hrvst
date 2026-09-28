@@ -9,16 +9,9 @@ import {
 } from 'chart.js'
 import { computed, type MaybeRefOrGetter, toValue } from 'vue'
 import type { MonthlyVolumeData } from '@/types/resources/product'
+import { formatKgAxis } from './chartSeries'
 
 ChartJS.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip)
-
-function formatKgAxis(value: number): string {
-    if (Math.abs(value) >= 1000) {
-        const scaled = value / 1000
-        return `${scaled.toLocaleString('en-PH', { maximumFractionDigits: 1 })}k kg`
-    }
-    return `${value} kg`
-}
 
 export function useSingleSeriesVolumeChart(
     volume: MaybeRefOrGetter<MonthlyVolumeData[] | null | undefined>,

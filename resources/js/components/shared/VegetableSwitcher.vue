@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { router, usePage } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
 import { Check, ChevronsUpDown, Search } from '@lucide/vue'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { Button } from '@/components/ui/button'
 import {
     Combobox,
@@ -15,8 +15,9 @@ import {
     ComboboxTrigger,
     ComboboxViewport,
 } from '@/components/ui/combobox'
-import adminRoutes from '@/routes/admin'
-import vegetables, { options } from '@/routes/vegetables'
+import { options } from '@/routes/vegetables'
+import { useVegetableShowRoute } from '@/composables/useVegetableShowRoute'
+const { vegetableShowRoute } = useVegetableShowRoute()
 
 interface Props {
     currentVegetableId: number
@@ -24,8 +25,6 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-
-const isAdmin = computed(() => usePage().props.auth.user.roles.includes('admin'))
 
 const groups = ref<Record<string, { id: number; name: string }[]>>({})
 const loaded = ref(false)
@@ -50,11 +49,7 @@ function goTo(rawId: unknown): void {
     const id = Number(rawId)
     if (!id || id === props.currentVegetableId) return
 
-    const route = isAdmin.value
-        ? adminRoutes.vegetables.show(id)
-        : vegetables.show(id)
-
-    router.visit(route.url, { preserveScroll: true })
+    router.visit(vegetableShowRoute(id).url, { preserveScroll: true })
 }
 </script>
 

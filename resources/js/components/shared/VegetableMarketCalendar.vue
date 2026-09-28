@@ -22,8 +22,7 @@ import {
 	type CalendarViewerRole,
 } from '@/composables/useCalendarBalance'
 import { stepMonth } from '@/lib/calendarMonth'
-import adminRoutes from '@/routes/admin'
-import vegetables from '@/routes/vegetables'
+import { useVegetableShowRoute } from '@/composables/useVegetableShowRoute'
 import type { CalendarSlotData, VegetableCalendarFilters, VegetableDaySchedule } from '@/types'
 
 interface Props {
@@ -40,13 +39,7 @@ const emit = defineEmits<{
 
 // ─── Role + routing ───────────────────────────────────────────────────────────
 
-const isAdmin = computed(() => usePage().props.auth.user.roles.includes('admin'))
-
-function showRoute(): { url: string } {
-	return isAdmin.value
-		? adminRoutes.vegetables.show(props.vegetableId)
-		: vegetables.show(props.vegetableId)
-}
+const { vegetableShowRoute } = useVegetableShowRoute()
 
 // ─── Month navigation (server-driven — reka-ui is display-only here) ─────────
 
@@ -68,7 +61,7 @@ const monthLabel = computed(() =>
 function navigateMonth(direction: 1 | -1): void {
 	const { year, month } = stepMonth(calendarYear.value, calendarMonth.value, direction)
 
-	router.visit(showRoute().url, {
+	router.visit(vegetableShowRoute(props.vegetableId).url, {
 		data: { year, month },
 		preserveState: true,
 		preserveScroll: true,

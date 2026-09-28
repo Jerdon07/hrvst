@@ -57,6 +57,16 @@ export const MONTHLY_VOLUME_SERIES: SeriesConfig[] = [
     },
 ]
 
+export const BOTTOM_LEGEND = {
+    position: 'bottom',
+    labels: {
+        boxWidth: 8,
+        boxHeight: 8,
+        padding: 8,
+        font: { size: 10 },
+    },
+} as const
+
 export function formatKgAxis(value: number): string {
     if (Math.abs(value) >= 1000) {
         const scaled = value / 1000
@@ -66,6 +76,46 @@ export function formatKgAxis(value: number): string {
         })}k kg`
     }
     return `${value} kg`
+}
+
+export function formatKgTooltipLabel(ctx: {
+    raw: unknown
+    dataset: { label?: string }
+}): string {
+    const raw = ctx.raw as number | null | undefined
+    if (raw === null || raw === undefined) return ''
+
+    return ` ${ctx.dataset.label}: ${raw.toLocaleString('en-PH', { minimumFractionDigits: 0, maximumFractionDigits: 2 })} kg`
+}
+
+export interface MonthlyTimeline {
+    labels: string[]
+    isForecastIndex: (dataIndex: number) => boolean
+    valuesFor: (key: MetricKey) => number[]
+}
+
+export function buildMonthlyTimeline(
+    activity: MaybeRefOrGetter<MonthlyActivity[] | null | undefined>,
+    forecast?: MaybeRefOrGetter<ForecastPoint[] | null | undefined>,
+): MonthlyTimeline | null {
+    const historical = toValue(activity)
+    if (!historical?.length) return null
+
+    const forecasted = forecast ? (toValue(forecast) ?? []) : []
+
+    return {
+        labels: [
+            ...historical.map((m) => m.label),
+            ...forecasted.map((m) => m.label),
+        ],
+        isForecastIndex: (dataIndex) => dataIndex >= historical.length,
+        valuesFor: (key) => [
+            ...historical.map(
+                (m) => (m as unknown as Record<string, number>)[key],
+            ),
+            ...forecasted.map((m) => m[key]),
+        ],
+    }
 }
 
 export function createForecastDividerPlugin(
