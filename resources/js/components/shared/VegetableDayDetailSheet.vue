@@ -4,8 +4,8 @@ import DetailSheet from '@/components/dialogs/DetailSheet.vue'
 import PosterRow from '@/components/shared/PosterRow.vue'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { groupPostersByType } from '@/lib/scheduleGrouping'
-import type { CalendarScheduleItem, CalendarTimeSlot, VegetableDaySchedule } from '@/types'
 import { TIME_SLOT_CONFIG, TIME_SLOT_ORDER } from '@/lib/timeSlots'
+import type { CalendarScheduleItem, CalendarTimeSlot, VegetableDaySchedule } from '@/types'
 
 const props = defineProps<{
     open: boolean

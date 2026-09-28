@@ -1,6 +1,6 @@
 // ─── Analytics ───────────────────────────────────────────────────────────────
 
-import { PostTimeSlot } from "../enums"
+import type { PostTimeSlot } from "../enums"
 
 export type ImbalanceBand = App.Enums.Analytics.ImbalanceBand
 export type RecommendationSeverity = App.Enums.Analytics.RecommendationSeverity

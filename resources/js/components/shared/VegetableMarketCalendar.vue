@@ -16,6 +16,7 @@ import {
 	CalendarHeadCell,
 } from '@/components/ui/calendar'
 import { Card } from '@/components/ui/card'
+import { useAuthRoles } from '@/composables/useAuthRoles'
 import {
 	BALANCE_DOT_CLASS,
 	useCalendarBalance,
@@ -24,7 +25,6 @@ import {
 import { useVegetableShowRoute } from '@/composables/useVegetableShowRoute'
 import { stepMonth } from '@/lib/calendarMonth'
 import type { CalendarSlotData, VegetableCalendarFilters, VegetableDaySchedule } from '@/types'
-import { useAuthRoles } from '@/composables/useAuthRoles'
 
 interface Props {
 	calendar?: Record<string, VegetableDaySchedule>

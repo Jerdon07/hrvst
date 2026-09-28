@@ -10,7 +10,7 @@ import { dashboard as dealerDashboard } from '@/routes/dealer'
 import * as dealerDemandRoutes from '@/routes/dealer/demands'
 import { dashboard as farmerDashboard } from '@/routes/farmer'
 import * as farmerSupplyRoutes from '@/routes/farmer/supplies'
-import { PostType } from '@/types'
+import type { PostType } from '@/types'
 
 export type ScheduleType = PostType
 

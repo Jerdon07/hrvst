@@ -1,5 +1,5 @@
-import { AppRole } from '@/types'
 import { computed, type MaybeRefOrGetter, toValue } from 'vue'
+import type { AppRole } from '@/types'
 
 export type CalendarViewerRole = AppRole
 export type BalanceColor = 'red' | 'orange' | 'amber' | 'green'

@@ -17,8 +17,8 @@ import { useOverlapPreview } from '@/composables/useOverlapPreview'
 import AppLayout from '@/layouts/AppLayout.vue'
 import { blankScheduleItem, nextItemKey, type ScheduleFormItem } from '@/lib/scheduleForm'
 import { scheduleRegistry, type ScheduleType } from '@/lib/scheduleRegistry'
-import type { BreadcrumbItem, PostDataFixed, PostTimeSlot, VarietyOptionsByVegetable } from '@/types'
 import { TIME_SLOT_CONFIG, TIME_SLOT_ORDER } from '@/lib/timeSlots'
+import type { BreadcrumbItem, PostDataFixed, PostTimeSlot, VarietyOptionsByVegetable } from '@/types'
 
 const props = defineProps<{
     type: ScheduleType

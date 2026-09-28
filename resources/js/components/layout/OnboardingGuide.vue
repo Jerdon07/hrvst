@@ -17,8 +17,8 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog'
-import { useOnboardingGuide } from '@/composables/useOnboardingGuide'
 import { useAuthRoles } from '@/composables/useAuthRoles'
+import { useOnboardingGuide } from '@/composables/useOnboardingGuide'
 
 interface OnboardingStep {
 	icon: Component
@@ -70,7 +70,6 @@ const wasForced = page.props.needsOnboarding === true
 const { isFarmer, isDealer } = useAuthRoles()
 
 const role = computed<'farmer' | 'dealer' | null>(() => {
-	const roles = page.props.auth.user?.roles ?? []
 	if (isFarmer.value) return 'farmer'
 	if (isDealer.value) return 'dealer'
 	return null
