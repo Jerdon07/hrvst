@@ -16,23 +16,12 @@ import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
 import DetailSheet from '@/components/dialogs/DetailSheet.vue'
 import EmptyState from '@/components/EmptyState.vue'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog'
-import {
     Item,
-    ItemActions,
     ItemContent,
     ItemDescription,
-    ItemGroup,
     ItemMedia,
-    ItemSeparator,
     ItemTitle,
 } from '@/components/ui/item'
 import { Separator } from '@/components/ui/separator'
@@ -41,8 +30,8 @@ import { useInitials } from '@/composables/useInitials'
 import { usePinRevealFlash } from '@/composables/usePinRevealFlash'
 import type { FarmerResource } from '@/types'
 import PhoneNumberField from '../PhoneNumberField.vue'
-import ScheduledItemList from './ScheduledItemList.vue'
 import PinRevealDialog from './PinRevealDialog.vue'
+import ScheduledItemList from './ScheduledItemList.vue'
 
 const props = defineProps<{
     open: boolean

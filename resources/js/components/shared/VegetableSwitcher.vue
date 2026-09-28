@@ -15,8 +15,8 @@ import {
     ComboboxTrigger,
     ComboboxViewport,
 } from '@/components/ui/combobox'
-import { options } from '@/routes/vegetables'
 import { useVegetableShowRoute } from '@/composables/useVegetableShowRoute'
+import { options } from '@/routes/vegetables'
 const { vegetableShowRoute } = useVegetableShowRoute()
 
 interface Props {
