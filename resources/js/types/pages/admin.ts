@@ -8,6 +8,15 @@ import type {
 } from '../resources/profile'
 import type { KpiStat, MapConfig, Paginated } from '../shared'
 
+// ─── Shared sorting ───────────────────────────────────────────────────────────
+
+export type SortDirection = 'asc' | 'desc'
+
+export interface SortFilters {
+    sort: string | null
+    direction: SortDirection | null
+}
+
 // ─── admin/Dashboard ──────────────────────────────────────────────────────────
 
 export interface AdminDashboardKPIs {
@@ -36,7 +45,7 @@ export interface AdminDashboardProps {
 
 // ─── admin/vegetables/Index ───────────────────────────────────────────────────
 
-export interface AdminVegetablesFilters {
+export interface AdminVegetablesFilters extends SortFilters {
     search: string | null
     category_id: number | null
 }
@@ -50,7 +59,7 @@ export interface AdminVegetablesProps {
 
 // ─── admin/farmers/Index ──────────────────────────────────────────────────────
 
-export interface AdminFarmersFilters {
+export interface AdminFarmersFilters extends SortFilters {
     search: string | null
     municipalities: MunicipalityOption[]
     supplies: Record<string, SupplyOption[]>
@@ -66,7 +75,7 @@ export interface AdminFarmersProps {
 
 // ─── admin/dealers/Index ──────────────────────────────────────────────────────
 
-export interface AdminDealersFilters {
+export interface AdminDealersFilters extends SortFilters {
     search: string | null
 }
 

@@ -168,7 +168,11 @@ function handleFarmerFromBarangay(farmerId: number): void {
 function handleSearch(query: string) {
     searchQuery.value = query
     router.visit(index().url, {
-        data: { search: query || undefined },
+        data: {
+            search: query || undefined,
+            sort: props.filters?.sort ?? undefined,
+            direction: props.filters?.direction ?? undefined,
+        },
         preserveState: true,
         preserveScroll: true,
         only: ['farmers', 'filters'],
@@ -177,9 +181,29 @@ function handleSearch(query: string) {
 
 function handlePageChange(page: number) {
     router.visit(admin.farmers.index().url, {
-        data: { page, view: 'list', search: searchQuery.value || undefined },
+        data: {
+            page,
+            view: 'list',
+            search: searchQuery.value || undefined,
+            sort: props.filters?.sort ?? undefined,
+            direction: props.filters?.direction ?? undefined,
+        },
         preserveState: true,
         preserveScroll: true,
+    })
+}
+
+function handleSort(payload: { key: string; direction: 'asc' | 'desc' }) {
+    router.visit(admin.farmers.index().url, {
+        data: {
+            view: 'list',
+            search: searchQuery.value || undefined,
+            sort: payload.key,
+            direction: payload.direction,
+        },
+        preserveState: true,
+        preserveScroll: true,
+        only: ['farmers', 'filters'],
     })
 }
 
@@ -315,9 +339,12 @@ if (storedView === 'map' && props.view !== 'map') {
                         v-if="farmers"
                         :farmers="farmers"
                         :search-query="searchQuery"
+                        :sort-key="filters?.sort"
+                        :sort-direction="filters?.direction"
                         @view-farmer="openFarmerSidebar($event.id)"
                         @page-change="handlePageChange"
                         @search="handleSearch"
+                        @sort="handleSort"
                     />
 
                     <EmptyState

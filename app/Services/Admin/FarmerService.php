@@ -3,9 +3,11 @@
 namespace App\Services\Admin;
 
 use App\Enums\Post\PostType;
+use App\Models\Address\Barangay;
 use App\Models\Profiles\FarmerProfile;
 use App\Models\Schedule\Post;
 use App\Services\Admin\Concerns\ManagesProfileDirectory;
+use Illuminate\Database\Eloquent\Builder;
 
 class FarmerService
 {
@@ -46,5 +48,21 @@ class FarmerService
     protected function locationRelations(): array
     {
         return ['province', 'municipality', 'barangay'];
+    }
+
+    protected function sortableColumns(): array
+    {
+        return [
+            'farmer' => $this->sortByUserName(),
+            'ongoing_supplies_count' => fn (Builder $query, string $direction) => $query->orderBy($this->ongoingCountAlias(), $direction),
+            'address' => fn (Builder $query, string $direction) => $query->orderBy(
+                Barangay::query()
+                    ->select('name')
+                    ->whereColumn((new Barangay)->getTable().'.id', (new FarmerProfile)->getTable().'.barangay_id')
+                    ->limit(1),
+                $direction,
+            ),
+            'joined' => fn (Builder $query, string $direction) => $query->orderBy('created_at', $direction),
+        ];
     }
 }

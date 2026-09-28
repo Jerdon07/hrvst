@@ -67,7 +67,12 @@ function closeSidebar() {
 
 function handlePageChange(page: number) {
     router.visit(admin.dealers.index(), {
-        data: { page, search: searchQuery.value || undefined },
+        data: {
+            page,
+            search: searchQuery.value || undefined,
+            sort: props.filters?.sort ?? undefined,
+            direction: props.filters?.direction ?? undefined,
+        },
         preserveState: true,
         preserveScroll: true,
     })
@@ -76,7 +81,24 @@ function handlePageChange(page: number) {
 function handleSearch(query: string) {
     searchQuery.value = query
     router.visit(admin.dealers.index().url, {
-        data: { search: query || undefined },
+        data: {
+            search: query || undefined,
+            sort: props.filters?.sort ?? undefined,
+            direction: props.filters?.direction ?? undefined,
+        },
+        preserveState: true,
+        preserveScroll: true,
+        only: ['dealers', 'filters'],
+    })
+}
+
+function handleSort(payload: { key: string; direction: 'asc' | 'desc' }) {
+    router.visit(admin.dealers.index().url, {
+        data: {
+            search: searchQuery.value || undefined,
+            sort: payload.key,
+            direction: payload.direction,
+        },
         preserveState: true,
         preserveScroll: true,
         only: ['dealers', 'filters'],
@@ -160,9 +182,12 @@ function handleSearch(query: string) {
                 <DealerTable
                     :dealers="dealers"
                     :search-query="searchQuery"
+                    :sort-key="filters?.sort"
+                    :sort-direction="filters?.direction"
                     @view-dealer="openDealerSidebar($event.id)"
                     @page-change="handlePageChange"
                     @search="handleSearch"
+                    @sort="handleSort"
                 />
             </Deferred>
         </div>

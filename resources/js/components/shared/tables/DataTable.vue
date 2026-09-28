@@ -11,7 +11,6 @@ import {
 	type ColumnDef,
 	FlexRender,
 	getCoreRowModel,
-	getSortedRowModel,
 	useVueTable,
 } from '@tanstack/vue-table'
 import { computed, ref } from 'vue'
@@ -32,6 +31,8 @@ interface Props<TData> {
 	entityName?: string
 	enableSearch?: boolean
 	searchQuery?: string
+	sortKey?: string | null
+	sortDirection?: 'asc' | 'desc' | null
 }
 
 const props = withDefaults(defineProps<Props<TData>>(), {
@@ -40,11 +41,14 @@ const props = withDefaults(defineProps<Props<TData>>(), {
 	entityName: 'items',
 	enableSearch: true,
 	searchQuery: '',
+	sortKey: null,
+	sortDirection: null,
 })
 
 const emit = defineEmits<{
 	'page-change': [page: number]
 	search: [query: string]
+	sort: [payload: { key: string; direction: 'asc' | 'desc' }]
 }>()
 
 const localSearchQuery = ref(props.searchQuery)
@@ -54,10 +58,17 @@ const table = useVueTable({
 		return props.data.data
 	},
 	columns: props.columns,
+	state: {
+		get sorting() {
+			return props.sortKey
+				? [{ id: props.sortKey, desc: props.sortDirection === 'desc' }]
+				: []
+		},
+	},
 	getCoreRowModel: getCoreRowModel(),
-	getSortedRowModel: getSortedRowModel(),
 	manualPagination: true,
 	manualFiltering: true,
+	manualSorting: true,
 })
 
 const hasPrevPage = computed(() => props.data.current_page > 1)
@@ -72,6 +83,20 @@ function sortIcon(state: string | false) {
 	if (state === 'asc') return ChevronUp
 	if (state === 'desc') return ChevronDown
 	return ChevronsUpDown
+}
+
+function ariaSort(state: string | false, canSort: boolean) {
+	if (!canSort) return undefined
+	if (state === 'asc') return 'ascending'
+	if (state === 'desc') return 'descending'
+	return 'none'
+}
+
+function handleSort(columnId: string) {
+	const isActiveAscending =
+		props.sortKey === columnId && (props.sortDirection ?? 'asc') === 'asc'
+
+	emit('sort', { key: columnId, direction: isActiveAscending ? 'desc' : 'asc' })
 }
 
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
@@ -117,12 +142,13 @@ function handleSearchInput() {
                         <th
                             v-for="header in table.getHeaderGroups()[0].headers"
                             :key="header.id"
+                            :aria-sort="ariaSort(header.column.getIsSorted(), header.column.getCanSort())"
                             class="px-4 py-3 text-left font-medium text-muted-foreground"
                         >
                             <template v-if="header.column.getCanSort()">
                                 <button
                                     class="flex items-center gap-1 hover:text-foreground transition-colors"
-                                    @click="header.column.toggleSorting(header.column.getIsSorted() === 'asc')"
+                                    @click="handleSort(header.column.id)"
                                 >
                                     <FlexRender
                                         :render="header.column.columnDef.header"

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Actions\Vegetable\CreateVegetableAction;
 use App\Actions\Vegetable\UpdateVegetableAction;
 use App\Data\Vegetable\VegetableIndexData;
+use App\Http\Controllers\Concerns\ReadsSortParameters;
 use App\Http\Controllers\Concerns\RendersVegetableShow;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Vegetable\StoreVegetableRequest;
@@ -21,6 +22,7 @@ use Inertia\Response;
 
 class VegetableController extends Controller
 {
+    use ReadsSortParameters;
     use RendersVegetableShow;
 
     public function __construct(
@@ -33,18 +35,22 @@ class VegetableController extends Controller
     public function index(Request $request): Response
     {
         $categoryId = $request->query('category_id');
+        $sorting = $this->sortParameters($request);
 
         return Inertia::render('admin/vegetables/Index', [
             'vegetables' => Inertia::defer(fn () => VegetableIndexData::collect(
                 $this->vegetableService->paginated(
                     search: $request->query('search'),
                     categoryId: $categoryId,
+                    sort: $sorting['sort'],
+                    direction: $sorting['direction'],
                 )->paginate(20)->withQueryString(),
             )),
             'categories' => Category::orderBy('name')->get(['id', 'name']),
             'filters' => [
                 'search' => $request->query('search', null),
                 'category_id' => $categoryId ? (int) $categoryId : null,
+                ...$sorting,
             ],
         ]);
     }

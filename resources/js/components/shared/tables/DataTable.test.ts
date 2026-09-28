@@ -40,6 +40,8 @@ interface DataTableRowProps {
     entityName?: string
     enableSearch?: boolean
     searchQuery?: string
+    sortKey?: string | null
+    sortDirection?: 'asc' | 'desc' | null
 }
 
 const Table = DataTable as unknown as new () => { $props: DataTableRowProps }
@@ -228,6 +230,119 @@ describe('DataTable', () => {
                 props: { data: paginated(), columns, enableSearch: false },
             })
             expect(wrapper.find('input').exists()).toBe(false)
+        })
+    })
+
+    describe('server-side sorting', () => {
+        const sortColumns: ColumnDef<Row>[] = [
+            { accessorKey: 'name', header: 'Name' },
+            { accessorKey: 'id', header: 'ID', enableSorting: false },
+        ]
+
+        it('emits sort asc when an unsorted column header is clicked', async () => {
+            const wrapper = mount(Table, {
+                props: { data: paginated(), columns: sortColumns },
+            })
+
+            await wrapper.find('th button').trigger('click')
+
+            expect(wrapper.emitted('sort')?.[0]).toEqual([
+                { key: 'name', direction: 'asc' },
+            ])
+        })
+
+        it('emits desc when the column is already sorted asc', async () => {
+            const wrapper = mount(Table, {
+                props: {
+                    data: paginated(),
+                    columns: sortColumns,
+                    sortKey: 'name',
+                    sortDirection: 'asc',
+                },
+            })
+
+            await wrapper.find('th button').trigger('click')
+
+            expect(wrapper.emitted('sort')?.[0]).toEqual([
+                { key: 'name', direction: 'desc' },
+            ])
+        })
+
+        it('flips back to asc when the column is already sorted desc', async () => {
+            const wrapper = mount(Table, {
+                props: {
+                    data: paginated(),
+                    columns: sortColumns,
+                    sortKey: 'name',
+                    sortDirection: 'desc',
+                },
+            })
+
+            await wrapper.find('th button').trigger('click')
+
+            expect(wrapper.emitted('sort')?.[0]).toEqual([
+                { key: 'name', direction: 'asc' },
+            ])
+        })
+
+        it('starts at asc when a different column is the active sort', async () => {
+            const wrapper = mount(Table, {
+                props: {
+                    data: paginated(),
+                    columns: sortColumns,
+                    sortKey: 'other',
+                    sortDirection: 'desc',
+                },
+            })
+
+            await wrapper.find('th button').trigger('click')
+
+            expect(wrapper.emitted('sort')?.[0]).toEqual([
+                { key: 'name', direction: 'asc' },
+            ])
+        })
+
+        it('renders no sort button for non-sortable columns', () => {
+            const wrapper = mount(Table, {
+                props: { data: paginated(), columns: sortColumns },
+            })
+
+            expect(wrapper.findAll('th button')).toHaveLength(1)
+            expect(wrapper.findAll('th')[1].attributes('aria-sort')).toBeUndefined()
+        })
+
+        it('reflects sort state from props via aria-sort', () => {
+            const wrapper = mount(Table, {
+                props: {
+                    data: paginated(),
+                    columns: sortColumns,
+                    sortKey: 'name',
+                    sortDirection: 'desc',
+                },
+            })
+
+            expect(wrapper.findAll('th')[0].attributes('aria-sort')).toBe('descending')
+        })
+
+        it('does not reorder rows locally — the server owns ordering', () => {
+            const wrapper = mount(Table, {
+                props: {
+                    data: paginated({
+                        data: [
+                            { id: 2, name: 'B' },
+                            { id: 1, name: 'A' },
+                        ],
+                        total: 2,
+                    }),
+                    columns: sortColumns,
+                    sortKey: 'name',
+                    sortDirection: 'asc',
+                },
+            })
+
+            const firstRow = wrapper.findAll('tbody tr')[0].text()
+
+            expect(firstRow).toContain('B')
         })
     })
 })

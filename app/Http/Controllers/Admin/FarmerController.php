@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Data\Profile\FarmerData;
 use App\Enums\Billing\SubscriptionFeature;
+use App\Http\Controllers\Concerns\ReadsSortParameters;
 use App\Http\Controllers\Controller;
 use App\Models\Billing\Subscription;
 use App\Models\Profiles\FarmerProfile;
@@ -18,6 +19,8 @@ use Inertia\Response;
 
 class FarmerController extends Controller
 {
+    use ReadsSortParameters;
+
     public function __construct(
         private readonly FarmerService $farmerService,
         private readonly FarmerMapService $farmerMapService,
@@ -36,12 +39,15 @@ class FarmerController extends Controller
             ]);
         }
 
+        $sorting = $this->sortParameters($request);
+
         return Inertia::render('admin/farmers/Index', [
             'view' => $view,
             'filters' => [
                 'search' => $request->query('search', null),
                 'municipalities' => $this->farmerMapService->getMunicipalityOptions(),
                 'supplies' => $this->farmerMapService->getSupplyOptions(),
+                ...$sorting,
             ],
             'mapConfig' => [
                 'center' => ['lat' => 16.4137, 'lng' => 120.5896],
@@ -52,6 +58,8 @@ class FarmerController extends Controller
                     $this->farmerService->paginated(
                         perPage: 20,
                         search: $request->query('search', null),
+                        sort: $sorting['sort'],
+                        direction: $sorting['direction'],
                     )
                 ))
                 : null,

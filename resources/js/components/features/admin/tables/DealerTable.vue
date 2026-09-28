@@ -9,12 +9,15 @@ import type { DealerResource, Paginated } from '@/types'
 defineProps<{
     dealers: Paginated<DealerResource>
     searchQuery?: string
+    sortKey?: string | null
+    sortDirection?: 'asc' | 'desc' | null
 }>()
 
 defineEmits<{
     'view-dealer': [dealer: DealerResource]
     'page-change': [page: number]
     search: [query: string]
+    sort: [payload: { key: string; direction: 'asc' | 'desc' }]
 }>()
 
 const columns: ColumnDef<DealerResource>[] = [
@@ -46,12 +49,15 @@ const columns: ColumnDef<DealerResource>[] = [
         :data="dealers"
         :columns="columns"
         :search-query="searchQuery"
+        :sort-key="sortKey"
+        :sort-direction="sortDirection"
         search-placeholder="Search dealers..."
         entity-name="dealers"
         empty-message="No dealers found."
         enable-expand
         @page-change="$emit('page-change', $event)"
         @search="$emit('search', $event)"
+        @sort="$emit('sort', $event)"
     >
         <template #cell-dealer="{ row }">
             <div class="flex flex-col gap-0.5">

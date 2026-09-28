@@ -6,6 +6,7 @@ use App\Enums\Post\PostType;
 use App\Models\Profiles\DealerProfile;
 use App\Models\Schedule\Post;
 use App\Services\Admin\Concerns\ManagesProfileDirectory;
+use Illuminate\Database\Eloquent\Builder;
 
 class DealerService
 {
@@ -41,5 +42,14 @@ class DealerService
     protected function postType(): PostType
     {
         return PostType::Demand;
+    }
+
+    protected function sortableColumns(): array
+    {
+        return [
+            'dealer' => $this->sortByUserName(),
+            'ongoing_demands_count' => fn (Builder $query, string $direction) => $query->orderBy($this->ongoingCountAlias(), $direction),
+            'joined_at' => fn (Builder $query, string $direction) => $query->orderBy('created_at', $direction),
+        ];
     }
 }

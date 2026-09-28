@@ -9,12 +9,15 @@ import type { FarmerResource, Paginated } from '@/types'
 defineProps<{
     farmers: Paginated<FarmerResource>
     searchQuery?: string
+    sortKey?: string | null
+    sortDirection?: 'asc' | 'desc' | null
 }>()
 
 defineEmits<{
     'view-farmer': [farmer: FarmerResource]
     'page-change': [page: number]
     search: [query: string]
+    sort: [payload: { key: string; direction: 'asc' | 'desc' }]
 }>()
 
 const columns: ColumnDef<FarmerResource>[] = [
@@ -29,6 +32,7 @@ const columns: ColumnDef<FarmerResource>[] = [
         id: 'ongoing_supplies_count',
         header: 'Supplies',
         accessorFn: (row) => row.ongoing_supplies_count ?? 0,
+        enableSorting: true,
     },
     {
         id: 'address',
@@ -52,11 +56,14 @@ const columns: ColumnDef<FarmerResource>[] = [
         :data="farmers"
         :columns="columns"
         :search-query="searchQuery"
+        :sort-key="sortKey"
+        :sort-direction="sortDirection"
         search-placeholder="Search farmers..."
         entity-name="farmers"
         empty-message="No farmers found"
         @page-change="$emit('page-change', $event)"
         @search="$emit('search', $event)"
+        @sort="$emit('sort', $event)"
     >
         <template #cell-farmer="{ row }">
             <div class="flex items-center gap-3">

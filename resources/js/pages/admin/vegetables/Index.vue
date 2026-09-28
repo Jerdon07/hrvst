@@ -61,7 +61,9 @@ function handleDelete(): void {
     })
 }
 
-function visit(overrides: { search?: string; category_id?: string } = {}) {
+function visit(
+    overrides: { search?: string; category_id?: string; sort?: string; direction?: string } = {},
+) {
     const search = overrides.search ?? searchQuery.value
     const categoryId = overrides.category_id ?? categoryFilter.value
 
@@ -69,6 +71,8 @@ function visit(overrides: { search?: string; category_id?: string } = {}) {
         data: {
             search: search || undefined,
             category_id: categoryId !== 'all' ? categoryId : undefined,
+            sort: overrides.sort ?? props.filters?.sort ?? undefined,
+            direction: overrides.direction ?? props.filters?.direction ?? undefined,
         },
         preserveState: true,
         preserveScroll: true,
@@ -82,6 +86,8 @@ function handlePageChange(page: number) {
             page,
             search: searchQuery.value || undefined,
             category_id: categoryFilter.value !== 'all' ? categoryFilter.value : undefined,
+            sort: props.filters?.sort ?? undefined,
+            direction: props.filters?.direction ?? undefined,
         },
         preserveState: true,
         preserveScroll: true,
@@ -91,6 +97,10 @@ function handlePageChange(page: number) {
 function handleSearch(query: string): void {
     searchQuery.value = query
     visit({ search: query })
+}
+
+function handleSort(payload: { key: string; direction: 'asc' | 'desc' }): void {
+    visit({ sort: payload.key, direction: payload.direction })
 }
 
 function handleCategoryFilterChange(value: unknown): void {
@@ -136,11 +146,14 @@ function handleCategoryFilterChange(value: unknown): void {
                     v-if="vegetables"
                     :vegetables="vegetables"
                     :search-query="searchQuery"
+                    :sort-key="filters?.sort"
+                    :sort-direction="filters?.direction"
                     @open-edit-vegetable="openEdit"
                     @open-delete-vegetable="openDelete"
                     @open-vegetable-details="(row) => router.visit(admin.vegetables.show({ vegetable: row.id }).url)"
                     @page-change="handlePageChange"
                     @search="handleSearch"
+                    @sort="handleSort"
                 >
                     <template #toolbar-actions>
                         <Select

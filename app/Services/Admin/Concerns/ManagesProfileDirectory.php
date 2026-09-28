@@ -3,7 +3,9 @@
 namespace App\Services\Admin\Concerns;
 
 use App\Enums\Post\PostType;
+use App\Models\User;
 use App\Services\Shared\PostItemInsightsService;
+use Closure;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -22,13 +24,22 @@ trait ManagesProfileDirectory
 
     abstract protected function postType(): PostType;
 
+    /**
+     * @return array<string, Closure(Builder, string): void>
+     */
+    abstract protected function sortableColumns(): array;
+
     protected function locationRelations(): array
     {
         return [];
     }
 
-    public function paginated(int $perPage = 20, ?string $search = null): LengthAwarePaginator
-    {
+    public function paginated(
+        int $perPage = 20,
+        ?string $search = null,
+        ?string $sort = null,
+        ?string $direction = null,
+    ): LengthAwarePaginator {
         $modelClass = $this->profileModelClass();
         $relation = $this->itemsRelation();
         $alias = $this->ongoingCountAlias();
@@ -46,7 +57,39 @@ trait ManagesProfileDirectory
             });
         }
 
-        return $query->orderBy('created_at', 'desc')->paginate($perPage);
+        $this->applySort($query, $sort, $direction);
+
+        return $query->paginate($perPage);
+    }
+
+    protected function applySort(Builder $query, ?string $sort, ?string $direction): void
+    {
+        $columns = $this->sortableColumns();
+
+        if ($sort === null || ! array_key_exists($sort, $columns)) {
+            $query->orderBy('created_at', 'desc')->orderBy('id', 'desc');
+
+            return;
+        }
+
+        $columns[$sort]($query, strtolower((string) $direction) === 'desc' ? 'desc' : 'asc');
+
+        $query->orderBy('id', 'desc');
+    }
+
+    protected function sortByUserName(): Closure
+    {
+        return function (Builder $query, string $direction): void {
+            $profileTable = (new ($this->profileModelClass()))->getTable();
+
+            $query->orderBy(
+                User::query()
+                    ->select('name')
+                    ->whereColumn((new User)->getTable().'.id', "{$profileTable}.user_id")
+                    ->limit(1),
+                $direction,
+            );
+        };
     }
 
     public function details(Model $profile): Model

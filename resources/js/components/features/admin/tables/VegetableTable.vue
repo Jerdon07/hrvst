@@ -14,6 +14,8 @@ import type { VegetableIndexData } from '@/types/resources/product'
 const props = defineProps<{
     vegetables: Paginated<VegetableIndexData>
     searchQuery?: string
+    sortKey?: string | null
+    sortDirection?: 'asc' | 'desc' | null
 }>()
 
 const emit = defineEmits<{
@@ -22,6 +24,7 @@ const emit = defineEmits<{
     'open-vegetable-details': [row: VegetableIndexData]
     'page-change': [page: number]
     search: [query: string]
+    sort: [payload: { key: string; direction: 'asc' | 'desc' }]
 }>()
 
 const columns: ColumnDef<VegetableIndexData>[] = [
@@ -55,11 +58,14 @@ const columns: ColumnDef<VegetableIndexData>[] = [
         :data="props.vegetables"
         :columns="columns"
         :search-query="searchQuery"
+        :sort-key="sortKey"
+        :sort-direction="sortDirection"
         search-placeholder="Search vegetables..."
         entity-name="vegetables"
         empty-message="No vegetables found"
         @page-change="$emit('page-change', $event)"
         @search="$emit('search', $event)"
+        @sort="emit('sort', $event)"
     >
         <template #toolbar-actions>
             <slot name="toolbar-actions" />

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Data\Profile\DealerData;
+use App\Http\Controllers\Concerns\ReadsSortParameters;
 use App\Http\Controllers\Controller;
 use App\Models\Profiles\DealerProfile;
 use App\Services\Admin\DealerService;
@@ -15,6 +16,8 @@ use Inertia\Response;
 
 class DealerController extends Controller
 {
+    use ReadsSortParameters;
+
     public function __construct(
         private readonly DealerService $dealerService,
     ) {}
@@ -23,12 +26,18 @@ class DealerController extends Controller
     {
         Gate::authorize('viewAny', DealerProfile::class);
 
+        $sorting = $this->sortParameters($request);
+
         return Inertia::render('admin/dealers/Index', [
             'summary' => Inertia::defer(fn () => $this->dealerService->summary()),
             'dealers' => Inertia::defer(fn () => DealerData::collect(
-                $this->dealerService->paginated(search: $request->query('search', null)),
+                $this->dealerService->paginated(
+                    search: $request->query('search', null),
+                    sort: $sorting['sort'],
+                    direction: $sorting['direction'],
+                ),
             )),
-            'filters' => ['search' => $request->query('search', null)],
+            'filters' => ['search' => $request->query('search', null), ...$sorting],
         ]);
     }
 
