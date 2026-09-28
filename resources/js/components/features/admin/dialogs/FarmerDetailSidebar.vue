@@ -41,6 +41,8 @@ import { useInitials } from '@/composables/useInitials'
 import { usePinRevealFlash } from '@/composables/usePinRevealFlash'
 import type { FarmerResource } from '@/types'
 import PhoneNumberField from '../PhoneNumberField.vue'
+import ScheduledItemList from './ScheduledItemList.vue'
+import PinRevealDialog from './PinRevealDialog.vue'
 
 const props = defineProps<{
     open: boolean
@@ -156,33 +158,10 @@ function handleDelete() {
                     </p>
                 </div>
 
-                <ItemGroup v-if="farmer.supplies?.length">
-                    <template
-                        v-for="(item, index) in farmer.supplies"
-                        :key="item.id"
-                    >
-                        <ItemSeparator v-if="index !== farmer.supplies!.length - 1" />
-                        <Item size="sm">
-                            <ItemMedia variant="image">
-                                <Avatar>
-                                    <AvatarImage
-                                        v-if="item.vegetable_image_url"
-                                        :src="item.vegetable_image_url"
-                                        :alt="item.display_name"
-                                    />
-                                </Avatar>
-                            </ItemMedia>
-
-                            <ItemContent>
-                                <ItemTitle>{{ item.display_name }}</ItemTitle>
-                            </ItemContent>
-
-                            <ItemActions>
-                                <Badge>{{ item.quantity_kg }} kg</Badge>
-                            </ItemActions>
-                        </Item>
-                    </template>
-                </ItemGroup>
+                <ScheduledItemList
+                    v-if="farmer.supplies?.length"
+                    :items="farmer.supplies"
+                />
 
                 <EmptyState
                     v-else
@@ -256,38 +235,10 @@ function handleDelete() {
     />
 
     <!-- PIN reveal after reset -->
-    <Dialog
+    <PinRevealDialog
         :open="pinModalOpen"
-        @update:open="!$event && closePinModal()"
-    >
-        <DialogContent
-            class="sm:max-w-fit"
-            @pointer-down-outside.prevent
-            @escape-key-down.prevent
-        >
-            <DialogHeader class="items-center text-center">
-                <DialogTitle>PIN Reset</DialogTitle>
-                <DialogDescription>
-                    Share this temporary PIN with the farmer in person. It will
-                    not be shown again.
-                </DialogDescription>
-            </DialogHeader>
-
-            <div class="flex flex-col items-center gap-3 py-6">
-                <p class="text-sm text-muted-foreground">Temporary PIN</p>
-                <p class="font-mono text-5xl sm:text-6xl font-bold tracking-[0.5em]">
-                    {{ revealedPin }}
-                </p>
-                <p class="max-w-[220px] text-center text-xs text-muted-foreground">
-                    The farmer will be asked to set a new PIN on their next
-                    login.
-                </p>
-            </div>
-
-            <Button
-                class="w-full"
-                @click="closePinModal"
-            >Done</Button>
-        </DialogContent>
-    </Dialog>
+        :pin="revealedPin"
+        user-label="farmer"
+        @close="closePinModal"
+    />
 </template>
