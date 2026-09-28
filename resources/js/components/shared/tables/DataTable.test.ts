@@ -308,7 +308,9 @@ describe('DataTable', () => {
             })
 
             expect(wrapper.findAll('th button')).toHaveLength(1)
-            expect(wrapper.findAll('th')[1].attributes('aria-sort')).toBeUndefined()
+            expect(
+                wrapper.findAll('th')[1].attributes('aria-sort'),
+            ).toBeUndefined()
         })
 
         it('reflects sort state from props via aria-sort', () => {
@@ -321,7 +323,9 @@ describe('DataTable', () => {
                 },
             })
 
-            expect(wrapper.findAll('th')[0].attributes('aria-sort')).toBe('descending')
+            expect(wrapper.findAll('th')[0].attributes('aria-sort')).toBe(
+                'descending',
+            )
         })
 
         it('does not reorder rows locally — the server owns ordering', () => {
