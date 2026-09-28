@@ -12,7 +12,7 @@ const { recoveryCodesList, fetchRecoveryCodes, errors } = useTwoFactorAuth()
 const isRecoveryCodesVisible = ref<boolean>(false)
 const recoveryCodeSectionRef = useTemplateRef('recoveryCodeSectionRef')
 
-const toggleRecoveryCodesVisibility = async () => {
+async function toggleRecoveryCodesVisibility() {
 	if (!isRecoveryCodesVisible.value && !recoveryCodesList.value.length) {
 		await fetchRecoveryCodes()
 	}

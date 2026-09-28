@@ -32,7 +32,7 @@ const emit = defineEmits<{
 	action: []
 }>()
 
-const handleAction = () => {
+function handleAction() {
 	emit('action')
 }
 </script>

@@ -126,7 +126,10 @@ function goNext(): void {
                             variant="outline"
                             size="icon-sm"
                         >
-                            <Link :href="billingShow().url">
+                            <Link 
+                                :href="billingShow().url" 
+                                aria-label="Subscribe to browse older market history"
+                            >
                                 <Lock class="size-3.5" />
                             </Link>
                         </Button>
@@ -135,6 +138,7 @@ function goNext(): void {
                             variant="outline"
                             size="icon-sm"
                             :disabled="!canGoPrevious"
+                            aria-label="View earlier history"
                             @click="goPrevious"
                         >
                             <ChevronLeft class="size-3.5" />
@@ -150,6 +154,7 @@ function goNext(): void {
                             variant="outline"
                             size="icon-sm"
                             :disabled="!canGoNext"
+                            aria-label="Back to current"
                             @click="goNext"
                         >
                             <ChevronRight class="size-3.5" />

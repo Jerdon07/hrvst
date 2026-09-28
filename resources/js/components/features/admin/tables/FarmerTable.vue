@@ -116,6 +116,7 @@ const columns: ColumnDef<FarmerResource>[] = [
                         variant="ghost"
                         size="icon-sm"
                         class="text-muted-foreground hover:text-foreground"
+                        aria-label="View details"
                         @click="$emit('view-farmer', row)"
                     >
                         <ClipboardList class="size-4" />

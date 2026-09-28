@@ -5,12 +5,12 @@ import axios from 'axios'
 import { onMounted, onUnmounted, ref } from 'vue'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemSeparator, ItemTitle } from '@/components/ui/item'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { show as billingShow } from '@/routes/billing'
 import notifications from '@/routes/notifications'
 import watches from '@/routes/watches'
-import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemSeparator, ItemTitle } from '../ui/item'
 
 interface NotificationItem {
     id: string
@@ -43,7 +43,7 @@ async function load(): Promise<void> {
 
 async function markRead(item: NotificationItem): Promise<void> {
     if (item.read_at) return
-    await axios.post(`/notifications/${item.id}/read`)
+    await axios.post(notifications.read(item.id).url)
     item.read_at = new Date().toISOString()
     unreadCount.value = Math.max(0, unreadCount.value - 1)
 }

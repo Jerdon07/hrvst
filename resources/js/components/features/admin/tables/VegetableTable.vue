@@ -126,6 +126,7 @@ const columns: ColumnDef<VegetableIndexData>[] = [
                             variant="ghost"
                             size="icon-sm"
                             class="text-muted-foreground hover:text-foreground"
+                            aria-label="Row actions"
                         >
                             <EllipsisVertical />
                         </Button>

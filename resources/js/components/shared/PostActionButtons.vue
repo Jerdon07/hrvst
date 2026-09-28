@@ -3,8 +3,8 @@ import { router } from '@inertiajs/vue3'
 import { CircleCheck, CircleX } from '@lucide/vue'
 import { computed, ref } from 'vue'
 import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
+import AppTooltip from '@/components/templates/AppTooltip.vue'
 import { Button } from '@/components/ui/button'
-import AppTooltip from '../templates/AppTooltip.vue'
 
 const props = defineProps<{
     fulfillUrl: string
@@ -58,6 +58,7 @@ function submit(): void {
                 variant="ghost"
                 size="icon"
                 class="text-primary hover:text-primary/80"
+                aria-label="Mark fulfilled"
                 @click="pendingAction = 'fulfill'"
             >
                 <CircleCheck class="size-6" />
@@ -69,6 +70,7 @@ function submit(): void {
                 variant="ghost"
                 size="icon-sm"
                 class="text-destructive hover:text-destructive/80"
+                aria-label="Mark expired"
                 @click="pendingAction = 'expire'"
             >
                 <CircleX class="size-6" />

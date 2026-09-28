@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Form, Head } from '@inertiajs/vue3'
+import { Form, Head, Link } from '@inertiajs/vue3'
 import { Phone } from '@lucide/vue'
 import { computed, ref } from 'vue'
 import InputError from '@/components/InputError.vue'
@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label'
 import { Spinner } from '@/components/ui/spinner'
 import AuthBase from '@/layouts/AuthLayout.vue'
 import { store } from '@/routes/login'
+import { create } from '@/routes/register'
 
 const props = defineProps<{
   status?: string
@@ -129,12 +130,12 @@ const pin = ref('')
 
                 <p class="text-center text-sm text-muted-foreground">
                     Don't have an account?
-                    <a
-                        href="/register"
+                    <Link
+                        :href="create()"
                         class="font-medium text-foreground underline decoration-neutral-300 underline-offset-4 hover:decoration-current"
                     >
                         Request one
-                    </a>
+                    </Link>
                 </p>
             </div>
         </Form>

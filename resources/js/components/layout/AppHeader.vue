@@ -16,6 +16,7 @@ import AppLogoIcon from '@/components/layout/AppLogoIcon.vue'
 import Breadcrumbs from '@/components/layout/Breadcrumbs.vue'
 import NotificationBell from '@/components/layout/NotificationBell.vue'
 import UserMenuContent from '@/components/layout/UserMenuContent.vue'
+import AppTooltip from '@/components/templates/AppTooltip.vue'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -48,7 +49,6 @@ import farmer from '@/routes/farmer'
 import { archived as farmerSuppliesArchived } from '@/routes/farmer/supplies'
 import vegetables from '@/routes/vegetables'
 import type { BreadcrumbItem, NavItem } from '@/types'
-import AppTooltip from '../templates/AppTooltip.vue'
 
 type Props = {
     breadcrumbs?: BreadcrumbItem[]

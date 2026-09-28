@@ -77,6 +77,7 @@ const emit = defineEmits<{ delete: [post: PostDataFixed] }>()
                     <Button
                         variant="ghost"
                         size="icon-sm"
+                        aria-label="View items"
                     >
                         <ChevronDown class="size-4" />
                     </Button>
@@ -133,6 +134,7 @@ const emit = defineEmits<{ delete: [post: PostDataFixed] }>()
                     <Button
                         variant="ghost"
                         size="icon-sm"
+                        aria-label="Actions"
                     >
                         <MoreVertical class="size-4" />
                     </Button>

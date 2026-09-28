@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { computed, onMounted, ref } from 'vue'
+import { destroy, store } from '@/routes/push-subscriptions'
 
 export type PushSupportState = 'unsupported' | 'default' | 'granted' | 'denied'
 
@@ -78,7 +79,7 @@ export function usePushNotifications() {
                 applicationServerKey: urlBase64ToUint8Array(vapidKey),
             })
 
-            await axios.post('/push-subscriptions', subscription.toJSON())
+            await axios.post(store().url, subscription.toJSON())
             isSubscribed.value = true
             return true
         } catch (e) {
@@ -106,7 +107,7 @@ export function usePushNotifications() {
                 return
             }
 
-            await axios.delete('/push-subscriptions', {
+            await axios.delete(destroy().url, {
                 data: { endpoint: subscription.endpoint },
             })
             await subscription.unsubscribe()

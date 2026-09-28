@@ -13,7 +13,7 @@ type Props = {
     user: User
 }
 
-const handleLogout = () => {
+function handleLogout() {
     router.flushAll()
 }
 

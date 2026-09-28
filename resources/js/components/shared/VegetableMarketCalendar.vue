@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { router, usePage } from '@inertiajs/vue3'
-import type { DateValue} from '@internationalized/date';
+import type { DateValue} from '@internationalized/date'
 import { CalendarDate, toCalendarDate } from '@internationalized/date'
 import { ChevronLeft, ChevronRight } from '@lucide/vue'
 import { CalendarRoot } from 'reka-ui'

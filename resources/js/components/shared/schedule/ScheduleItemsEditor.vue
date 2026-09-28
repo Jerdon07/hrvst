@@ -138,6 +138,7 @@ function removeItem(index: number): void {
                         variant="ghost"
                         size="icon"
                         class="shrink-0"
+                        aria-label="Edit vegetable"
                         @click="openItemDialog(i)"
                     >
                         <ChevronsUpDown class="size-4" />
@@ -148,6 +149,7 @@ function removeItem(index: number): void {
                         variant="ghost"
                         size="icon-lg"
                         class="text-destructive"
+                        aria-label="Remove vegetable"
                         @click="removeItem(i)"
                     >
                         <Trash2 class="size-4" />

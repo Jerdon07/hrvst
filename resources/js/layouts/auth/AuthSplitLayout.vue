@@ -68,7 +68,7 @@ const name = usePage().props.name as string
                                 class="flex gap-4 w-fit pt-10 z-10"
                             >
                                 <img 
-                                    src="favicon.svg" 
+                                    src="/favicon.svg" 
                                     alt="Hrvst Logo"
                                     class="hidden sm:block w-20"
                                 >

@@ -4,16 +4,13 @@ import { onMounted, onUnmounted, ref, watch } from 'vue'
 import 'leaflet/dist/leaflet.css'
 import { useMapResizeSync } from '@/composables/useMapResizeSync'
 import { buildGroups, getLevel, type FarmerGroup, ZOOM_BARANGAY, ZOOM_MUNICIPALITY } from '@/lib/farmerMapGrouping'
+import type { Coordinates } from '@/types'
 import type { FarmerMarker } from '@/types/resources/marketplace'
 
-interface MapCenter {
-    lat: number
-    lng: number
-}
 
 const props = defineProps<{
     markers: FarmerMarker[]
-    center: MapCenter
+    center: Coordinates
     zoom: number
 }>()
 

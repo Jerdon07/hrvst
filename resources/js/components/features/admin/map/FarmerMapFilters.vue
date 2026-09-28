@@ -38,15 +38,15 @@ const activeFilterCount = computed(() => {
 	return count
 })
 
-const handleMunicipalityChange = (value: any) => {
+function handleMunicipalityChange(value: any) {
 	emit('update:selectedMunicipality', value === 'all' ? null : value)
 }
 
-const handleVarietyChange = (value: any) => {
+function handleVarietyChange(value: any) {
 	emit('update:selectedVariety', value === 'all' ? null : value)
 }
 
-const clearFilters = () => {
+function clearFilters() {
 	emit('clear')
 }
 </script>
@@ -76,7 +76,10 @@ const clearFilters = () => {
 
         <!-- Municipality Filter -->
         <div class="flex flex-col gap-1.5">
-            <label class="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+            <label 
+                for="farmer-map-municipality"
+                class="flex items-center gap-1.5 text-xs font-medium text-muted-foreground"
+            >
                 <MapPin class="size-3.5" />
                 Municipality
             </label>
@@ -84,7 +87,10 @@ const clearFilters = () => {
                 :model-value="selectedMunicipality || 'all'" 
                 @update:model-value="handleMunicipalityChange"
             >
-                <SelectTrigger size="sm">
+                <SelectTrigger 
+                    id="farmer-map-municipality"
+                    size="sm"
+                >
                     <SelectValue placeholder="All municipalities" />
                 </SelectTrigger>
                 <SelectContent>

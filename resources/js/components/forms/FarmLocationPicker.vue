@@ -6,6 +6,7 @@ import markerShadowUrl from 'leaflet/dist/images/marker-shadow.png'
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import InputError from '@/components/InputError.vue'
 import { useMapResizeSync } from '@/composables/useMapResizeSync'
+import type { Coordinates } from '@/types'
 
 L.Marker.prototype.options.icon = L.icon({
 	iconUrl: markerIconUrl,
@@ -16,26 +17,21 @@ L.Marker.prototype.options.icon = L.icon({
 	shadowSize: [41, 41],
 })
 
-interface Coordinates {
+interface NullableCoordinates {
 	lat: number | null
 	lng: number | null
 }
 
-interface MunicipalityCoords {
-	lat: number
-	lng: number
-}
-
 const props = defineProps<{
-	modelValue: Coordinates
-	municipalityCoords: MunicipalityCoords | null
+	modelValue: NullableCoordinates
+	municipalityCoords: Coordinates | null
 	latError?: string
 	lngError?: string
 	size?: 'sm'
 }>()
 
 const emit = defineEmits<{
-	'update:modelValue': [value: Coordinates]
+	'update:modelValue': [value: NullableCoordinates]
 }>()
 
 const mapContainer = ref<HTMLDivElement | null>(null)

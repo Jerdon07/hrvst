@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
     delayDuration?: number
 }
 
-withDefaults(defineProps < Props > (), {
+withDefaults(defineProps <Props> (), {
     content: '',
     side: 'top',
     align: 'center',

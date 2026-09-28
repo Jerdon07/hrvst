@@ -15,6 +15,9 @@ import { show } from '@/actions/App/Http/Controllers/Shared/UserController'
 import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
 import DetailSheet from '@/components/dialogs/DetailSheet.vue'
 import EmptyState from '@/components/EmptyState.vue'
+import PinRevealDialog from '@/components/features/admin/dialogs/PinRevealDialog.vue'
+import ScheduledItemList from '@/components/features/admin/dialogs/ScheduledItemList.vue'
+import PhoneNumberField from '@/components/features/admin/PhoneNumberField.vue'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -29,9 +32,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useInitials } from '@/composables/useInitials'
 import { usePinRevealFlash } from '@/composables/usePinRevealFlash'
 import type { FarmerResource } from '@/types'
-import PhoneNumberField from '../PhoneNumberField.vue'
-import PinRevealDialog from './PinRevealDialog.vue'
-import ScheduledItemList from './ScheduledItemList.vue'
 
 const props = defineProps<{
     open: boolean

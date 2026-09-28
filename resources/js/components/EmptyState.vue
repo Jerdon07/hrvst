@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Search } from '@lucide/vue'
 import type { Component } from 'vue'
-import { Button } from './ui/button'
+import { Button } from '@/components/ui/button'
 import {
 	Empty,
 	EmptyContent,
@@ -9,7 +9,7 @@ import {
 	EmptyHeader,
 	EmptyMedia,
 	EmptyTitle,
-} from './ui/empty'
+} from '@/components/ui/empty'
 
 type Props = {
 	title: string

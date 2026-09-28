@@ -28,6 +28,8 @@ import {
 } from '@/components/ui/stepper'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import AuthBase from '@/layouts/AuthLayout.vue'
+import { login } from '@/routes'
+import address from '@/routes/address'
 import { store } from '@/routes/register'
 
 interface Municipality {
@@ -132,7 +134,7 @@ async function onMunicipalityChange(value: string) {
     loadingBarangays.value = true
 
     try {
-        const res = await fetch(`/address/barangays?municipality_id=${value}`)
+        const res = await fetch(address.barangays({ query: { municipality_id: value } }).url)
         barangays.value = await res.json()
     } finally {
         loadingBarangays.value = false
@@ -556,7 +558,7 @@ function submit(): void {
             <p class="text-center text-sm text-muted-foreground">
                 Already have an account?
                 <Link
-                    href="/login"
+                    :href="login()"
                     class="font-medium text-foreground underline decoration-neutral-300 underline-offset-4 hover:decoration-current"
                 >
                     Sign in

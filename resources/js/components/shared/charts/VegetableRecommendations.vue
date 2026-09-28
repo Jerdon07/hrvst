@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ChevronDown, ChevronUp, Info, OctagonX, TriangleAlert } from '@lucide/vue'
 import { Button } from '@/components/ui/button'
-import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from '@/components/ui/item';
+import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from '@/components/ui/item'
 import { useExpandableList } from '@/composables/useExpandableList'
 import type { RecommendationSeverity, VarietyRecommendation } from '@/types/resources/product'
 

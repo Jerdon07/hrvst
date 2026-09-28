@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
-import { ChevronRight, User } from '@lucide/vue';
-import { Badge } from '@/components/ui/badge';
-import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/components/ui/item';
+import { Link } from '@inertiajs/vue3'
+import { ChevronRight, User } from '@lucide/vue'
+import { Badge } from '@/components/ui/badge'
+import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/components/ui/item'
 
 defineProps<{
     link?: string
