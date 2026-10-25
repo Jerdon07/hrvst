@@ -78,7 +78,7 @@ Hrvst aims to transform the Trading Post from a chaotic marketplace into a **Jus
 
 ### 🚀 Getting Started
 
-1.  **Clone the Repo:** `git clone https://github.com/Cresco-Team/Hrvst-v2.git` then `cd Hrvst-v2`
+1.  **Clone the Repo:** `git clone https://github.com/Jerdon07/hrvst.git` then `cd hrvst`
 2.  **Install Run Setup:** `composer setup`
 4.  **Database & Storage:** `php artisan db:seed` then `php storage:link`
 5.  **Run Development Server:** `php artisan dev`
@@ -107,17 +107,7 @@ Hrvst aims to transform the Trading Post from a chaotic marketplace into a **Jus
     - `npm run test:unit`
 8. Wayfinder Routes
     - Run `php artisan wayfinder:generate --no-interaction` if you touched routes/controllers
-
-#### One-Line Version
-
-- `composer install && npm ci \
-&& vendor/bin/pint --test \
-&& composer audit \
-&& npx eslint . \
-&& npm run format:check \
-&& npx vue-tsc --noEmit \
-&& vendor/bin/pest --compact`
-
+    
 ---
 
 **Developed by Team Cresco**
