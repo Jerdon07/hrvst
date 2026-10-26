@@ -9,6 +9,7 @@ import {
     Vegan,
     CircleHelp,
     UserCheck,
+    Store,
 } from '@lucide/vue'
 import { computed, ref } from 'vue'
 import AppLogo from '@/components/layout/AppLogo.vue'
@@ -50,6 +51,7 @@ import farmer from '@/routes/farmer'
 import { archived as farmerSuppliesArchived } from '@/routes/farmer/supplies'
 import vegetables from '@/routes/vegetables'
 import type { BreadcrumbItem, NavItem } from '@/types'
+import market from '@/routes/market'
 
 type Props = {
     breadcrumbs?: BreadcrumbItem[]
@@ -151,6 +153,8 @@ const mainNavItems = computed<AppNavItem[]>(() => {
             },
         )
     }
+
+    items.push({ title: 'Market', href: market.index(), icon: Store })
 
     return items
 })
