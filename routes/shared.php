@@ -1,10 +1,13 @@
 <?php
 
+use App\Http\Controllers\Shared\MarketController;
 use App\Http\Controllers\Shared\VegetableController;
 use App\Http\Controllers\Shared\VegetableWatchController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/vegetables-options', [VegetableController::class, 'options'])->name('vegetables.options');
+
+Route::middleware(['auth', 'verified'])->get('/market', MarketController::class)->name('market.index');
 
 Route::middleware(['auth', 'verified', 'can:not-admin'])->group(function () {
 
