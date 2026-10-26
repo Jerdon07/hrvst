@@ -1,5 +1,5 @@
 export type PostItemStatus = App.Enums.PostItemStatus
-export type PostType = App.Enums.PostType
-export type PostTimeSlot = App.Enums.PostTimeSlot
+export type PostType = App.Enums.Post.PostType
+export type PostTimeSlot = App.Enums.Post.PostTimeSlot
 
 export type KpiTrend = 'up' | 'down' | 'flat'
