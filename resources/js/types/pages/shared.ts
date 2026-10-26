@@ -1,6 +1,6 @@
+import type { PostTimeSlot } from '../enums'
 import type { CategoryOption } from '../resources/product'
 import type { Paginated } from '../shared'
-import type { PostTimeSlot } from '../enums'
 
 export interface SharedVegetablesFilters {
     search: string | null

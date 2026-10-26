@@ -49,9 +49,9 @@ import dealer from '@/routes/dealer'
 import { archived as dealerDemandsArchived } from '@/routes/dealer/demands'
 import farmer from '@/routes/farmer'
 import { archived as farmerSuppliesArchived } from '@/routes/farmer/supplies'
+import market from '@/routes/market'
 import vegetables from '@/routes/vegetables'
 import type { BreadcrumbItem, NavItem } from '@/types'
-import market from '@/routes/market'
 
 type Props = {
     breadcrumbs?: BreadcrumbItem[]
