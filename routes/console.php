@@ -21,3 +21,15 @@ Schedule::command(EvaluateVegetableWatchesCommand::class)->weekly()->onOneServer
 Schedule::command(NotifyPostsDueTodayCommand::class)->dailyAt('07:00')->onOneServer();
 Schedule::command(NotifyPostsReminderCommand::class, ['morning'])->dailyAt('06:00')->onOneServer();
 Schedule::command(NotifyPostsReminderCommand::class, ['evening'])->dailyAt('18:00')->onOneServer();
+
+Artisan::command('debug:media', function () {
+    $m = \App\Models\Vegetable\Vegetable::first()?->getFirstMedia('vegetable_image');
+    $this->line(json_encode([
+        'disk' => $m?->disk,
+        'url' => $m?->getUrl(),
+        'path' => $m?->getPath(),
+        's3_url_cfg' => config('filesystems.disks.s3.url'),
+        'default_disk' => config('filesystems.default'),
+        'media_disk' => config('media-library.disk_name'),
+    ], JSON_PRETTY_PRINT));
+})->purpose('Debug media disk config');
