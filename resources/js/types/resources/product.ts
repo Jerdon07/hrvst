@@ -76,6 +76,7 @@ export interface CategoryOption {
     id: number
     name: string
     slug: string
+    description: string | null
 }
 
 export interface VegetableSummary {

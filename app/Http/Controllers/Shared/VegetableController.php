@@ -34,7 +34,7 @@ class VegetableController extends Controller
                     categoryId: $categoryId,
                 )->paginate(12)->withQueryString(),
             )),
-            'categories' => Category::orderBy('name')->get(['id', 'name']),
+            'categories' => Category::orderBy('name')->get(['id', 'name', 'slug', 'description']),
             'filters' => [
                 'search' => $request->query('search', null),
                 'category_id' => $categoryId ? (int) $categoryId : null,

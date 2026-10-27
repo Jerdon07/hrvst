@@ -223,6 +223,7 @@ declare namespace App {
                 id: number
                 name: string
                 slug: string
+                description: null | string
             }
             export type VegetableCalendarItemData = {
                 post_id: number

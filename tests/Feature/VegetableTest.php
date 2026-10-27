@@ -60,6 +60,23 @@ describe('index', function () {
     });
 });
 
+describe('category description', function () {
+    it('exposes category descriptions to admins', function () {
+        $category = Category::create([
+            'name' => 'Root Vegetables',
+            'description' => 'Vegetables with thick, swollen roots that grow underground.',
+        ]);
+
+        actingAs($this->admin)
+            ->get(route('admin.vegetables.index'))
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('admin/vegetables/Index')
+                ->where('categories', fn ($categories) => collect($categories)
+                    ->contains(fn ($c) => $c['id'] === $category->id
+                        && $c['description'] === $category->description)));
+    });
+});
+
 // ─── Vegetable Store ──────────────────────────────────────────────────────────
 
 describe('vegetable store', function () {
