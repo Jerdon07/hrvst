@@ -14,16 +14,19 @@ class ProductSeeder extends Seeder
         DB::transaction(function () {
 
             // ── Categories ────────────────────────────────────────────────────
-            $categoryNames = [
-                'Leafy Vegetables',
-                'Root Vegetables',
-                'Fruiting Vegetables',
-                'Bean Vegetables',
+            $categoryFields = [
+                ['name' => 'Leafy Vegetables', 'description' => 'Vegetables with edible green leaves and soft stems.'],
+                ['name' => 'Root Vegetables', 'description' => 'Vegetables with thick, swollen roots that grow underground.'],
+                ['name' => 'Fruiting Vegetables', 'description' => 'Vegetables that grow as fruits from flowering plants, often with seeds inside.'],
+                ['name' => 'Bean Vegetables', 'description' => 'Vegetables that grow in elongated pods containing rows of seeds.'],
             ];
 
-            $categories = collect($categoryNames)
-                ->mapWithKeys(fn ($name) => [
-                    $name => Category::firstOrCreate(['name' => $name]),
+            $categories = collect($categoryFields)
+                ->mapWithKeys(fn (array $fields) => [
+                    $fields['name'] => Category::updateOrCreate(
+                        ['name' => $fields['name']],
+                        ['description' => $fields['description']],
+                    ),
                 ]);
 
             // ── Vegetables + varieties (flat), local_name applies at the

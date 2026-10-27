@@ -13,10 +13,11 @@ class CategoryData extends Data
         public int $id,
         public string $name,
         public string $slug,
+        public ?string $description = null,
     ) {}
 
     public static function fromModel(Category $category): self
     {
-        return new self($category->id, $category->name, $category->slug);
+        return new self($category->id, $category->name, $category->slug, $category->description);
     }
 }

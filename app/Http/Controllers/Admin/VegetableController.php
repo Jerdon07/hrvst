@@ -46,7 +46,7 @@ class VegetableController extends Controller
                     direction: $sorting['direction'],
                 )->paginate(20)->withQueryString(),
             )),
-            'categories' => Category::orderBy('name')->get(['id', 'name']),
+            'categories' => Category::orderBy('name')->get(['id', 'name', 'slug', 'description']),
             'filters' => [
                 'search' => $request->query('search', null),
                 'category_id' => $categoryId ? (int) $categoryId : null,

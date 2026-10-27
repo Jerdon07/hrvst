@@ -36,6 +36,10 @@ const categoryFilter = ref(
     props.filters?.category_id ? String(props.filters.category_id) : 'all',
 )
 
+const selectedCategory = computed(() =>
+    props.categories.find((c) => String(c.id) === categoryFilter.value),
+)
+
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
 
 function visit(overrides: { search?: string; category_id?: string } = {}) {
@@ -121,6 +125,14 @@ function handlePageChange(page: number): void {
                     </SelectContent>
                 </Select>
             </div>
+
+            <p
+                v-if="selectedCategory?.description"
+                class="-mt-3 text-sm text-muted-foreground"
+            >
+                <span class="font-medium text-foreground">{{ selectedCategory.name }}:</span>
+                {{ selectedCategory.description }}
+            </p>
 
             <Deferred data="vegetables">
                 <template #fallback>
