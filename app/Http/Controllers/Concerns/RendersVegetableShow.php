@@ -63,7 +63,7 @@ trait RendersVegetableShow
             'meta' => [
                 'vegetableId' => $vegetable->id,
                 'vegetableLabel' => $vegetable->display_name,
-                'categoryName' => $vegetable->category->name,
+                'categoryName' => "{$vegetable->category->name}: {$vegetable->category->description}"
             ],
             'isWatching' => $user->watches()->where('vegetable_id', $vegetable->id)->exists(),
         ]);
